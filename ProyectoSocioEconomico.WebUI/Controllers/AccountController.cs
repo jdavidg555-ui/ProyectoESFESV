@@ -12,7 +12,11 @@ namespace ProyectoSocioEconomico.WebUI.Controllers
             _authService = authService;
         }
 
-        public IActionResult Login()
+        public IActionResult IniciarSesion()
+        {
+            return View();
+        }
+        public IActionResult Registrarse()
         {
             return View();
         }
