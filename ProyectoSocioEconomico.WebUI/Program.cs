@@ -1,40 +1,30 @@
-using Microsoft.EntityFrameworkCore;
-using ProyectoSocioEconomico.Application.Services;
-using ProyectoSocioEconomico.Infrastructure.Data;
-
+using ProyectoSocioEconomico.Infrastructure;
+using ProyectoSocioEconomico.WebUI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Registrar DbContext (conexión a SQL Server)
-builder.Services.AddDbContext<ProyectoSocioEconomicoDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Registrar servicios para Dependency Injection
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddInfrastructure(
+    builder.Configuration.GetConnectionString("DefaultConnection"));
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
-app.UseRouting();
-
-app.UseAuthorization();
+app.UseAntiforgery();
 
 app.MapStaticAssets();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();

@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="ProyectoSocioEconomico.Application/ProyectoSocioEconomico.Application.csproj" />
-  <Project Path="ProyectoSocioEconomico.Domain/ProyectoSocioEconomico.Domain.csproj" />
-  <Project Path="ProyectoSocioEconomico.Infraestructure/ProyectoSocioEconomico.Infrastructure.csproj" />
-  <Project Path="ProyectoSocioEconomico.WebUI/ProyectoSocioEconomico.WebUI.csproj" />
-</Solution>
