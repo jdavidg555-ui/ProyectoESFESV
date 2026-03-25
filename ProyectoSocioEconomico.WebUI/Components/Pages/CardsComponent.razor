@@ -1,0 +1,63 @@
+@using System.Globalization
+@using ProyectoSocioEconomico.Application.Interfaces
+@inject ICasoService CasoService
+
+@if (casos.Count == 0)
+{
+    <section class="bulma-section">
+        <p class="bulma-has-text-grey">No hay casos disponibles por el momento.</p>
+    </section>
+}
+else
+{
+    <section class="bulma-section">
+        <div class="cards-container">
+            @for (var indice = 0; indice < casos.Count; indice++)
+            {
+                var caso = casos[indice];
+                decimal totalRecaudado = 0m;
+                if (caso.Donaciones != null)
+                {
+                    foreach (var donacion in caso.Donaciones)
+                    {
+                        totalRecaudado += donacion.Monto;
+                    }
+                }
+
+                <CardComponent Title="@caso.Titulo"
+                               Description="@caso.Descripcion"
+                               MoneyRaised="@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))"
+                               RemainingPercentage="@CalcularPorcentajeRestante(caso.Meta, totalRecaudado)"
+                               ImageUrl="@caso.ImagenUrl" />
+            }
+        </div>
+    </section>
+}
+
+@code {
+    private List<dynamic> casos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        casos = (await CasoService.ObtenerActivosParaHome(4)).Cast<dynamic>().ToList();
+    }
+
+    private static int CalcularPorcentajeRestante(decimal meta, decimal totalRecaudado)
+    {
+        if (meta <= 0)
+        {
+            return 0;
+        }
+
+        var restante = meta - totalRecaudado;
+
+        if (restante <= 0)
+        {
+            return 0;
+        }
+
+        var porcentaje = (int)Math.Round((restante / meta) * 100, MidpointRounding.AwayFromZero);
+
+        return Math.Clamp(porcentaje, 0, 100);
+    }
+}

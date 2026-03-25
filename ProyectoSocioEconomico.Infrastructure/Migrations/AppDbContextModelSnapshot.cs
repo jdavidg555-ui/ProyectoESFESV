@@ -66,6 +66,10 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.Property<int>("IdCategoria")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImagenUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<decimal>("Meta")
                         .HasColumnType("decimal(18, 2)");
 

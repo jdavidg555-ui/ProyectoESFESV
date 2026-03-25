@@ -12,7 +12,7 @@ using ProyectoSocioEconomico.Infrastructure.Data;
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260322235613_InitialCreate")]
+    [Migration("20260325224015_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -68,6 +68,10 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
 
                     b.Property<int>("IdCategoria")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImagenUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal>("Meta")
                         .HasColumnType("decimal(18, 2)");

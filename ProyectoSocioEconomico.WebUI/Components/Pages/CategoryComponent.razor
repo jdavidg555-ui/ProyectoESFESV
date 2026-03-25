@@ -12,15 +12,14 @@
 
 @code {
     [Parameter]
-    public string Icon { set; get; }
+    public string? Icon { set; get; }
     [Parameter]
-    public string Title { set; get; }
+    public string? Title { set; get; }
     [Parameter]
-    public string ColorClass { set; get; }
+    public string? ColorClass { set; get; }
 
     public string? Cases { set; get; }
 
-    // TODO arreglar la funcion
     async void callDatabaseToGetCases()
     {
     }

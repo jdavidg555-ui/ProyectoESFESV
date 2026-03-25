@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ProyectoSocioEconomico.Domain.Entities;
@@ -12,6 +12,8 @@ public partial class Caso
     public string Titulo { get; set; } = null!;
 
     public string Descripcion { get; set; } = null!;
+
+    public string? ImagenUrl { get; set; }
 
     public decimal Meta { get; set; }
 

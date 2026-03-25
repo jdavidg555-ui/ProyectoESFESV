@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSocioEconomico.Domain.Entities;
@@ -55,6 +55,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.IdCategoria, "IX_Casos_IdCategoria");
 
             entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.ImagenUrl).HasMaxLength(500);
             entity.Property(e => e.Meta).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Titulo).HasMaxLength(150);
 

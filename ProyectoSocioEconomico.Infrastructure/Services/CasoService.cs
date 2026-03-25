@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProyectoSocioEconomico.Application.Interfaces;
 using ProyectoSocioEconomico.Domain.Entities;
 using ProyectoSocioEconomico.Infrastructure.Data;
@@ -19,6 +19,16 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
             return await _context.Casos
                 .Include(c => c.IdCategoriaNavigation)
                 .Include(c => c.IdBeneficiadoNavigation)
+                .ToListAsync();
+        }
+
+        public async Task<List<Caso>> ObtenerActivosParaHome(int cantidad)
+        {
+            return await _context.Casos
+                .Include(c => c.Donaciones)
+                .Where(c => c.Estado == "Activo")
+                .OrderByDescending(c => c.FechaCreacion)
+                .Take(cantidad)
                 .ToListAsync();
         }
 

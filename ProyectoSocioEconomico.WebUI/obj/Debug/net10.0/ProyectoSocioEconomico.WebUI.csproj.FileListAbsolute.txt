@@ -425,8 +425,6 @@ C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\72rjccycs0-{0}-4d85u1mtcx-4d85u1mtcx.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\xcv9wao2wa-{0}-0j3bgjxly4-0j3bgjxly4.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\4ewrz898gh-{0}-abdmv1u4y3-abdmv1u4y3.gz
-C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\d4vtvxeprj-{0}-b9228eflpl-b9228eflpl.gz
-C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\d8te6a9v4m-{0}-2tj1sjhksk-2tj1sjhksk.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\y6q2qnb4cw-{0}-c1kd2gxivb-c1kd2gxivb.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\6z06w0avkv-{0}-c1kd2gxivb-c1kd2gxivb.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\staticwebassets.build.json
@@ -456,3 +454,5 @@ C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\bkpzf38398-{0}-yoozw7z35b-yoozw7z35b.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\6nsu9plqyv-{0}-qtffaftpm7-qtffaftpm7.gz
 C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\jf2eb0412t-{0}-4j5u5idqd6-4j5u5idqd6.gz
+C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\d4vtvxeprj-{0}-mgww215af1-mgww215af1.gz
+C:\Users\Level\source\repos\ProyectoESFE\ProyectoSocioEconomico.WebUI\obj\Debug\net10.0\compressed\d8te6a9v4m-{0}-dy8h75y8gn-dy8h75y8gn.gz

@@ -95,6 +95,7 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     IdBeneficiado = table.Column<int>(type: "int", nullable: false),
                     Titulo = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Meta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FechaLimite = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdCategoria = table.Column<int>(type: "int", nullable: false),
