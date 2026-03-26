@@ -23,6 +23,8 @@ public partial class Usuario
 
     public string? Direccion { get; set; }
 
+    public string? ImagenPerfil { get; set; }
+
     public int IdRol { get; set; }
 
     public string Estado { get; set; } = null!;

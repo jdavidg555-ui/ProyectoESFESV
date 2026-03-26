@@ -200,6 +200,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.Apellido).HasMaxLength(100);
             entity.Property(e => e.Direccion).HasMaxLength(255);
+            entity.Property(e => e.ImagenPerfil).HasMaxLength(500);
             entity.Property(e => e.Dui)
                 .HasMaxLength(20)
                 .HasColumnName("DUI");
