@@ -1,0 +1,5 @@
+dotnet ef migrations add InitialCreate --project ProyectoSocioEconomico.Infrastructure --startup-project ProyectoSocioEconomico.WebUI --output-dir Migrations
+
+dotnet build ProyectoSocioEconomico.Infrastructure 
+
+dotnet ef database update --project ProyectoSocioEconomico.Infrastructure --startup-project ProyectoSocioEconomico.WebUI

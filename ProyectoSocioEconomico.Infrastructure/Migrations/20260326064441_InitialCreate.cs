@@ -72,6 +72,7 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     DUI = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Direccion = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    ImagenPerfil = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IdRol = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -149,6 +150,7 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreadoPor = table.Column<int>(type: "int", nullable: false)
