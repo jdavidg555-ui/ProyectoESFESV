@@ -25,13 +25,16 @@
 
     public string? Cases { set; get; }
 
-    @inject AppDbContext DbContext
+    @inject IDbContextFactory<AppDbContext> DbContextFactory
 
     protected override async Task OnInitializedAsync()
     {
-        var count = await DbContext.Casos
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+
+        var count = await dbContext.Casos
             .Where(c => c.IdCategoria == IdCategoria && c.Estado == "Activo")
             .CountAsync();
+
         Cases = count.ToString();
     }
 }

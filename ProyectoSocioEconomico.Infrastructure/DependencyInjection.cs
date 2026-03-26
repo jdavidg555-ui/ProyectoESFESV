@@ -10,7 +10,10 @@ namespace ProyectoSocioEconomico.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<AppDbContext>(
+                options => options.UseSqlServer(connectionString),
+                optionsLifetime: ServiceLifetime.Singleton);
+            services.AddDbContextFactory<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             services.AddScoped<IUsuarioService, UsuarioService>();
