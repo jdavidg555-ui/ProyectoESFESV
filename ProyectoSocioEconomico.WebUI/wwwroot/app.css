@@ -173,7 +173,7 @@ section.login-step3-inputs {
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  gap: 3.50rem;
+  gap: 3.5rem;
   align-items: center;
 
   .login-step3-inputs-passwords {
@@ -193,6 +193,59 @@ section.login-step3-inputs {
   }
 }
 
+section.registrarse {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div.registrarse-column {
+      width: 35rem;
+      flex: none;
+      max-width: 95%;
+  }
+
+  form.form-registrarse {
+    border: 1px solid #eee;
+    border-radius: 1rem;
+    background-color: white !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+    .bulma-input {
+      color: #4a4a4a !important;
+      background-color: white !important;
+      
+      &::placeholder {
+          color: #7a7a7a !important;
+          opacity: 1;
+      }
+    }
+
+    .bulma-icon.bulma-is-clickable {
+        pointer-events: all;
+        cursor: pointer;
+        color: var(--primary-color);
+    }
+  }
+
+  section.login-step3-inputs-grid {
+    display: grid;
+    gap: 1rem; /* Margen aumentado para que las etiquetas no se peguen al input superior */
+    width: 100%;
+  }
+
+  div.field-terminos {
+    margin-top: 2.5rem !important;
+  }
+}
+
 section.section-redondeado {
   border-radius: 1rem;
+}
+
+a.a-crear-cuenta {
+  color: var(--primary-color) !important;
+  font-weight: 900 !important;
+  text-decoration: underline !important;
+  font-size: 1.1rem;
 }

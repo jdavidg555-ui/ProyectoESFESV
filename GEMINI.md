@@ -86,6 +86,7 @@ When editing .razor files:
   For example:
   `section.section-redondeado`
 * Improve layout using web-design-guidelines
+* Si se usa CSS y se modifica `ProyectoSocioEconomico.WebUI/wwwroot/app.css`, hacer variables en ':root' y usarlas con 'var()'
 * Maintain layout fidelity using ui-mockup-fidelity
 * Prefer Bulma helpers (columns, box, card, level)
 * Prefer Bulma components (columns, card, box, level)
@@ -97,3 +98,7 @@ When editing .razor files:
 * Keep markup minimal and clean
 
 Always prioritize BulmaCSS classes over custom CSS.
+
+## Documentation
+
+* [Bulma CSS](https://bulma.io/documentation/)

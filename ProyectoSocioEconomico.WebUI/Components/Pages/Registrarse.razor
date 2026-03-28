@@ -1,4 +1,5 @@
 @page "/login"
+@layout EmptyLayout
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using ProyectoSocioEconomico.Application.Interfaces
@@ -8,13 +9,14 @@
 @inject AppDbContext DbContext
 @inject NavigationManager NavigationManager
 
-<form @onsubmit="CrearCuenta">
-    <div class="login-step3">
-        <section class="bulma-container login-step3-container">
-            <section class="bulma-section login-step3-section bulma-has-text-black">
+<section class="bulma-section registrarse bulma-is-fullheight bulma-has-background-white-bis">
+    <div class="bulma-container">
+        <div class="bulma-columns bulma-is-centered">
+            <div class="bulma-column registrarse-column">
+                <form @onsubmit="CrearCuenta" class="bulma-box bulma-p-6 bulma-has-background-white form-registrarse">
+                <div class="login-step3-content bulma-has-text-black">
                 <div class="login-step3-text">
-                    <h1 class="bulma-title bulma-has-text-black">Seguridada y configuracion de la cuenta</h1>
-                    <p>Finalize your credentials and select your role within the community.</p>
+                    <h1 class="bulma-title bulma-has-text-black bulma-mb-5">Bienvenido de vuelta</h1>
                 </div>
 
                 @if (!string.IsNullOrWhiteSpace(mensaje))
@@ -24,88 +26,69 @@
                     </div>
                 }
 
-                <section class="login-step3-inputs">
-                    <label class="item">
-                        <span>Correo electronico</span>
+                <section class="login-step3-inputs-grid">
+                    <div class="bulma-field bulma-mb-0">
+                        <label class="bulma-label bulma-has-text-black">Correo electrónico</label>
+                        <div class="bulma-control">
+                            <input class="bulma-input bulma-input-rounded bulma-is-medium" type="email" name="email"
+                                   placeholder="ejemplo@gmail.com" @bind="email" />
+                        </div>
+                    </div>
+                    
+                    <div class="bulma-field bulma-mb-0">
+                        <label class="bulma-label bulma-has-text-black">Contraseña</label>
                         <div class="bulma-control bulma-has-icons-right">
-                            <input
-                                class="bulma-input bulma-input-rounded bulma-is-medium"
-                                type="email"
-                                name="email"
-                                placeholder="ejemplo@gmail.com"
-                                @bind="email" />
-                            <span class="bulma-icon bulma-is-small bulma-is-right">
-                                <i class="fa-solid fa-at"></i>
+                            <input class="bulma-input bulma-input-rounded bulma-is-medium" type="@(verPassword ? "text" : "password")"
+                                   name="password" placeholder="Mínimo 8 caracteres" @bind="password" />
+                            <span class="bulma-icon bulma-is-small bulma-is-right bulma-is-clickable" @onclick="TogglePassword">
+                                <i class="fa-solid @(verPassword ? "fa-eye-slash" : "fa-eye")"></i>
                             </span>
                         </div>
-                    </label>
-                    <section class="login-step3-inputs-passwords">
-                        <label>
-                            <span>Contraseña</span>
-                            <div class="bulma-control">
-                                <input
-                                    class="bulma-input bulma-input-rounded bulma-is-medium"
-                                    type="password"
-                                    name="password"
-                                    placeholder="Introduce tu contraseña"
-                                    @bind="password" />
-                            </div>
-                        </label>
-                        <label>
-                            <span>Repite la contraña</span>
-                            <div class="bulma-control">
-                                <input
-                                    class="bulma-input bulma-input-rounded bulma-is-medium"
-                                    type="password"
-                                    name="repeatPassword"
-                                    placeholder="Introduce tu constraseña de nuevo"
-                                    @bind="repeatPassword" />
-                            </div>
-                        </label>
-                    </section>
+                    </div>
                 </section>
-                <div class="bulma-is-flex">
+                <div class="bulma-field field-terminos">
                     <label class="checkbox">
                         <input type="checkbox" class="mr-5" @bind="aceptaTerminos" />
-                        <span class="bulma-has-text-centred bulma-has-text-black">
-                            I agree to the Terms of Service and Privacy Policy. I understand that my data will be
-                            used for socioeconomic analysis.
+                        <span class="bulma-has-text-black">
+                            Acepto los términos de servicio y la política de privacidad.
                         </span>
                     </label>
                 </div>
                 <button type="submit" class="bulma-button bulma-is-warning bulma-is-fullwidth" disabled="@guardando">
-                    @(guardando ? "Guardando..." : "Crear Cuenta")
+                    @(guardando ? "Ingresando..." : "Iniciar Sesión")
                 </button>
-            </section>
-        </section>
+                <hr />
+                <p class="bulma-has-text-centered bulma-has-text-grey-darker">
+                    ¿No tienes una cuenta? 
+                    <a href="/registrarse" class="a-crear-cuenta">Crear cuenta</a>
+                </p>
+                </div>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
+</section>
 
 @code {
     private string email = string.Empty;
     private string password = string.Empty;
-    private string repeatPassword = string.Empty;
     private bool aceptaTerminos;
     private bool guardando;
     private string mensaje = string.Empty;
     private bool esError;
+    private bool verPassword;
+
+    private void TogglePassword() => verPassword = !verPassword;
 
     private async Task CrearCuenta()
     {
         mensaje = string.Empty;
         esError = false;
 
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(repeatPassword))
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             esError = true;
             mensaje = "Completa todos los campos.";
-            return;
-        }
-
-        if (password != repeatPassword)
-        {
-            esError = true;
-            mensaje = "Las contraseñas no coinciden.";
             return;
         }
 
