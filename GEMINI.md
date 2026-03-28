@@ -1,12 +1,12 @@
-# AGENTS.md
+# GEMINI.md
 
-## 🧠 Propósito
+## Propósito
 
 Este archivo define las reglas y convenciones para los agentes (automatizados) que trabajan en este proyecto ASP.NET Core con Blazor Server y Entity Framework.
 
 ---
 
-## 🏗️ Stack Tecnológico
+## Stack Tecnológico
 
 * ASP.NET Core
 * Blazor Server
@@ -17,7 +17,7 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 * `ProyectoSocioEconomico.WebUI/Components/Pages` → Componentes Razor (páginas)
 * `ProyectoSocioEconomico.Domain/Entities` → Entidades del dominio
@@ -29,7 +29,7 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ---
 
-## 📌 Convenciones de Código
+## Convenciones de Código
 
 * Usar **PascalCase** para clases y propiedades
 * Usar **camelCase** para variables locales
@@ -38,7 +38,7 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ---
 
-## 🗄️ Entity Framework
+## Entity Framework
 
 * Las entidades del dominio se encuentran en `ProyectoSocioEconomico.Domain/Entities`
 * Configuración adicional en `OnModelCreating` del `AppDbContext` (`ProyectoSocioEconomico.Infrastructure/Data/AppDbContext.cs`)
@@ -58,7 +58,7 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ---
 
-## 🔐 Buenas Prácticas
+## Buenas Prácticas
 
 * No hardcodear strings de conexión
 * Usar `appsettings.json` y `appsettings.Development.json` en `ProyectoSocioEconomico.WebUI/`
@@ -68,7 +68,7 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ---
 
-## 📝 Notas
+## Notas
 
 * Mantener el código limpio
 * Mantener el código simple (Keep it simple, stupid)
@@ -78,4 +78,22 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ## UI
 
-Mira las variables en css, ocupa esos colores o si usas Bulma CSS, ocupa los colores mas parecidos a los de las variables, que son warning y success.
+When editing .razor files:
+
+* Prioritize BulmaCSS (no Tailwind, no Bootstrap)
+* When you use Bulma classes, they should be start with "bulma-" and after the class name, you can add your personalized classes.
+* If you wanana use personalized classes, you can use css but with a lot of priotity.
+  For example:
+  `section.section-redondeado`
+* Improve layout using web-design-guidelines
+* Maintain layout fidelity using ui-mockup-fidelity
+* Prefer Bulma helpers (columns, box, card, level)
+* Prefer Bulma components (columns, card, box, level)
+* Use reusable Razor components
+* Use components instead of duplicated markup
+* Avoid inline styles
+* Keep accessibility attributes
+* Keep semantic HTML
+* Keep markup minimal and clean
+
+Always prioritize BulmaCSS classes over custom CSS.

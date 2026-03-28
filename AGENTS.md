@@ -1,6 +1,6 @@
 # AGENTS.md
 
-## 🧠 Propósito
+## Propósito
 
 Este archivo define las reglas y convenciones para los agentes (automatizados) que trabajan en este proyecto ASP.NET Core con Blazor Server y Entity Framework.
 
@@ -78,4 +78,22 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 
 ## UI
 
-Mira las variables en css, ocupa esos colores o si usas Bulma CSS, ocupa los colores mas parecidos a los de las variables, que son warning y success.
+When editing .razor files:
+
+* Prioritize BulmaCSS (no Tailwind, no Bootstrap)
+* When you use Bulma classes, they should be start with "bulma-" and after the class name, you can add your personalized classes.
+* If you wanana use personalized classes, you can use css but with a lot of priotity.
+  For example:
+  `section.section-redondeado`
+* Improve layout using web-design-guidelines
+* Maintain layout fidelity using ui-mockup-fidelity
+* Prefer Bulma helpers (columns, box, card, level)
+* Prefer Bulma components (columns, card, box, level)
+* Use reusable Razor components
+* Use components instead of duplicated markup
+* Avoid inline styles
+* Keep accessibility attributes
+* Keep semantic HTML
+* Keep markup minimal and clean
+
+Always prioritize BulmaCSS classes over custom CSS.

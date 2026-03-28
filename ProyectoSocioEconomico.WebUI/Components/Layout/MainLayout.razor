@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
 
 
 <nav class="bulma-navbar bulma-px-1 bulma-px-5">
@@ -21,14 +22,25 @@
             </a>
         </ul>
         <section class="bulma-navbar-end bulma-is-flex bulma-is-align-items-center">
-            <div class="bulma-navbar-item">
-                <a class="bulma-button bulma-is-info">Mi caso</a>
-            </div>
-            <a>
-                <figure class="bulma-image bulma-is-48x48">
-                    <img class="bulma-is-rounded" src="https://bulma.io/assets/images/placeholders/48x48.png" />
-                </figure>
-            </a>
+            <CascadingAuthenticationState>
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="bulma-navbar-item">
+                            <a class="bulma-button bulma-is-info">Mi caso</a>
+                        </div>
+                        <a class="bulma-navbar-item">
+                            <figure class="bulma-image bulma-is-48x48">
+                                <img class="bulma-is-rounded" src="https://bulma.io/assets/images/placeholders/48x48.png" />
+                            </figure>
+                        </a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <div class="bulma-navbar-item">
+                            <a href="/login" class="bulma-button bulma-is-warning">Registrarse</a>
+                        </div>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </CascadingAuthenticationState>
         </section>
     </section>
 </nav>

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "skills": {
+    "Razor Pages Patterns": {
+      "source": "wshaddix/dotnet-skills",
+      "sourceType": "github",
+      "computedHash": "2c6bcfd0328e45e1039394dbd3c880a0700f5a99dd69ea777108201fdd2da517"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "computedHash": "645b891da1edbae76ab79c7b088d4e73397464f8396edaf773c0e01971ce75d6"
+    },
+    "ui-mockup-fidelity": {
+      "source": "sebkay/skills",
+      "sourceType": "github",
+      "computedHash": "fa306eaaddf73cea370d6d24d35bdb72ba144faa49e0a46f01dea15c9b80a574"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "d8e7d3afe37dcc8a97b99ffb5afdb4d0919ae0092ea8b68f44eb201f035e33ac"
+    }
+  }
+}
