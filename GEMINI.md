@@ -75,3 +75,7 @@ Este archivo define las reglas y convenciones para los agentes (automatizados) q
 * Evitar duplicación (Don't repeat yourself)
 * Documentar métodos importantes
 * Los componentes Blazor deben ser reactivos y usar parámetros adecuadamente
+
+## UI
+
+Mira las variables en css, ocupa esos colores o si usas Bulma CSS, ocupa los colores mas parecidos a los de las variables, que son warning y success.
