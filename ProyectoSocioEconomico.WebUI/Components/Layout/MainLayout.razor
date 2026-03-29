@@ -22,25 +22,23 @@
             </a>
         </ul>
         <section class="bulma-navbar-end bulma-is-flex bulma-is-align-items-center">
-            <CascadingAuthenticationState>
-                <AuthorizeView>
-                    <Authorized>
-                        <div class="bulma-navbar-item">
-                            <a class="bulma-button bulma-is-info">Mi caso</a>
-                        </div>
-                        <a class="bulma-navbar-item">
-                            <figure class="bulma-image bulma-is-48x48">
-                                <img class="bulma-is-rounded" src="https://bulma.io/assets/images/placeholders/48x48.png" />
-                            </figure>
-                        </a>
-                    </Authorized>
-                    <NotAuthorized>
-                        <div class="bulma-navbar-item">
-                            <a href="/login" class="bulma-button bulma-is-warning">Registrarse</a>
-                        </div>
-                    </NotAuthorized>
-                </AuthorizeView>
-            </CascadingAuthenticationState>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="bulma-navbar-item">
+                        <a class="bulma-button bulma-is-info">Mi caso</a>
+                    </div>
+                    <a class="bulma-navbar-item">
+                        <figure class="bulma-image bulma-is-48x48">
+                            <img class="bulma-is-rounded" src="https://bulma.io/assets/images/placeholders/48x48.png" />
+                        </figure>
+                    </a>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="bulma-navbar-item">
+                        <a href="/login" class="bulma-button bulma-is-warning">Registrarse</a>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
         </section>
     </section>
 </nav>
