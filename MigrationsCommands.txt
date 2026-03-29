@@ -1,4 +1,4 @@
- dotnet ef database drop -f --project ProyectoSocioEconomico.Infrastructure --startup-project ProyectoSocioEconomico.WebUI
+dotnet ef database drop -f --project ProyectoSocioEconomico.Infrastructure --startup-project ProyectoSocioEconomico.WebUI
 
 dotnet ef migrations add InitialCreate --project ProyectoSocioEconomico.Infrastructure --startup-project ProyectoSocioEconomico.WebUI --output-dir Migrations
 

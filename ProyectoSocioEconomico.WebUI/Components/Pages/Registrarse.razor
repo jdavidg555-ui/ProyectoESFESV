@@ -29,19 +29,25 @@
                 <section class="login-step3-inputs-grid">
                     <div class="bulma-field bulma-mb-0">
                         <label class="bulma-label bulma-has-text-black">Correo electrónico</label>
-                        <div class="bulma-control">
-                            <input class="bulma-input bulma-input-rounded bulma-is-medium" type="email" name="email"
+                        <div class="bulma-control bulma-has-icons-left">
+                            <span class="bulma-icon bulma-is-small bulma-is-left">
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                            <input class="bulma-input bulma-is-medium" type="email" name="email"
                                    placeholder="ejemplo@gmail.com" @bind="email" />
                         </div>
                     </div>
                     
                     <div class="bulma-field bulma-mb-0">
                         <label class="bulma-label bulma-has-text-black">Contraseña</label>
-                        <div class="bulma-control bulma-has-icons-right">
-                            <input class="bulma-input bulma-input-rounded bulma-is-medium" type="@(verPassword ? "text" : "password")"
+                        <div class="bulma-control bulma-has-icons-right bulma-has-icons-left">
+                            <span class="bulma-icon bulma-is-small bulma-is-left">
+                                <i class="fa-solid fa-key"></i>
+                            </span>
+                            <input class="bulma-input bulma-is-medium" type="@(verPassword ? "text" : "password")"
                                    name="password" placeholder="Mínimo 8 caracteres" @bind="password" />
                             <span class="bulma-icon bulma-is-small bulma-is-right bulma-is-clickable" @onclick="TogglePassword">
-                                <i class="fa-solid @(verPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                <i class="fa-solid @(verPassword ? "fa-eye" : "fa-eye-slash")"></i>
                             </span>
                         </div>
                     </div>

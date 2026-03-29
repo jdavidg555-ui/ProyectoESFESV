@@ -211,20 +211,36 @@ section.registrarse {
     background-color: white !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 
-    .bulma-input {
+    input.bulma-input {
       color: #4a4a4a !important;
       background-color: white !important;
-      
+      border-radius: 6px !important;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+          border-color: var(--education-color) !important;
+          box-shadow: 0 0 0 0.125em rgba(32, 156, 238, 0.25) !important;
+      }
+
       &::placeholder {
           color: #7a7a7a !important;
           opacity: 1;
       }
     }
 
+    .bulma-control .bulma-icon {
+      height: 100%;
+      color: var(--primary-color);
+      transition: color 0.2s ease-in-out;
+    }
+
     .bulma-icon.bulma-is-clickable {
         pointer-events: all;
         cursor: pointer;
-        color: var(--primary-color);
+    }
+
+    .bulma-control:focus-within .bulma-icon {
+      color: var(--education-color);
     }
   }
 
