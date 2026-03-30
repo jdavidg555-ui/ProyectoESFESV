@@ -56,13 +56,19 @@ namespace ProyectoSocioEconomico.WebUI.Services
 
         private ClaimsPrincipal CreateClaimsPrincipalFromUser(Usuario usuario)
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuario.Nombre),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, "Usuario")
+                new Claim(ClaimTypes.Email, usuario.Email)
             };
+
+            // If the role name is known (e.g. from a join or property), add it here.
+            // For now, let's use a generic role or handle it based on IdRol if we had a mapping.
+            // Since we want to check for "beneficiado", we'll add the claim.
+            // Note: Ideally, 'usuario' should have a 'Role' navigation property loaded.
+            if (usuario.IdRol == 1) claims.Add(new Claim(ClaimTypes.Role, "beneficiado"));
+            else claims.Add(new Claim(ClaimTypes.Role, "Usuario"));
 
             var identity = new ClaimsIdentity(claims, "CustomAuth");
             return new ClaimsPrincipal(identity);
