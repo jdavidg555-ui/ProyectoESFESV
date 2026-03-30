@@ -30,8 +30,8 @@
                         </div>
                     </AuthorizeView>
                     <a class="bulma-navbar-item">
-                        <figure class="bulma-image bulma-is-48x48">
-                            <img class="bulma-is-rounded" src="@context.User.FindFirst("ImagenPerfil")?.Value" alt="Foto de perfil" />
+                        <figure class="bulma-image profile-pic-container">
+                            <img class="profile-pic" src="@context.User.FindFirst("ImagenPerfil")?.Value" alt="Foto de perfil" />
                         </figure>
                     </a>
                 </Authorized>
