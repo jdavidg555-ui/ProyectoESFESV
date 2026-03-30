@@ -270,7 +270,7 @@
             await DbContext.SaveChangesAsync();
 
             // 5. Iniciar sesión automáticamente
-            AuthStateProvider.NotifyUserLogin(nuevoUsuario);
+            await AuthStateProvider.NotifyUserLogin(nuevoUsuario);
 
             // 6. Finalizar
             RegState.Reset();

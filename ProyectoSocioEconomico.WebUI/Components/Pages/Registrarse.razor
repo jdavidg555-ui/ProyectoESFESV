@@ -124,7 +124,7 @@
             {
                 mensaje = "Sesión iniciada correctamente.";
                 esError = false;
-                CustomAuthStateProvider.NotifyUserLogin(usuarioEncontrado);
+                await CustomAuthStateProvider.NotifyUserLogin(usuarioEncontrado);
                 NavigationManager.NavigateTo("/");
             }
             else
