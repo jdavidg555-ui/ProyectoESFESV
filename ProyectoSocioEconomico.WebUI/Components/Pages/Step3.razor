@@ -3,19 +3,6 @@
 @layout EmptyLayout
 
 <div class="rp3-page">
-
-    <!-- ── NAVBAR ── -->
-    @* <nav class="bulma-navbar rp3-navbar" role="navigation" aria-label="main navigation">
-        <div class="bulma-navbar-brand rp3-navbar__brand">
-            <a class="rp3-navbar__logo-link bulma-navbar-item" href="/">
-                <span class="rp3-navbar__logo-icon">
-                    <i class="fas fa-shield-halved"></i>
-                </span>
-                <span class="rp3-navbar__brand-text">Social Aid Platform</span>
-            </a>
-        </div>
-    </nav> *@
-
     <!-- ── MAIN ── -->
     <main class="rp3-main">
         <div class="rp3-card">
@@ -45,16 +32,28 @@
                 <!-- ── FORM ── -->
                 <div class="rp3-form">
 
+                    @if (!string.IsNullOrEmpty(mensajeError))
+                    {
+                        <div class="bulma-notification bulma-is-danger bulma-is-light bulma-py-2 bulma-px-3 bulma-mb-4" style="font-size: 0.9rem;">
+                            <i class="fa-solid fa-circle-exclamation bulma-mr-2"></i> @mensajeError
+                        </div>
+                    }
+
                     <!-- Email -->
                     <div class="bulma-field rp3-field">
                         <label class="bulma-label rp3-label" for="email">Email Address</label>
                         <div class="bulma-control bulma-has-icons-right rp3-control">
-                            <input id="email" class="bulma-input rp3-input" type="email" placeholder="example@email.com"
+                            <input id="email" class="bulma-input rp3-input @(mostrarErrores && !EsEmailValido(Email) ? "bulma-is-danger" : "")" 
+                                   type="email" placeholder="example@email.com"
                                    @bind="Email" />
                             <span class="bulma-icon bulma-is-right rp3-input-icon">
                                 <i class="far fa-envelope"></i>
                             </span>
                         </div>
+                        @if (mostrarErrores && !EsEmailValido(Email))
+                        {
+                            <p class="bulma-help bulma-is-danger">Por favor, ingresa un correo electrónico válido.</p>
+                        }
                     </div>
 
                     <!-- Passwords row -->
@@ -64,28 +63,36 @@
                         <div class="bulma-field rp3-field rp3-field--half">
                             <label class="bulma-label rp3-label" for="password">Create Password</label>
                             <div class="bulma-control bulma-has-icons-right rp3-control">
-                                <input id="password" class="bulma-input rp3-input"
+                                <input id="password" class="bulma-input rp3-input @(mostrarErrores && !EsPasswordValido(Password) ? "bulma-is-danger" : "")"
                                        type="@(ShowPassword ? "text" : "password")" placeholder="••••••••" @bind="Password"
                                        @oninput="OnPasswordInput" />
                                 <span class="bulma-icon bulma-is-right rp3-input-icon rp3-input-icon--clickable"
                                       @onclick="TogglePassword">
-                                    <i class="@(ShowPassword ? "far fa-eye-slash" : "far fa-eye")"></i>
+                                    <i class="@(ShowPassword ? "far fa-eye" : "far fa-eye-slash")"></i>
                                 </span>
                             </div>
+                            @if (mostrarErrores && !EsPasswordValido(Password))
+                            {
+                                <p class="bulma-help bulma-is-danger">Mínimo 8 caracteres.</p>
+                            }
                         </div>
 
                         <!-- Confirm Password -->
                         <div class="bulma-field rp3-field rp3-field--half">
                             <label class="bulma-label rp3-label" for="confirm-password">Confirm Password</label>
                             <div class="bulma-control bulma-has-icons-right rp3-control">
-                                <input id="confirm-password" class="bulma-input rp3-input"
+                                <input id="confirm-password" class="bulma-input rp3-input @(mostrarErrores && Password != ConfirmPassword ? "bulma-is-danger" : "")"
                                        type="@(ShowConfirm ? "text" : "password")" placeholder="••••••••"
                                        @bind="ConfirmPassword" />
                                 <span class="bulma-icon bulma-is-right rp3-input-icon rp3-input-icon--clickable"
                                       @onclick="ToggleConfirm">
-                                    <i class="@(ShowConfirm ? "far fa-eye-slash" : "far fa-eye")"></i>
+                                    <i class="@(ShowConfirm ? "far fa-eye" : "far fa-eye-slash")"></i>
                                 </span>
                             </div>
+                            @if (mostrarErrores && Password != ConfirmPassword)
+                            {
+                                <p class="bulma-help bulma-is-danger">Las contraseñas no coinciden.</p>
+                            }
                         </div>
                     </div>
                     <!-- Terms -->
@@ -123,6 +130,8 @@
     private string SelectedRole { get; set; } = "donor";
     private bool AgreeTerms { get; set; } = false;
     private int StrengthScore { get; set; } = 0;
+    private string mensajeError = string.Empty;
+    private bool mostrarErrores = false;
 
     private string StrengthLabel => StrengthScore switch
     {
@@ -154,6 +163,17 @@
         return score;
     }
 
+    private bool EsEmailValido(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return false;
+        return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    }
+
+    private bool EsPasswordValido(string pwd)
+    {
+        return !string.IsNullOrWhiteSpace(pwd) && pwd.Length >= 8;
+    }
+
     private string GetBarClass(int bar)
     {
         if (StrengthScore == 0) return string.Empty;
@@ -162,7 +182,33 @@
 
     private void HandleSubmit()
     {
-        if (!AgreeTerms) return;
-        // Navigation or further logic here
+        mensajeError = string.Empty;
+        mostrarErrores = true;
+
+        if (!EsEmailValido(Email))
+        {
+            mensajeError = "Por favor, ingresa un correo electrónico válido.";
+            return;
+        }
+
+        if (!EsPasswordValido(Password))
+        {
+            mensajeError = "La contraseña debe tener al menos 8 caracteres.";
+            return;
+        }
+
+        if (Password != ConfirmPassword)
+        {
+            mensajeError = "Las contraseñas no coinciden.";
+            return;
+        }
+
+        if (!AgreeTerms)
+        {
+            mensajeError = "Debes aceptar los términos y condiciones.";
+            return;
+        }
+
+        // Si todo es válido, proceder con el registro (ej. navegación o guardado)
     }
 }

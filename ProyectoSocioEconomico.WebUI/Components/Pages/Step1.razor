@@ -29,12 +29,21 @@
             <!-- FORM FIELDS -->
             <div class="register-page__form">
 
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="bulma-notification bulma-is-danger bulma-is-light bulma-py-2 bulma-px-3 bulma-mb-4" style="font-size: 0.9rem;">
+                        <i class="fa-solid fa-circle-exclamation bulma-mr-2"></i> @mensajeError
+                    </div>
+                }
+
                 <!-- Full Name -->
                 <div class="register-page__field bulma-field">
                     <label class="register-page__label bulma-label">Nombre Completo</label>
                     <div class="register-page__control bulma-control bulma-has-icons-left">
-                        <input class="register-page__input bulma-input" type="text"
-                               placeholder="Ingresa tu nombre completo" />
+                        <input class="register-page__input bulma-input @(mostrarErrores && (string.IsNullOrWhiteSpace(fullName) || fullName.Trim().Length < 3) ? "bulma-is-danger" : "")" 
+                               type="text"
+                               placeholder="Ingresa tu nombre completo" 
+                               @bind="fullName" />
                         <span class="register-page__icon bulma-icon bulma-is-left">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -79,7 +88,11 @@
                             </span>
                             <span class="register-page__phone-code">@GetPrefix()</span>
                         </div>
-                        <input class="register-page__phone-input bulma-input" type="tel" placeholder="0000-0000" />
+                        <input class="register-page__phone-input bulma-input @(mostrarErrores && !EsTelefonoValido(phoneNumber) ? "bulma-is-danger" : "")" 
+                               type="tel" 
+                               placeholder="0000-0000" 
+                               value="@phoneNumber"
+                               @oninput="HandlePhoneInput" />
                     </div>
                 </div>
                 <!-- Next Step Button -->
@@ -106,7 +119,11 @@
 </div>
 
 @code {
+    private string fullName = string.Empty;
+    private string phoneNumber = string.Empty;
     private string selectedCountry = "El Salvador";
+    private string mensajeError = string.Empty;
+    private bool mostrarErrores = false;
 
     private Dictionary<string, string> countryPrefixes = new()
     {
@@ -119,8 +136,37 @@
 
     private string GetPrefix() => countryPrefixes.TryGetValue(selectedCountry, out var prefix) ? prefix : "+503";
 
+    private void HandlePhoneInput(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString() ?? string.Empty;
+        // Solo permitir números (eliminar guiones y otros caracteres)
+        phoneNumber = new string(value.Where(char.IsDigit).ToArray());
+    }
+
+    private bool EsTelefonoValido(string telefono)
+    {
+        if (string.IsNullOrWhiteSpace(telefono)) return false;
+        // Validar que tenga exactamente 8 dígitos o al menos 8 (según prefieras, dejaré >= 8 por flexibilidad)
+        return telefono.Length >= 8;
+    }
+
     private void GoToStep2()
     {
+        mensajeError = string.Empty;
+        mostrarErrores = true;
+
+        if (string.IsNullOrWhiteSpace(fullName) || fullName.Trim().Length < 3)
+        {
+            mensajeError = "Por favor, ingresa tu nombre completo (mínimo 3 caracteres).";
+            return;
+        }
+
+        if (!EsTelefonoValido(phoneNumber))
+        {
+            mensajeError = "Por favor, ingresa un número de teléfono válido (mínimo 8 dígitos).";
+            return;
+        }
+
         Navigation.NavigateTo("/registrarse/step2");
     }
 }

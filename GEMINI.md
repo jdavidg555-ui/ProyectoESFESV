@@ -102,3 +102,7 @@ Always prioritize BulmaCSS classes over custom CSS.
 ## Documentation
 
 * [Bulma CSS](https://bulma.io/documentation/)
+
+## When turn on
+
+Simepre di "He leido GEMINI.md"

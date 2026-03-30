@@ -363,6 +363,7 @@ main[b-mv9mys3c78] {
 }
 /* /Components/Pages/Step2.razor.rz.scp.css */
 .dui-upload-box[b-mxt3kfhzi9] {
+    position: relative;
     border: 2px dashed var(--rp-border);
     border-radius: 10px;
     padding: 1.5rem;
@@ -375,6 +376,8 @@ main[b-mv9mys3c78] {
     color: var(--rp-text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
+    height: 100%;
+    text-align: center;
 }
 
 .dui-upload-box:hover[b-mxt3kfhzi9] {
@@ -383,8 +386,31 @@ main[b-mv9mys3c78] {
     color: var(--rp-text-dark);
 }
 
+.dui-upload-box.has-file[b-mxt3kfhzi9] {
+    border-color: var(--rp-green);
+    background-color: #f6fffa;
+    color: #257953;
+}
+
+.dui-upload-box.has-error[b-mxt3kfhzi9] {
+    border-color: var(--health-color);
+    background-color: #fff5f5;
+}
+
+.dui-upload-box[b-mxt3kfhzi9]  input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
 .dui-upload-box i[b-mxt3kfhzi9] {
     font-size: 1.5rem;
+    margin-bottom: 5px;
 }
 
 .dui-upload-box span[b-mxt3kfhzi9] {
@@ -393,11 +419,22 @@ main[b-mv9mys3c78] {
     font-weight: 600;
 }
 
+.upload-label[b-mxt3kfhzi9] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
 .register-page__nav-buttons[b-mxt3kfhzi9] {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 1rem;
+    gap: 1rem;
 }
 
 .register-page__nav-buttons .bulma-button.bulma-is-warning[b-mxt3kfhzi9] {
