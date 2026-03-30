@@ -118,10 +118,7 @@
 
         try
         {
-            var usuarios = await UsuarioService.ObtenerTodos();
-            var usuarioEncontrado = usuarios.FirstOrDefault(u => 
-                u.Email.Equals(email.Trim(), StringComparison.OrdinalIgnoreCase) && 
-                u.PasswordHash == password);
+            var usuarioEncontrado = await UsuarioService.VerificarCredenciales(email, password);
 
             if (usuarioEncontrado != null)
             {
