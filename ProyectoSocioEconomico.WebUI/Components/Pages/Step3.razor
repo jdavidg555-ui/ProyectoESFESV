@@ -1,6 +1,8 @@
 @page "/registrarse/step3"
 @using System.Text.RegularExpressions
 @layout EmptyLayout
+@inject NavigationManager Navigation
+@inject ProyectoSocioEconomico.WebUI.Services.RegistrationState RegState
 
 <div class="rp3-page">
     <!-- ── MAIN ── -->
@@ -122,6 +124,14 @@
     </div>
 
 @code {
+    protected override void OnInitialized()
+    {
+        if (!RegState.Step2Completed)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
     private string Email { get; set; } = string.Empty;
     private string Password { get; set; } = string.Empty;
     private string ConfirmPassword { get; set; } = string.Empty;

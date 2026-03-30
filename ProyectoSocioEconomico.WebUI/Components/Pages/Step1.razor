@@ -2,6 +2,7 @@
 @layout EmptyLayout
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ProyectoSocioEconomico.WebUI.Services.RegistrationState RegState
 
 <div class="register-page">
     <!-- MAIN CONTENT -->
@@ -119,6 +120,11 @@
 </div>
 
 @code {
+    protected override void OnInitialized()
+    {
+        RegState.Reset();
+    }
+
     private string fullName = string.Empty;
     private string phoneNumber = string.Empty;
     private string selectedCountry = "El Salvador";
@@ -167,6 +173,7 @@
             return;
         }
 
+        RegState.Step1Completed = true;
         Navigation.NavigateTo("/registrarse/step2");
     }
 }

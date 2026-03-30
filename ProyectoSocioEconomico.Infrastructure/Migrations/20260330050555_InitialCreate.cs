@@ -73,6 +73,8 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Direccion = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     ImagenPerfil = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FrontDUI = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReverseDUI = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdRol = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)

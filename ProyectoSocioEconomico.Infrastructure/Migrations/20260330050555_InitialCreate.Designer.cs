@@ -12,7 +12,7 @@ using ProyectoSocioEconomico.Infrastructure.Data;
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260326064441_InitialCreate")]
+    [Migration("20260330050555_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -445,6 +445,10 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FrontDUI")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("IdRol")
                         .HasColumnType("int");
 
@@ -461,6 +465,10 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ReverseDUI")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
                         .HasMaxLength(20)

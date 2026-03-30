@@ -19,6 +19,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<ProyectoSocioEconomico.WebUI.Services.RegistrationState>();
 builder.Services.AddScoped<Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider, ProyectoSocioEconomico.WebUI.Services.CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<ProyectoSocioEconomico.WebUI.Services.CustomAuthenticationStateProvider>(sp => (ProyectoSocioEconomico.WebUI.Services.CustomAuthenticationStateProvider)sp.GetRequiredService<Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider>());
 

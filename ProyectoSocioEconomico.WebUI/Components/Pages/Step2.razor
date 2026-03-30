@@ -2,6 +2,7 @@
 @layout EmptyLayout
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ProyectoSocioEconomico.WebUI.Services.RegistrationState RegState
 
 <div class="register-page">
 
@@ -139,6 +140,14 @@
 </div>
 
 @code {
+    protected override void OnInitialized()
+    {
+        if (!RegState.Step1Completed)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
     private string duiNumber = string.Empty;
     private DateTime? birthDate;
     private IBrowserFile? duiFront;
@@ -200,6 +209,7 @@
             return;
         }
 
+        RegState.Step2Completed = true;
         Navigation.NavigateTo("/registrarse/step3");
     }
 }
