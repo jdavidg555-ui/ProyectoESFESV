@@ -3,6 +3,8 @@
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ProyectoSocioEconomico.WebUI.Services.RegistrationState RegState
+@using ProyectoSocioEconomico.WebUI.Services
+@inject CustomAuthenticationStateProvider AuthStateProvider
 
 <div class="register-page">
 
@@ -140,8 +142,15 @@
 </div>
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
         if (!RegState.Step1Completed)
         {
             Navigation.NavigateTo("/");

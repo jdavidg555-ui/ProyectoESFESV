@@ -130,8 +130,15 @@
 </div>
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
         if (!RegState.Step2Completed)
         {
             Navigation.NavigateTo("/");

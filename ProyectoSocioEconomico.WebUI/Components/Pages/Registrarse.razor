@@ -78,6 +78,15 @@
 </section>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await CustomAuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
     private string email = string.Empty;
     private string password = string.Empty;
     private bool aceptaTerminos;
