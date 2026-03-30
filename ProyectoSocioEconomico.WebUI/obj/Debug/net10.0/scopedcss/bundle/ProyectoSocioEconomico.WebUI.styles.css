@@ -361,3 +361,56 @@ main[b-mv9mys3c78] {
         opacity: 0;
     }
 }
+/* /Components/Pages/Step2.razor.rz.scp.css */
+.dui-upload-box[b-mxt3kfhzi9] {
+    border: 2px dashed var(--rp-border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--rp-input-bg);
+    color: var(--rp-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dui-upload-box:hover[b-mxt3kfhzi9] {
+    border-color: var(--rp-yellow);
+    background-color: var(--rp-glow);
+    color: var(--rp-text-dark);
+}
+
+.dui-upload-box i[b-mxt3kfhzi9] {
+    font-size: 1.5rem;
+}
+
+.dui-upload-box span[b-mxt3kfhzi9] {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.register-page__nav-buttons[b-mxt3kfhzi9] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.register-page__nav-buttons .bulma-button.bulma-is-warning[b-mxt3kfhzi9] {
+    flex-grow: 1;
+    max-width: 70%;
+    height: 3.5rem;
+    border-radius: 12px;
+    background-color: var(--rp-yellow);
+    box-shadow: 0 4px 12px rgba(245, 187, 0, 0.3);
+}
+
+.register-page__nav-buttons .bulma-button.bulma-is-ghost[b-mxt3kfhzi9] {
+    color: var(--rp-text-mid);
+    text-decoration: none;
+    font-weight: 600;
+}

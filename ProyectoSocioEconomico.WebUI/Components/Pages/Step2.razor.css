@@ -1,0 +1,52 @@
+.dui-upload-box {
+    border: 2px dashed var(--rp-border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--rp-input-bg);
+    color: var(--rp-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dui-upload-box:hover {
+    border-color: var(--rp-yellow);
+    background-color: var(--rp-glow);
+    color: var(--rp-text-dark);
+}
+
+.dui-upload-box i {
+    font-size: 1.5rem;
+}
+
+.dui-upload-box span {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.register-page__nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.register-page__nav-buttons .bulma-button.bulma-is-warning {
+    flex-grow: 1;
+    max-width: 70%;
+    height: 3.5rem;
+    border-radius: 12px;
+    background-color: var(--rp-yellow);
+    box-shadow: 0 4px 12px rgba(245, 187, 0, 0.3);
+}
+
+.register-page__nav-buttons .bulma-button.bulma-is-ghost {
+    color: var(--rp-text-mid);
+    text-decoration: none;
+    font-weight: 600;
+}

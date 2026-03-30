@@ -15,6 +15,17 @@
   --white-cream: #fef2f2;
   --health-color: #ef4444; /* Rojo */
   --education-color: #3b82f6; /* Azul */
+  --rp-yellow: #f5bb00;
+  --rp-yellow-dark: #d9a600;
+  --rp-green: #22c55e;
+  --rp-bg: #f9f7f0;
+  --rp-glow: rgba(245, 187, 0, 0.18);
+  --rp-text-dark: #1a1a1a;
+  --rp-text-mid: #555;
+  --rp-text-muted: #888;
+  --rp-border: #e2e0d8;
+  --rp-input-bg: #ffffff;
+  --rp-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .color-primary {
@@ -22,7 +33,11 @@
 }
 
 header.header {
-  background: radial-gradient(circle at center, var(--header-glow) 0%, var(--primary-color-dark) 100%);
+  background: radial-gradient(
+    circle at center,
+    var(--header-glow) 0%,
+    var(--primary-color-dark) 100%
+  );
   height: calc(100vh - 64px);
   position: relative;
 
@@ -38,7 +53,7 @@ header.header {
   .header__title {
     font-size: 2.25rem;
     font-weight: 900;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   }
 
   .header__title--primary-color {
@@ -202,26 +217,28 @@ section.registrarse {
   justify-content: center;
 
   div.registrarse-column {
-      width: 35rem;
-      flex: none;
-      max-width: 95%;
+    width: 35rem;
+    flex: none;
+    max-width: 95%;
   }
 
   form.form-registrarse {
     border: 1px solid #eee;
     border-radius: 1rem;
     background-color: white !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 
     input.bulma-input {
       color: #4a4a4a !important;
       background-color: white !important;
       border-radius: 6px !important;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 
       &::placeholder {
-          color: #7a7a7a !important;
-          opacity: 1;
+        color: #7a7a7a !important;
+        opacity: 1;
       }
     }
 
@@ -235,8 +252,8 @@ section.registrarse {
     }
 
     .bulma-icon.bulma-is-clickable {
-        pointer-events: all;
-        cursor: pointer;
+      pointer-events: all;
+      cursor: pointer;
     }
   }
 
@@ -260,4 +277,436 @@ a.a-crear-cuenta {
   font-weight: 900 !important;
   text-decoration: underline !important;
   font-size: 1.1rem;
+}
+
+div.register-page {
+  min-height: 100vh;
+  background-color: var(--rp-bg);
+  background-image: radial-gradient(
+    ellipse 420px 520px at 92% 48%,
+    var(--rp-glow) 0%,
+    transparent 70%
+  );
+  font-family: "Georgia", "Times New Roman", serif;
+}
+
+/* ───────── NAVBAR ───────── */
+div.register-page nav.register-page__navbar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0 2rem;
+  min-height: 64px;
+  box-shadow: none;
+}
+
+div.register-page nav.register-page__navbar .register-page__navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--rp-text-dark);
+  text-decoration: none;
+}
+
+div.register-page nav.register-page__navbar .register-page__logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--rp-yellow);
+  border-radius: 8px;
+  color: #1a1a1a;
+  flex-shrink: 0;
+}
+
+div.register-page nav.register-page__navbar .register-page__brand-text {
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+div.register-page nav.register-page__navbar .register-page__navbar-login {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+}
+
+div.register-page nav.register-page__navbar .register-page__login-hint {
+  color: var(--rp-text-muted);
+}
+
+div.register-page nav.register-page__navbar .register-page__login-link {
+  font-weight: 700;
+  color: var(--rp-text-dark);
+  text-decoration: none;
+}
+
+div.register-page nav.register-page__navbar .register-page__login-link:hover {
+  color: var(--rp-yellow-dark);
+}
+
+/* ───────── MAIN / CARD ───────── */
+div.register-page main.register-page__main {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+div.register-page main.register-page__main .register-page__card {
+  width: 100%;
+  max-width: 520px;
+}
+
+/* ───────── PROGRESS SECTION ───────── */
+div.register-page .register-page__progress-section {
+  margin-bottom: 2.4rem;
+}
+
+div.register-page
+  .register-page__progress-section
+  .register-page__progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+div.register-page .register-page__progress-section .register-page__step-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--rp-green);
+}
+
+div.register-page
+  .register-page__progress-section{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  color: var(--rp-text-muted);
+}
+
+div.register-page
+  .register-page__progress-section
+  progress.register-page__progress-bar.bulma-progress.bulma-is-success {
+  height: 6px;
+  border-radius: 99px;
+  background-color: #e5e3da;
+  margin-bottom: 0.55rem;
+}
+
+div.register-page
+  .register-page__progress-section
+  progress.register-page__progress-bar.bulma-progress.bulma-is-success::-webkit-progress-bar {
+  background-color: #e5e3da;
+  border-radius: 99px;
+}
+
+div.register-page
+  .register-page__progress-section
+  progress.register-page__progress-bar.bulma-progress.bulma-is-success::-webkit-progress-value {
+  background-color: var(--rp-green);
+  border-radius: 99px;
+}
+
+div.register-page
+  .register-page__progress-section
+  progress.register-page__progress-bar.bulma-progress.bulma-is-success::-moz-progress-bar {
+  background-color: var(--rp-green);
+  border-radius: 99px;
+}
+
+div.register-page
+  .register-page__progress-section{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.82rem;
+  color: var(--rp-text-muted);
+}
+
+/* ───────── HEADING BLOCK ───────── */
+div.register-page .register-page__heading-block {
+  margin-bottom: 2rem;
+}
+
+div.register-page .register-page__heading-block .register-page__title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--rp-text-dark);
+  line-height: 1.2;
+  margin-bottom: 0.65rem;
+  letter-spacing: -0.02em;
+}
+
+div.register-page .register-page__heading-block .register-page__subtitle {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--rp-text-mid);
+  line-height: 1.6;
+}
+
+/* ───────── FORM ───────── */
+div.register-page .register-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+div.register-page .register-page__form .register-page__field.bulma-field {
+  margin-bottom: 0;
+}
+
+div.register-page .register-page__form .register-page__label.bulma-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--rp-text-dark);
+  margin-bottom: 0.45rem;
+}
+
+/* ─── Input ─── */
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__input.bulma-input {
+  background: var(--rp-input-bg);
+  border: 1.5px solid var(--rp-border);
+  border-radius: 10px;
+  height: 3rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--rp-text-dark);
+  padding-left: 2.75rem;
+  box-shadow: var(--rp-shadow);
+  transition: border-color 0.18s;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__input.bulma-input::placeholder {
+  color: #b0ada5;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__input.bulma-input:focus {
+  border-color: var(--rp-yellow);
+  box-shadow: 0 0 0 3px rgba(245, 187, 0, 0.15);
+  outline: none;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__icon.bulma-icon.bulma-is-left {
+  color: #a0a09a;
+  height: 3rem;
+  width: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Select ─── */
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__select-wrapper.bulma-select.bulma-is-fullwidth {
+  width: 100%;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__select-wrapper.bulma-select.bulma-is-fullwidth::after {
+  border-color: #888;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__select-wrapper.bulma-select.bulma-is-fullwidth
+  .register-page__select {
+  background: var(--rp-input-bg);
+  border: 1.5px solid var(--rp-border);
+  border-radius: 10px;
+  height: 3rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--rp-text-dark);
+  padding-left: 2.75rem;
+  box-shadow: var(--rp-shadow);
+  width: 100%;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__control.bulma-control
+  .register-page__select-wrapper.bulma-select.bulma-is-fullwidth
+  .register-page__select:focus {
+  border-color: var(--rp-yellow);
+  box-shadow: 0 0 0 3px rgba(245, 187, 0, 0.15);
+  outline: none;
+}
+
+/* ─── Phone group ─── */
+div.register-page .register-page__form .register-page__phone-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-group
+  .register-page__phone-prefix {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--rp-input-bg);
+  border: 1.5px solid var(--rp-border);
+  border-radius: 10px;
+  padding: 0 0.85rem;
+  height: 3rem;
+  min-width: 90px;
+  box-shadow: var(--rp-shadow);
+  flex-shrink: 0;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-group
+  .register-page__phone-icon {
+  color: #a0a09a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-group
+  .register-page__phone-code {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--rp-text-mid);
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-group
+  .register-page__phone-input.bulma-input {
+  flex: 1 1 0;
+  background: var(--rp-input-bg);
+  border: 1.5px solid var(--rp-border);
+  border-radius: 10px;
+  height: 3rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--rp-text-dark);
+  padding-left: 1rem;
+  box-shadow: var(--rp-shadow);
+  transition: border-color 0.18s;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-group
+  .register-page__phone-input.bulma-input::placeholder {
+  color: #b0ada5;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-group
+  .register-page__phone-input.bulma-input:focus {
+  border-color: var(--rp-yellow);
+  box-shadow: 0 0 0 3px rgba(245, 187, 0, 0.15);
+  outline: none;
+}
+
+div.register-page .register-page__form .register-page__phone-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.78rem;
+  color: var(--rp-text-muted);
+  margin-top: 0.4rem;
+}
+
+div.register-page
+  .register-page__form
+  .register-page__phone-hint {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: #aaa;
+}
+
+/* ─── Next Step Button ─── */
+div.register-page
+  .register-page__form
+  .register-page__btn-next.bulma-button.bulma-is-fullwidth:hover {
+  background-color: var(--rp-yellow-dark);
+  box-shadow: 0 6px 20px rgba(245, 187, 0, 0.45);
+  transform: translateY(-1px);
+}
+
+div.register-page
+  .register-page__form
+  .register-page__btn-next.bulma-button.bulma-is-fullwidth:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(245, 187, 0, 0.3);
+}
+
+div.register-page
+  .register-page__form
+  .register-page__btn-next.bulma-button.bulma-is-fullwidth
+  .register-page__btn-arrow {
+  display: inline-flex;
+}
+
+/* ───────── HELP TEXT ───────── */
+div.register-page .register-page__help-text {
+  text-align: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.85rem;
+  color: var(--rp-text-muted);
+  margin-top: 2.2rem;
+}
+
+div.register-page .register-page__help-text .register-page__help-link {
+  color: var(--rp-yellow-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+div.register-page .register-page__help-text .register-page__help-link:hover {
+  text-decoration: underline;
+}
+
+/* ───────── RESPONSIVE ───────── */
+@media (max-width: 600px) {
+  div.register-page nav.register-page__navbar {
+    padding: 0 1rem;
+  }
+
+  div.register-page main.register-page__main {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  div.register-page .register-page__heading-block .register-page__title {
+    font-size: 1.5rem;
+  }
 }
