@@ -60,7 +60,8 @@ namespace ProyectoSocioEconomico.WebUI.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuario.Nombre),
-                new Claim(ClaimTypes.Email, usuario.Email)
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim("ImagenPerfil", usuario.ImagenPerfil ?? "uploads/profiles/DefaultProfile.png")
             };
 
             // If the role name is known (e.g. from a join or property), add it here.

@@ -31,7 +31,7 @@
                     </AuthorizeView>
                     <a class="bulma-navbar-item">
                         <figure class="bulma-image bulma-is-48x48">
-                            <img class="bulma-is-rounded" src="https://bulma.io/assets/images/placeholders/48x48.png" />
+                            <img class="bulma-is-rounded" src="@context.User.FindFirst("ImagenPerfil")?.Value" alt="Foto de perfil" />
                         </figure>
                     </a>
                 </Authorized>
