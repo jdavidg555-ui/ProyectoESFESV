@@ -5,38 +5,6 @@
 
 <div class="dp-page">
 
-    <!-- ═══════════════ NAVBAR ═══════════════ -->
-    <nav class="dp-navbar">
-        <a href="/" class="dp-navbar__brand">
-            <span class="dp-navbar__logo-icon">
-                <i class="fas fa-shield-halved"></i>
-            </span>
-            <span class="dp-navbar__brand-text">AidFlow</span>
-        </a>
-
-        <div class="dp-navbar__search bulma-control bulma-has-icons-left">
-            <input class="bulma-input dp-navbar__search-input" type="text" placeholder="Search cases..." />
-            <span class="bulma-icon bulma-is-left dp-navbar__search-icon">
-                <i class="fas fa-magnifying-glass"></i>
-            </span>
-        </div>
-
-        <div class="dp-navbar__end">
-            <button class="dp-navbar__bell" aria-label="Notifications">
-                <i class="far fa-bell"></i>
-                <span class="dp-navbar__bell-dot"></span>
-            </button>
-            <div class="dp-navbar__user">
-                <img class="dp-navbar__avatar"
-                     src="@userImage"
-                     alt="@userName" />
-                <div class="dp-navbar__user-info">
-                    <span class="dp-navbar__user-name">@userName</span>
-                    <span class="dp-navbar__user-role">Gold Donor</span>
-                </div>
-            </div>
-        </div>
-    </nav>
 
     <!-- ═══════════════ BODY ═══════════════ -->
     <div class="dp-body">
@@ -45,7 +13,7 @@
         <aside class="dp-sidebar">
 
             <!-- Status card -->
-            <div class="dp-sidebar__status-card">
+            @* <div class="dp-sidebar__status-card">
                 <p class="dp-sidebar__status-label">
                     <span class="bulma-icon bulma-is-small dp-sidebar__status-icon">
                         <i class="fas fa-shield-check"></i>
@@ -54,7 +22,7 @@
                 </p>
                 <p class="dp-sidebar__status-title">Identity Verified</p>
                 <p class="dp-sidebar__status-sub">Socioeconomic profile validated on Jan 12, 2024</p>
-            </div>
+            </div> *@
 
             <!-- Nav links -->
             <nav class="dp-sidebar__nav">
@@ -65,10 +33,6 @@
                 <a href="/donor/settings" class="dp-sidebar__nav-item">
                     <span class="bulma-icon bulma-is-small"><i class="far fa-user"></i></span>
                     Account Settings
-                </a>
-                <a href="/donor/payout" class="dp-sidebar__nav-item">
-                    <span class="bulma-icon bulma-is-small"><i class="fas fa-wallet"></i></span>
-                    Payout Methods
                 </a>
                 <a class="dp-sidebar__nav-item" @onclick="HandleLogout" style="cursor: pointer;">
                     <span class="bulma-icon bulma-is-small"><i class="fas fa-right-from-bracket"></i></span>
