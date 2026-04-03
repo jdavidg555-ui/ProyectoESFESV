@@ -9,7 +9,8 @@ public class RegistrationState
     public bool Step2Completed { get; set; } = false;
 
     // Step 1 Data
-    public string FullName { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string SelectedCountry { get; set; } = "El Salvador";
 
@@ -29,7 +30,8 @@ public class RegistrationState
     {
         Step1Completed = false;
         Step2Completed = false;
-        FullName = string.Empty;
+        FirstName = string.Empty;
+        LastName = string.Empty;
         PhoneNumber = string.Empty;
         SelectedCountry = "El Salvador";
         DuiNumber = string.Empty;

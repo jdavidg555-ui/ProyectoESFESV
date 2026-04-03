@@ -258,8 +258,8 @@
             // 4. Crear Usuario
             var nuevoUsuario = new Usuario
             {
-                Nombre = RegState.FullName,
-                Apellido = "", // Opcional
+                Nombre = RegState.FirstName,
+                Apellido = RegState.LastName,
                 Email = RegState.Email,
                 PasswordHash = UsuarioService.HashPassword(RegState.Password), 
                 FechaNacimiento = RegState.BirthDate ?? DateTime.Now,

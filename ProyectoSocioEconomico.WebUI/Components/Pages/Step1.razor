@@ -39,14 +39,32 @@
                     </div>
                 }
 
-                <!-- Full Name -->
+                <!-- First Name -->
                 <div class="register-page__field bulma-field">
-                    <label class="register-page__label bulma-label">Nombre Completo</label>
+                    <label class="register-page__label bulma-label">Nombre</label>
                     <div class="register-page__control bulma-control bulma-has-icons-left">
-                        <input class="register-page__input bulma-input @(mostrarErrores && (string.IsNullOrWhiteSpace(RegState.FullName) || RegState.FullName.Trim().Length < 3) ? "bulma-is-danger" : "")" 
+                        <input class="register-page__input bulma-input @(mostrarErrores && (string.IsNullOrWhiteSpace(RegState.FirstName) || RegState.FirstName.Trim().Length < 2) ? "bulma-is-danger" : "")" 
                                type="text"
-                               placeholder="Ingresa tu nombre completo" 
-                               @bind="RegState.FullName" />
+                               placeholder="Ingresa tu nombre" 
+                               @bind="RegState.FirstName" />
+                        <span class="register-page__icon bulma-icon bulma-is-left">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Last Name -->
+                <div class="register-page__field bulma-field">
+                    <label class="register-page__label bulma-label">Apellido</label>
+                    <div class="register-page__control bulma-control bulma-has-icons-left">
+                        <input class="register-page__input bulma-input @(mostrarErrores && (string.IsNullOrWhiteSpace(RegState.LastName) || RegState.LastName.Trim().Length < 2) ? "bulma-is-danger" : "")" 
+                               type="text"
+                               placeholder="Ingresa tu apellido" 
+                               @bind="RegState.LastName" />
                         <span class="register-page__icon bulma-icon bulma-is-left">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -163,9 +181,15 @@
         mensajeError = string.Empty;
         mostrarErrores = true;
 
-        if (string.IsNullOrWhiteSpace(RegState.FullName) || RegState.FullName.Trim().Length < 3)
+        if (string.IsNullOrWhiteSpace(RegState.FirstName) || RegState.FirstName.Trim().Length < 2)
         {
-            mensajeError = "Por favor, ingresa tu nombre completo (mínimo 3 caracteres).";
+            mensajeError = "Por favor, ingresa tu nombre (mínimo 2 caracteres).";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(RegState.LastName) || RegState.LastName.Trim().Length < 2)
+        {
+            mensajeError = "Por favor, ingresa tu apellido (mínimo 2 caracteres).";
             return;
         }
 
