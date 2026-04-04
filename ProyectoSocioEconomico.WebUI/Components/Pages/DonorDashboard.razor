@@ -3,8 +3,11 @@
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
 @using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@using ProyectoSocioEconomico.Infrastructure.Data
 @inject CustomAuthenticationStateProvider AuthProvider
 @inject IUsuarioService UsuarioService
+@inject AppDbContext DbContext
 
 <div class="dp-page">
 
@@ -52,7 +55,7 @@
                     </span>
                     <div class="dp-stat-card__body">
                         <p class="dp-stat-card__label">TOTAL DONADO</p>
-                        <p class="dp-stat-card__value">$12,450.00</p>
+                        <p class="dp-stat-card__value">@TotalDonado.ToString("C")</p>
                     </div>
                 </div>
 
@@ -62,7 +65,7 @@
                     </span>
                     <div class="dp-stat-card__body">
                         <p class="dp-stat-card__label">CASOS APOYADOS</p>
-                        <p class="dp-stat-card__value">142</p>
+                        <p class="dp-stat-card__value">@CasosApoyados</p>
                         <p class="dp-stat-card__sub">Casos en los que has ayudado</p>
                     </div>
                 </div>
@@ -79,32 +82,41 @@
                     <a href="/donor/transactions" class="dp-history-card__view-all">Ver todas las transacciones</a>
                 </div>
 
-                <table class="bulma-table dp-history-table bulma-is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th class="dp-history-table__th">RECEPTOR (CASO/PROGRAMA)</th>
-                            <th class="dp-history-table__th dp-history-table__th--right">CANTIDAD</th>
-                            <th class="dp-history-table__th"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var donation in Donations)
-                        {
-                            <tr class="dp-history-table__row">
-                                <td class="dp-history-table__td">
-                                    <p class="dp-history-table__recipient">@donation.Name</p>
-                                    <p class="dp-history-table__type">@donation.Type</p>
-                                </td>
-                                <td class="dp-history-table__td dp-history-table__td--amount">
-                                    @donation.Amount.ToString("C")
-                                </td>
-                                <td class="dp-history-table__td dp-history-table__td--badge">
-                                    <span class="dp-badge dp-badge--yellow"></span>
-                                </td>
+                @if (Donations == null || !Donations.Any())
+                {
+                    <div class="bulma-notification bulma-is-info bulma-is-light bulma-m-5">
+                        <i class="fas fa-circle-info"></i> Aún no has realizado ninguna donación. ¡Empieza hoy a cambiar vidas!
+                    </div>
+                }
+                else
+                {
+                    <table class="bulma-table dp-history-table bulma-is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th class="dp-history-table__th">RECEPTOR (CASO/PROGRAMA)</th>
+                                <th class="dp-history-table__th dp-history-table__th--right">CANTIDAD</th>
+                                <th class="dp-history-table__th"></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var donation in Donations)
+                            {
+                                <tr class="dp-history-table__row">
+                                    <td class="dp-history-table__td">
+                                        <p class="dp-history-table__recipient">@donation.Name</p>
+                                        <p class="dp-history-table__type">@donation.Type</p>
+                                    </td>
+                                    <td class="dp-history-table__td dp-history-table__td--amount">
+                                        @donation.Amount.ToString("C")
+                                    </td>
+                                    <td class="dp-history-table__td dp-history-table__td--badge">
+                                        <span class="dp-badge dp-badge--yellow"></span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
             </div>
         </main>
     </div>
@@ -114,13 +126,9 @@
     private Usuario? CurrentUser { get; set; }
     private record DonationRecord(string Name, string Type, decimal Amount);
 
-    private List<DonationRecord> Donations = new()
-    {
-        new("Education Fund: Northern District", "Institutional Program", 1200m),
-        new("Medical Relief: Case #8821",        "Direct Case Aid",       450m),
-        new("Rural Development Initiative",       "Institutional Program", 2500m),
-        new("Emergency Relief: San Salvador",     "Disaster Recovery",     800m),
-    };
+    private List<DonationRecord> Donations { get; set; } = new();
+    private decimal TotalDonado { get; set; } = 0;
+    private int CasosApoyados { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -132,6 +140,25 @@
             if (int.TryParse(userIdStr, out int userId))
             {
                 CurrentUser = await UsuarioService.ObtenerPorId(userId);
+                
+                if (CurrentUser != null)
+                {
+                    var dbDonations = await DbContext.Donaciones
+                        .Include(d => d.IdCasoNavigation)
+                        .ThenInclude(c => c.IdCategoriaNavigation)
+                        .Where(d => d.IdDonador == userId)
+                        .OrderByDescending(d => d.FechaDonacion)
+                        .ToListAsync();
+
+                    Donations = dbDonations.Select(d => new DonationRecord(
+                        d.IdCasoNavigation.Titulo,
+                        d.IdCasoNavigation.IdCategoriaNavigation.Nombre,
+                        d.Monto
+                    )).ToList();
+
+                    TotalDonado = dbDonations.Sum(d => d.Monto);
+                    CasosApoyados = dbDonations.Select(d => d.IdCaso).Distinct().Count();
+                }
             }
         }
     }
