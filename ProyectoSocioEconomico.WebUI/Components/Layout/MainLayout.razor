@@ -30,9 +30,15 @@
                         </div>
                     </AuthorizeView>
                     <a class="bulma-navbar-item" href="/donor/dashboard">
-                        <figure class="bulma-image profile-pic-container">
-                            <img class="profile-pic" src="@context.User.FindFirst("ImagenPerfil")?.Value" alt="Foto de perfil" />
-                        </figure>
+                        <div class="bulma-is-flex bulma-is-align-items-center">
+                            <figure class="bulma-image profile-pic-container bulma-mr-3">
+                                <img class="profile-pic" src="@context.User.FindFirst("ImagenPerfil")?.Value" alt="Foto de perfil" />
+                            </figure>
+                            <div class="bulma-is-flex bulma-is-flex-direction-column">
+                                <span class="bulma-has-text-weight-bold" style="line-height: 1.2;">@context.User.Identity?.Name</span>
+                                <span class="bulma-is-size-7 bulma-has-text-grey" style="line-height: 1.2;">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                            </div>
+                        </div>
                     </a>
                 </Authorized>
                 <NotAuthorized>

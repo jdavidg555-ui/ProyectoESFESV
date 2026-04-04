@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "2c6bcfd0328e45e1039394dbd3c880a0700f5a99dd69ea777108201fdd2da517"
     },
+    "changelog-automation": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "67c6e536f306655d682651e68b9966c7c9a0a3f31ba8d8a3ce7e596d3b504e36"
+    },
     "find-skills": {
       "source": "vercel-labs/skills",
       "sourceType": "github",

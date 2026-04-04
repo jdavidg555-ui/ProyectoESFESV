@@ -40,9 +40,11 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
         public async Task<Usuario?> VerificarCredenciales(string email, string password)
         {
             var passwordHash = HashPassword(password);
-            return await _context.Usuarios.FirstOrDefaultAsync(u => 
-                u.Email.ToLower() == email.Trim().ToLower() && 
-                u.PasswordHash == passwordHash);
+            return await _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefaultAsync(u => 
+                    u.Email.ToLower() == email.Trim().ToLower() && 
+                    u.PasswordHash == passwordHash);
         }
     }
 }

@@ -38,7 +38,6 @@ public partial class Usuario
     [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Donacione> Donaciones { get; set; } = new List<Donacione>();
 
-    [System.Text.Json.Serialization.JsonIgnore]
     public virtual Role IdRolNavigation { get; set; } = null!;
 
     [System.Text.Json.Serialization.JsonIgnore]

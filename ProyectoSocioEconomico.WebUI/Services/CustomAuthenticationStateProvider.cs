@@ -64,12 +64,9 @@ namespace ProyectoSocioEconomico.WebUI.Services
                 new Claim("ImagenPerfil", usuario.ImagenPerfil ?? "uploads/profiles/DefaultProfile.png")
             };
 
-            // If the role name is known (e.g. from a join or property), add it here.
-            // For now, let's use a generic role or handle it based on IdRol if we had a mapping.
-            // Since we want to check for "beneficiado", we'll add the claim.
-            // Note: Ideally, 'usuario' should have a 'Role' navigation property loaded.
-            if (usuario.IdRol == 1) claims.Add(new Claim(ClaimTypes.Role, "beneficiado"));
-            else claims.Add(new Claim(ClaimTypes.Role, "Usuario"));
+            // Add role claim based on the navigation property if it's available.
+            var roleName = usuario.IdRolNavigation?.Nombre ?? "Usuario";
+            claims.Add(new Claim(ClaimTypes.Role, roleName));
 
             var identity = new ClaimsIdentity(claims, "CustomAuth");
             return new ClaimsPrincipal(identity);

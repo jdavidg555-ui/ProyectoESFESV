@@ -37,3 +37,23 @@ Este skill debe activarse siempre que se realicen tareas de desarrollo en el rep
    - Evita estilos en línea (inline styles).
    - Usa componentes reutilizables en lugar de duplicar marcado HTML.
    - Mantén el HTML semántico y los atributos de accesibilidad.
+
+## Changelog
+
+### [Unreleased]
+
+#### Added
+- Functional logout button in `AccountSettings.razor`.
+- User name and role display in `MainLayout.razor` navigation bar.
+- Dynamic role loading from database in `UsuarioService` and `CustomAuthenticationStateProvider`.
+- Changelog section in `SKILL.md` (root).
+
+#### Changed
+- Unified sidebar navigation between `AccountSettings.razor` and `DonorDashboard.razor`.
+- Synced `AGENTS.md` with `GEMINI.md` to ensure consistency in agent instructions.
+- Updated `.gitignore` to robustly ignore `bin/` and `obj/` folders across the entire project.
+
+#### Fixed
+- Syntax errors in `AccountSettings.razor` caused by duplicated code blocks.
+- Incorrect link to Account Settings in `DonorDashboard.razor`.
+- Removed build artifacts from Git index to prevent noise in version control.
