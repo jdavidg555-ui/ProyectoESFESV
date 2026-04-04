@@ -30,6 +30,22 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task Actualizar(Usuario usuario)
+        {
+            _context.Entry(usuario).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ActualizarPassword(int usuarioId, string passwordHash)
+        {
+            var user = await _context.Usuarios.FindAsync(usuarioId);
+            if (user != null)
+            {
+                user.PasswordHash = passwordHash;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public string HashPassword(string password)
         {
             using var sha256 = System.Security.Cryptography.SHA256.Create();

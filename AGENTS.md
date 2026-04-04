@@ -105,4 +105,4 @@ Always prioritize BulmaCSS classes over custom CSS.
 
 ## When turn on
 
-Simepre di "He leido GEMINI.md"
+Simepre di "He leido AGENTS.md"

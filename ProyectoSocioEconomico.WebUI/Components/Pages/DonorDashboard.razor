@@ -1,6 +1,10 @@
 @page "/donor/dashboard"
 @using ProyectoSocioEconomico.WebUI.Services
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using System.Security.Claims
 @inject CustomAuthenticationStateProvider AuthProvider
+@inject IUsuarioService UsuarioService
 
 <div class="dp-page">
 
@@ -32,7 +36,23 @@
             <div class="dp-main__header">
                 <div class="dp-main__header-text">
                     <h1 class="dp-main__title">Mis donaciones</h1>
+                    @if (CurrentUser != null)
+                    {
+                        <p class="dp-main__subtitle">Bienvenido de nuevo, @CurrentUser.Nombre @CurrentUser.Apellido</p>
+                    }
                 </div>
+                @if (CurrentUser != null)
+                {
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="text-align: right;">
+                            <p style="font-weight: 700; color: var(--dp-text-dark); margin: 0;">@CurrentUser.Nombre @CurrentUser.Apellido</p>
+                            <p style="font-size: 0.8rem; color: var(--dp-text-muted); margin: 0;">@CurrentUser.Telefono</p>
+                        </div>
+                        <img src="@(string.IsNullOrEmpty(CurrentUser.ImagenPerfil) ? "uploads/profiles/DefaultProfile.png" : CurrentUser.ImagenPerfil)" 
+                             alt="@CurrentUser.Nombre" 
+                             style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--dp-yellow);" />
+                    </div>
+                }
             </div>
 
             <!-- Stat cards -->
@@ -103,8 +123,7 @@
 </div>
 
 @code {
-    private string userName = "Cargando...";
-    private string userImage = "https://i.pravatar.cc/40?img=12";
+    private Usuario? CurrentUser { get; set; }
     private record DonationRecord(string Name, string Type, decimal Amount);
 
     private List<DonationRecord> Donations = new()
@@ -121,8 +140,11 @@
         var user = authState.User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            userName = user.Identity.Name ?? "Usuario";
-            userImage = user.FindFirst("ImagenPerfil")?.Value ?? "https://i.pravatar.cc/40?img=12";
+            var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdStr, out int userId))
+            {
+                CurrentUser = await UsuarioService.ObtenerPorId(userId);
+            }
         }
     }
 }
