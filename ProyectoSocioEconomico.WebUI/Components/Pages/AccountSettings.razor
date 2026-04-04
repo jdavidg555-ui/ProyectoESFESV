@@ -349,6 +349,7 @@
 
             // Save basic profile info
             await UsuarioService.Actualizar(CurrentUser);
+            await AuthProvider.NotifyUserLogin(CurrentUser);
             
             // Clear password fields
             CurrentPassword = "";
@@ -368,4 +369,6 @@
         await AuthProvider.NotifyUserLogout();
         Navigation.NavigateTo("/");
     }
+}
+  }
 }
