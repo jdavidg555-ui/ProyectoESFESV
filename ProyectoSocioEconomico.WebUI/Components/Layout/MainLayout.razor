@@ -1,62 +1,145 @@
 ﻿@inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Authorization
 
+<div class="page">
 
-<nav class="bulma-navbar bulma-px-1 bulma-px-5">
-    <section class="bulma-navbar-brand">
-        <a class="bulma-navbar-item bulma-title" href="/">AidPortal</a>
-    </section>
-    <section class="bulma-navbar-menu">
-        <ul class="bulma-navbar-start">
-            <a class="bulma-navbar-item">
-                Programas
-            </a>
-            <a class="bulma-navbar-item">
-                Acerca de nosotros
-            </a>
-            <a class="bulma-navbar-item">
-                Reportes de impacto
-            </a>
-            <a class="bulma-navbar-item">
-                Ser volunatario
-            </a>
-        </ul>
-        <section class="bulma-navbar-end bulma-is-flex bulma-is-align-items-center">
-            <AuthorizeView>
-                <Authorized>
-                    <AuthorizeView Roles="beneficiado" Context="innerContext">
-                        <div class="bulma-navbar-item">
-                            <a class="bulma-button bulma-is-info">Mi caso</a>
-                        </div>
-                    </AuthorizeView>
-                    <a class="bulma-navbar-item" href="/donor/dashboard">
-                        <div class="bulma-is-flex bulma-is-align-items-center">
-                            <figure class="bulma-image profile-pic-container bulma-mr-3">
-                                <img class="profile-pic" src="@context.User.FindFirst("ImagenPerfil")?.Value" alt="Foto de perfil" />
-                            </figure>
-                            <div class="bulma-is-flex bulma-is-flex-direction-column">
-                                <span class="bulma-has-text-weight-bold" style="line-height: 1.2;">@context.User.Identity?.Name</span>
-                                <span class="bulma-is-size-7 bulma-has-text-grey" style="line-height: 1.2;">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
-                            </div>
-                        </div>
-                    </a>
-                </Authorized>
-                <NotAuthorized>
-                    <div class="bulma-navbar-item">
-                        <a href="/login" class="bulma-button bulma-is-warning">Registrarse</a>
-                    </div>
-                </NotAuthorized>
-            </AuthorizeView>
+    <nav class="bulma-navbar bulma-px-1 bulma-px-5">
+        <section class="bulma-navbar-brand">
+            <a class="bulma-navbar-item bulma-title" href="/">AidPortal</a>
         </section>
-    </section>
-</nav>
+        <section class="bulma-navbar-menu">
+            <ul class="bulma-navbar-start">
+                <a class="bulma-navbar-item">
+                    Programas
+                </a>
+                <a class="bulma-navbar-item">
+                    Acerca de nosotros
+                </a>
+                <a class="bulma-navbar-item">
+                    Reportes de impacto
+                </a>
+                <a class="bulma-navbar-item">
+                    Ser volunatario
+                </a>
+            </ul>
+            <section class="bulma-navbar-end bulma-is-flex bulma-is-align-items-center">
+                <AuthorizeView>
+                    <Authorized>
+                        <AuthorizeView Roles="beneficiado" Context="innerContext">
+                            <div class="bulma-navbar-item">
+                                <a class="bulma-button bulma-is-info">Mi caso</a>
+                            </div>
+                        </AuthorizeView>
+                        <a class="bulma-navbar-item" href="/donor/dashboard">
+                            <div class="bulma-is-flex bulma-is-align-items-center">
+                                <figure class="bulma-image profile-pic-container bulma-mr-3">
+                                    <img class="profile-pic" src="@context.User.FindFirst("ImagenPerfil")?.Value"
+                                         alt="Foto de perfil" />
+                                </figure>
+                                <div class="bulma-is-flex bulma-is-flex-direction-column">
+                                    <span class="bulma-has-text-weight-bold"
+                                          style="line-height: 1.2;">@context.User.Identity?.Name</span>
+                                    <span class="bulma-is-size-7 bulma-has-text-grey"
+                                          style="line-height: 1.2;">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                                </div>
+                            </div>
+                        </a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <div class="bulma-navbar-item">
+                            <a href="/login" class="bulma-button bulma-is-warning">Registrarse</a>
+                        </div>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </section>
+        </section>
+    </nav>
 
-<main>
-    @Body
-</main>
+    <main>
+        @Body
+    </main>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <footer class="bulma-footer bulma-has-background-dark bulma-py-6">
+        <div class="bulma-container bulma-is-max-desktop">
+            <div class="bulma-columns bulma-is-multiline">
+
+                <!-- Columna 1: Logo + Descripción -->
+                <div class="bulma-column bulma-is-12 bulma-is-6-desktop">
+                    <div class="bulma-is-flex bulma-is-align-items-center bulma-mb-3">
+                        @* <figure class="bulma-image bulma-mr-3" style="width: 48px; height: 48px;">
+                            <img src="/images/aidportal-logo-green.svg" alt="AidPortal Logo" class="bulma-image">
+                        </figure> *@
+                        <h3 class="bulma-title bulma-is-4 bulma-has-text-white">AIDPORTAL</h3>
+                    </div>
+                    <p class="bulma-has-text-grey-light">
+                        Una plataforma socioeconómica dedicada a la transparencia en la ayuda
+                        y el apoyo directo a la comunidad. Empoderando personas a través de la acción colectiva.
+                    </p>
+                    <div class="bulma-is-flex bulma-gap-3 bulma-mt-5">
+                        <a href="#" class="bulma-button bulma-is-small bulma-is-dark bulma-is-outlined">
+                            <span class="icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </span>
+                        </a>
+                        <a href="#" class="bulma-button bulma-is-small bulma-is-dark bulma-is-outlined">
+                            <span class="icon">
+                                <i class="fab fa-instagram"></i>
+                            </span>
+                        </a>
+                        <a href="#" class="bulma-button bulma-is-small bulma-is-dark bulma-is-outlined">
+                            <span class="icon">
+                                <i class="fab fa-twitter"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Programas -->
+                <div class="bulma-column bulma-is-12 bulma-is-3-desktop">
+                    <h4 class="bulma-subtitle bulma-is-6 bulma-has-text-white bulma-mb-4">Programas</h4>
+                    <ul class="bulma-menu-list">
+                        <li><a href="#" class="bulma-has-text-grey-light">Emergencias Médicas</a></li>
+                        <li><a href="#" class="bulma-has-text-grey-light">Fondos Educativos</a></li>
+                        <li><a href="#" class="bulma-has-text-grey-light">Ayuda en Desastres</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Organización -->
+                <div class="bulma-column bulma-is-12 bulma-is-3-desktop">
+                    <h4 class="bulma-subtitle bulma-is-6 bulma-has-text-white bulma-mb-4">Organización</h4>
+                    <ul class="bulma-menu-list">
+                        <li><a href="#" class="bulma-has-text-grey-light">Acerca de Nosotros</a></li>
+                        <li><a href="#" class="bulma-has-text-grey-light">Reportes de Impacto</a></li>
+                        <li><a href="#" class="bulma-has-text-grey-light">Ser Voluntario</a></li>
+                        @* <li><a href="#" class="bulma-has-text-grey-light">Contacto</a></li> *@
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Línea inferior -->
+            <hr class="bulma-has-background-grey-dark bulma-my-5">
+
+            <div class="bulma-level bulma-is-mobile">
+                <div class="bulma-level-left">
+                    <div class="bulma-level-item">
+                        <p class="bulma-has-text-grey-light bulma-is-size-7">
+                            © 2026 Aid & Donation Portal. Todos los derechos reservados.
+                        </p>
+                    </div>
+                </div>
+                <div class="bulma-level-right">
+                    <div class="bulma-level-item">
+                        <p class="bulma-has-text-grey-light bulma-is-size-7">
+                            Hecho con amor para la comunidad
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div id="blazor-error-ui" data-nosnippet>
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
 </div>
