@@ -1,0 +1,107 @@
+/* CardComponent.razor.css */
+
+/* === Estilos específicos para que se parezca a la imagen === */
+
+.card-custom {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s ease !important;
+    background-color: white !important;
+    border: 1px solid #f0f0f0 !important;
+}
+
+.card-custom:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Imagen - igual que en la demo */
+.bulma-card-image {
+    height: 220px !important;
+    overflow: hidden !important;
+}
+
+.bulma-card-image figure.bulma-image {
+    height: 100% !important;
+}
+
+.bulma-card-image img {
+    height: 100% !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Título */
+.title-custom {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    color: #2c3e50 !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* Descripción */
+.description-custom {
+    flex-grow: 1 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    color: #555 !important;
+    margin-bottom: 1.25rem !important;
+}
+
+/* Sección de recaudación */
+.progress-container {
+    margin: 1.25rem 0 1.5rem 0 !important;
+}
+
+.progress-container .bulma-is-flex {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.progress-container .bulma-has-text-success {
+    font-weight: 700 !important;
+    color: #48c774 !important;
+}
+
+/* Barra de progreso - estilo más moderno y grueso como en la imagen */
+.bulma-progress {
+    height: 10px !important;
+    border-radius: 9999px !important;
+    background-color: #f0f0f0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.bulma-progress.bulma-is-success {
+    background-color: #48c774 !important;
+}
+
+/* Footer con botón grande */
+.bulma-card-footer {
+    border-top: 1px solid #f0f0f0 !important;
+    margin-top: auto !important;
+    padding: 0 !important;
+}
+
+.btn-donate {
+    width: 100% !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 1rem 1.5rem !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    background-color: #48c774 !important;
+    color: white !important;
+    transition: all 0.25s ease !important;
+}
+
+.btn-donate:hover {
+    background-color: #3eb96a !important;
+    color: white !important;
+}

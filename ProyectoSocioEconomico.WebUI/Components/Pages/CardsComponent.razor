@@ -2,37 +2,40 @@
 @using ProyectoSocioEconomico.Application.Interfaces
 @inject ICasoService CasoService
 
-@if (casos.Count == 0)
-{
-    <section class="bulma-section">
-        <p class="bulma-has-text-grey">No hay casos disponibles por el momento.</p>
-    </section>
-}
-else
-{
-    <section class="bulma-section">
-        <div class="cards-container">
-            @for (var indice = 0; indice < casos.Count; indice++)
-            {
-                var caso = casos[indice];
-                decimal totalRecaudado = 0m;
-                if (caso.Donaciones != null)
+<section class="bulma-section">
+    <div class="bulma-container">
+        @if (casos.Count == 0)
+        {
+            <div class="bulma-notification bulma-is-light">
+                <p class="bulma-has-text-grey">No hay casos disponibles por el momento.</p>
+            </div>
+        }
+        else
+        {
+            <div class="bulma-columns bulma-is-multiline">
+                @foreach (var caso in casos)
                 {
-                    foreach (var donacion in caso.Donaciones)
+                    decimal totalRecaudado = 0m;
+                    if (caso.Donaciones != null)
                     {
-                        totalRecaudado += donacion.Monto;
+                        foreach (var donacion in caso.Donaciones)
+                        {
+                            totalRecaudado += donacion.Monto;
+                        }
                     }
-                }
 
-                <CardComponent Title="@caso.Titulo"
-                               Description="@caso.Descripcion"
-                               MoneyRaised="@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))"
-                               RemainingPercentage="@CalcularPorcentajeRestante(caso.Meta, totalRecaudado)"
-                               ImageUrl="@caso.ImagenUrl" />
-            }
-        </div>
-    </section>
-}
+                    <div class="bulma-column bulma-is-3-desktop bulma-is-6-tablet">
+                        <CardComponent Title="@caso.Titulo"
+                                       Description="@caso.Descripcion"
+                                       MoneyRaised="@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))"
+                                       RemainingPercentage="@CalcularPorcentajeProgreso(caso.Meta, totalRecaudado)"
+                                       ImageUrl="@caso.ImagenUrl" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
 
 @code {
     private List<dynamic> casos = new();
@@ -42,21 +45,14 @@ else
         casos = (await CasoService.ObtenerActivosParaHome(4)).Cast<dynamic>().ToList();
     }
 
-    private static int CalcularPorcentajeRestante(decimal meta, decimal totalRecaudado)
+    private static int CalcularPorcentajeProgreso(decimal meta, decimal totalRecaudado)
     {
         if (meta <= 0)
         {
             return 0;
         }
 
-        var restante = meta - totalRecaudado;
-
-        if (restante <= 0)
-        {
-            return 0;
-        }
-
-        var porcentaje = (int)Math.Round((restante / meta) * 100, MidpointRounding.AwayFromZero);
+        var porcentaje = (int)Math.Round((totalRecaudado / meta) * 100, MidpointRounding.AwayFromZero);
 
         return Math.Clamp(porcentaje, 0, 100);
     }
