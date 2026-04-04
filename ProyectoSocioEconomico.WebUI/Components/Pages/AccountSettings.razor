@@ -59,7 +59,12 @@
                             <h2 class="as-profile__name">@CurrentUser.Nombre @CurrentUser.Apellido</h2>
                             <span class="as-profile__badge">@UserRole</span>
                         </div>
-                        <p class="as-profile__meta">El Salvador</p>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                            <p class="as-profile__meta" style="margin-bottom: 0;">@(string.IsNullOrEmpty(CurrentUser.Direccion) ? "País no especificado" : CurrentUser.Direccion)</p>
+                            <button class="bulma-button bulma-is-small bulma-is-ghost" @onclick="ScrollToCountry" style="padding: 0; height: auto; color: #888; text-decoration: none;">
+                                <span class="bulma-icon bulma-is-small"><i class="fas fa-pen-to-square"></i></span>
+                            </button>
+                        </div>
                         <div class="as-profile__actions">
                             <label class="bulma-button as-btn-change-photo" for="profile-upload" style="cursor: pointer;">Change Photo</label>
                             <button class="bulma-button as-btn-remove-photo" @onclick="RemovePhoto">Remove Photo</button>
@@ -105,11 +110,29 @@
 
                     <!-- Phone Number -->
                     <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="phone">Phone Number</label>
-                        <div class="as-phone-group">
-                            <span class="as-phone-group__prefix">+503</span>
-                            <div class="bulma-control as-control as-control--flex">
-                                <input id="phone" class="bulma-input as-input" type="tel" @bind="CurrentUser.Telefono" />
+                        <label class="bulma-label as-label" for="phone">Número de Teléfono</label>
+                        <div class="as-phone-group" style="display: flex; gap: 0.5rem;">
+                            <div style="background: #f5f3ee; border: 1.5px solid #e4e2da; border-radius: 8px; display: flex; align-items: center; padding: 0 0.8rem; font-weight: 600; color: #555; font-size: 0.9rem;">
+                                @GetPhonePrefix()
+                            </div>
+                            <div class="bulma-control as-control as-control--flex" style="flex: 1;">
+                                <input id="phone" class="bulma-input as-input" type="tel" @bind="CurrentUser.Telefono" placeholder="0000-0000" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Country (Stored in Direccion) -->
+                    <div class="bulma-field as-field" id="country-field">
+                        <label class="bulma-label as-label" for="country">País de Residencia</label>
+                        <div class="bulma-control as-control">
+                            <div class="bulma-select bulma-is-fullwidth as-select-wrap">
+                                <select id="country" class="as-select" @bind="CurrentUser.Direccion">
+                                    <option value="">Seleccione un país</option>
+                                    @foreach (var country in countryPrefixes.Keys)
+                                    {
+                                        <option value="@country">@country</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -220,6 +243,15 @@
     private string? ErrorMessage { get; set; }
     private string? SuccessMessage { get; set; }
 
+    private Dictionary<string, string> countryPrefixes = new()
+    {
+        { "El Salvador", "+503" },
+        { "Guatemala", "+502" },
+        { "Honduras", "+504" },
+        { "México", "+52" },
+        { "Estados Unidos", "+1" }
+    };
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
@@ -247,6 +279,21 @@
             return "/uploads/profiles/DefaultProfile.png";
         
         return CurrentUser.ImagenPerfil.StartsWith("/") ? CurrentUser.ImagenPerfil : "/" + CurrentUser.ImagenPerfil;
+    }
+
+    private string GetPhonePrefix()
+    {
+        if (!string.IsNullOrEmpty(CurrentUser?.Direccion) && countryPrefixes.TryGetValue(CurrentUser.Direccion, out var prefix))
+        {
+            return prefix;
+        }
+        return "+503"; // Default
+    }
+
+    private void ScrollToCountry()
+    {
+        // Use NavigationManager to scroll to the anchor natively
+        Navigation.NavigateTo("/account/settings#country-field");
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
@@ -289,6 +336,7 @@
                     CurrentUser.ImagenPerfil = $"/uploads/profiles/{fileName}";
                     // We save immediately so the UI reflects the change
                     await UsuarioService.Actualizar(CurrentUser);
+                    await AuthProvider.NotifyUserLogin(CurrentUser);
                     SuccessMessage = "Foto de perfil actualizada.";
                     StateHasChanged();
                 }
@@ -306,6 +354,7 @@
         {
             CurrentUser.ImagenPerfil = null;
             await UsuarioService.Actualizar(CurrentUser);
+            await AuthProvider.NotifyUserLogin(CurrentUser);
             SuccessMessage = "Foto de perfil eliminada.";
         }
     }
@@ -369,6 +418,4 @@
         await AuthProvider.NotifyUserLogout();
         Navigation.NavigateTo("/");
     }
-}
-  }
 }
