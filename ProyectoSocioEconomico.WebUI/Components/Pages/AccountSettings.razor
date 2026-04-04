@@ -3,9 +3,12 @@
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Hosting
+@using System.IO
 @inject CustomAuthenticationStateProvider AuthProvider
 @inject IUsuarioService UsuarioService
 @inject NavigationManager Navigation
+@inject IWebHostEnvironment Environment
 
 <div class="as-page">
 
@@ -44,10 +47,11 @@
             <section class="as-card">
                 <div class="as-profile">
                     <div class="as-profile__avatar-wrap">
-                        <img class="as-profile__avatar" src="@(string.IsNullOrEmpty(CurrentUser.ImagenPerfil) ? "uploads/profiles/DefaultProfile.png" : CurrentUser.ImagenPerfil)" alt="@CurrentUser.Nombre" />
-                        <button class="as-profile__edit-btn" aria-label="Edit photo">
+                        <img class="as-profile__avatar" src="@GetProfileImage()" alt="@CurrentUser.Nombre" />
+                        <label class="as-profile__edit-btn" for="profile-upload" style="cursor: pointer;">
                             <i class="fas fa-pencil"></i>
-                        </button>
+                        </label>
+                        <InputFile id="profile-upload" OnChange="HandleFileSelected" style="display: none;" accept="image/*" />
                     </div>
 
                     <div class="as-profile__info">
@@ -57,8 +61,8 @@
                         </div>
                         <p class="as-profile__meta">El Salvador</p>
                         <div class="as-profile__actions">
-                            <button class="bulma-button as-btn-change-photo">Change Photo</button>
-                            <button class="bulma-button as-btn-remove-photo">Remove Photo</button>
+                            <label class="bulma-button as-btn-change-photo" for="profile-upload" style="cursor: pointer;">Change Photo</label>
+                            <button class="bulma-button as-btn-remove-photo" @onclick="RemovePhoto">Remove Photo</button>
                         </div>
                     </div>
                 </div>
@@ -234,6 +238,75 @@
         if (CurrentUser == null)
         {
             Navigation.NavigateTo("/");
+        }
+    }
+
+    private string GetProfileImage()
+    {
+        if (string.IsNullOrEmpty(CurrentUser?.ImagenPerfil))
+            return "/uploads/profiles/DefaultProfile.png";
+        
+        return CurrentUser.ImagenPerfil.StartsWith("/") ? CurrentUser.ImagenPerfil : "/" + CurrentUser.ImagenPerfil;
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        ErrorMessage = null;
+        SuccessMessage = null;
+
+        try
+        {
+            var file = e.File;
+            if (file != null)
+            {
+                // Validate file size (e.g., 2MB max)
+                if (file.Size > 2 * 1024 * 1024)
+                {
+                    ErrorMessage = "El archivo es demasiado grande. El máximo es 2MB.";
+                    return;
+                }
+
+                // Ensure the directory exists
+                var uploadsFolder = Path.Combine(Environment.WebRootPath, "uploads", "profiles");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Generate a unique filename
+                var extension = Path.GetExtension(file.Name);
+                var fileName = $"profile_{CurrentUser?.Id}_{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                // Save file to disk
+                using var stream = file.OpenReadStream(2 * 1024 * 1024);
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                await stream.CopyToAsync(fileStream);
+
+                // Update user profile image path
+                if (CurrentUser != null)
+                {
+                    CurrentUser.ImagenPerfil = $"/uploads/profiles/{fileName}";
+                    // We save immediately so the UI reflects the change
+                    await UsuarioService.Actualizar(CurrentUser);
+                    SuccessMessage = "Foto de perfil actualizada.";
+                    StateHasChanged();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Error al subir la imagen: " + ex.Message;
+        }
+    }
+
+    private async Task RemovePhoto()
+    {
+        if (CurrentUser != null)
+        {
+            CurrentUser.ImagenPerfil = null;
+            await UsuarioService.Actualizar(CurrentUser);
+            SuccessMessage = "Foto de perfil eliminada.";
         }
     }
 
