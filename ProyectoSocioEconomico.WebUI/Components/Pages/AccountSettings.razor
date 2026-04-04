@@ -1,0 +1,208 @@
+@page "/account/settings"
+@using ProyectoSocioEconomico.WebUI.Services
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+
+<div class="as-page">
+
+    <!-- ═══════════════ SIDEBAR ═══════════════ -->
+    <aside class="as-sidebar">
+        <p class="as-sidebar__heading">SETTINGS MENU</p>
+
+        <nav class="as-sidebar__nav">
+            <a href="/account/settings" class="as-sidebar__nav-item as-sidebar__nav-item--active">
+                <span class="bulma-icon bulma-is-small"><i class="far fa-user"></i></span>
+                Account Settings
+            </a>
+            <a href="/donor/dashboard" class="as-sidebar__nav-item">
+                <span class="bulma-icon bulma-is-small"><i class="fas fa-table-cells-large"></i></span>
+                Mis donaciones
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ═══════════════ MAIN ═══════════════ -->
+    <main class="as-main">
+
+        <!-- Page title -->
+        <div class="as-main__header">
+            <h1 class="as-main__title">Account Settings</h1>
+            <p class="as-main__subtitle">Manage your public profile, security protocols, and connectivity.</p>
+        </div>
+
+        <!-- ── PROFILE CARD ── -->
+        <section class="as-card">
+            <div class="as-profile">
+                <div class="as-profile__avatar-wrap">
+                    <img class="as-profile__avatar" src="https://i.pravatar.cc/120?img=33" alt="Juan Perez" />
+                    <button class="as-profile__edit-btn" aria-label="Edit photo">
+                        <i class="fas fa-pencil"></i>
+                    </button>
+                </div>
+
+                <div class="as-profile__info">
+                    <div class="as-profile__name-row">
+                        <h2 class="as-profile__name">Juan Perez</h2>
+                        <span class="as-profile__badge">BENEFICIARY</span>
+                    </div>
+                    <p class="as-profile__meta">San Salvador, El Salvador &bull; Member since January 2024</p>
+                    <div class="as-profile__actions">
+                        <button class="bulma-button as-btn-change-photo">Change Photo</button>
+                        <button class="bulma-button as-btn-remove-photo">Remove Photo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── PERSONAL INFORMATION ── -->
+        <div class="as-section-heading">
+            <span class="as-section-heading__icon">
+                <i class="fas fa-id-card-clip"></i>
+            </span>
+            <h2 class="as-section-heading__text">Personal Information</h2>
+        </div>
+
+        <section class="as-card">
+            <div class="as-form-grid">
+
+                <!-- Full Name -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="full-name">Full Name</label>
+                    <div class="bulma-control as-control">
+                        <input id="full-name" class="bulma-input as-input" type="text" @bind="FullName" />
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="email">Email Address</label>
+                    <div class="bulma-control as-control">
+                        <input id="email" class="bulma-input as-input" type="email" @bind="Email" />
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="phone">Phone Number</label>
+                    <div class="as-phone-group">
+                        <span class="as-phone-group__prefix">+503</span>
+                        <div class="bulma-control as-control as-control--flex">
+                            <input id="phone" class="bulma-input as-input" type="tel" @bind="Phone" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Country -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="country">Country</label>
+                    <div class="bulma-control as-control">
+                        <div class="bulma-select bulma-is-fullwidth as-select-wrap">
+                            <select id="country" class="as-select" @bind="Country">
+                                <option value="SV">El Salvador</option>
+                                <option value="GT">Guatemala</option>
+                                <option value="HN">Honduras</option>
+                                <option value="NI">Nicaragua</option>
+                                <option value="CR">Costa Rica</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── SECURITY ── -->
+        <div class="as-section-heading">
+            <span class="as-section-heading__icon as-section-heading__icon--yellow">
+                <i class="fas fa-shield-halved"></i>
+            </span>
+            <h2 class="as-section-heading__text">Security</h2>
+            <a href="/account/2fa" class="as-section-heading__link">Two-Factor Authentication</a>
+        </div>
+
+        <section class="as-card">
+            <div class="as-form-grid as-form-grid--3col">
+
+                <!-- Current Password -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="current-pw">Current Password</label>
+                    <div class="bulma-control bulma-has-icons-right as-control">
+                        <input id="current-pw" class="bulma-input as-input" type="@(ShowCurrent ? "text" : "password")"
+                               placeholder="••••••••" />
+                        <span class="bulma-icon bulma-is-right as-pw-toggle"
+                              @onclick="() => ShowCurrent = !ShowCurrent">
+                            <i class="@(ShowCurrent ? "far fa-eye-slash" : "far fa-eye")"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- New Password -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="new-pw">New Password</label>
+                    <div class="bulma-control bulma-has-icons-right as-control">
+                        <input id="new-pw" class="bulma-input as-input" type="@(ShowNew ? "text" : "password")"
+                               placeholder="••••••••" />
+                        <span class="bulma-icon bulma-is-right as-pw-toggle" @onclick="() => ShowNew = !ShowNew">
+                            <i class="@(ShowNew ? "far fa-eye-slash" : "far fa-eye")"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label" for="confirm-pw">Confirm Password</label>
+                    <div class="bulma-control bulma-has-icons-right as-control">
+                        <input id="confirm-pw" class="bulma-input as-input" type="@(ShowConfirm ? "text" : "password")"
+                               placeholder="••••••••" />
+                        <span class="bulma-icon bulma-is-right as-pw-toggle"
+                              @onclick="() => ShowConfirm = !ShowConfirm">
+                            <i class="@(ShowConfirm ? "far fa-eye-slash" : "far fa-eye")"></i>
+                        </span>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <!-- Logout button -->
+        <div class="bulma-field as-field">
+            <label class="bulma-label as-label">&nbsp;</label>
+            <div class="bulma-control">
+                <button class="bulma-button bulma-is-danger bulma-is-light as-btn-logout-sec" @onclick="HandleLogout">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-right-from-bracket"></i></span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+        <!-- ── SAVE BUTTON ── -->
+        <div class="as-save-row">
+            <button class="bulma-button bulma-is-success as-btn-save" @onclick="HandleSave">
+                <span class="bulma-icon bulma-is-small"><i class="fas fa-floppy-disk"></i></span>
+                <strong>Save Changes</strong>
+            </button>
+        </div>
+
+    </main>
+</div>
+
+@code {
+    private string FullName { get; set; } = "Juan Perez";
+    private string Email { get; set; } = "juan.perez@example.com";
+    private string Phone { get; set; } = "7123-4567";
+    private string Country { get; set; } = "SV";
+    private bool ShowCurrent { get; set; } = false;
+    private bool ShowNew { get; set; } = false;
+    private bool ShowConfirm { get; set; } = false;
+
+    private void HandleSave()
+    {
+        // Save logic here
+    }
+
+    private async Task HandleLogout()
+    {
+        await AuthProvider.NotifyUserLogout();
+        Navigation.NavigateTo("/");
+    }
+}

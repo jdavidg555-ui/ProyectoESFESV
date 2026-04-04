@@ -1,7 +1,6 @@
 @page "/donor/dashboard"
 @using ProyectoSocioEconomico.WebUI.Services
 @inject CustomAuthenticationStateProvider AuthProvider
-@inject NavigationManager Navigation
 
 <div class="dp-page">
 
@@ -11,20 +10,17 @@
 
         <!-- ── SIDEBAR ── -->
         <aside class="dp-sidebar">
+            <p class="dp-sidebar__heading">SETTINGS MENU</p>
 
             <!-- Nav links -->
             <nav class="dp-sidebar__nav">
-                <a href="/donor/settings" class="dp-sidebar__nav-item">
+                <a href="/account/settings" class="dp-sidebar__nav-item">
                     <span class="bulma-icon bulma-is-small"><i class="far fa-user"></i></span>
                     Account Settings
                 </a>
                 <a href="/donor/dashboard" class="dp-sidebar__nav-item dp-sidebar__nav-item--active">
                     <span class="bulma-icon bulma-is-small"><i class="fas fa-table-cells-large"></i></span>
                     Mis donaciones
-                </a>
-                <a class="dp-sidebar__nav-item" @onclick="HandleLogout" style="cursor: pointer;">
-                    <span class="bulma-icon bulma-is-small"><i class="fas fa-right-from-bracket"></i></span>
-                    Cerrar Sesión
                 </a>
             </nav>
         </aside>
@@ -128,11 +124,5 @@
             userName = user.Identity.Name ?? "Usuario";
             userImage = user.FindFirst("ImagenPerfil")?.Value ?? "https://i.pravatar.cc/40?img=12";
         }
-    }
-
-    private async Task HandleLogout()
-    {
-        await AuthProvider.NotifyUserLogout();
-        Navigation.NavigateTo("/");
     }
 }

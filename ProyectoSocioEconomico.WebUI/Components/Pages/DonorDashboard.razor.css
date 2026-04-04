@@ -52,6 +52,16 @@ div.dp-page .dp-body aside.dp-sidebar {
     gap: 0.5rem;
 }
 
+div.dp-page .dp-body aside.dp-sidebar .dp-sidebar__heading {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--dp-text-muted);
+    text-transform: uppercase;
+    padding: 0 1rem;
+    margin-bottom: 0.5rem;
+}
+
 
 /* Sidebar nav */
 div.dp-page .dp-body aside.dp-sidebar nav.dp-sidebar__nav {

@@ -1,0 +1,504 @@
+/* ═══════════════════════════════════════════════════════════════
+   AccountSettings.razor.css
+   Scoped styles – always use div.as-page as root for specificity
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── TOKENS ──────────────────────────────────────────────────── */
+div.as-page {
+    --as-yellow:       #f5bb00;
+    --as-yellow-dark:  #d9a600;
+    --as-green:        #22c55e;
+    --as-green-dark:   #16a34a;
+    --as-green-bg:     #22c55e;
+    --as-bg:           #f2f2f0;
+    --as-white:        #ffffff;
+    --as-text-dark:    #1a1a1a;
+    --as-text-mid:     #4a4a4a;
+    --as-text-muted:   #888;
+    --as-border:       #e0dfd8;
+    --as-input-bg:     #ffffff;
+    --as-shadow-sm:    0 1px 3px rgba(0,0,0,0.06);
+    --as-shadow-card:  0 2px 12px rgba(0,0,0,0.06);
+    --as-sidebar-w:    280px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    background-color: var(--as-bg);
+    display: grid;
+    grid-template-columns: var(--as-sidebar-w) 1fr;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════════ */
+div.as-page aside.as-sidebar {
+    background: var(--as-white);
+    border-right: 1px solid var(--as-border);
+    padding: 2rem 0 2rem;
+    min-height: 100vh;
+}
+
+div.as-page aside.as-sidebar .as-sidebar__heading {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--as-text-muted);
+    text-transform: uppercase;
+    padding: 0 1.5rem;
+    margin-bottom: 1rem;
+}
+
+div.as-page aside.as-sidebar nav.as-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+}
+
+div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--as-text-mid);
+    text-decoration: none;
+    border-radius: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item:hover {
+    background: #f5f4f0;
+    color: var(--as-text-dark);
+}
+
+div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item--active {
+    border-left: 3px solid var(--as-green);
+    background: #f0faf1; /* Light green to match dp-green-light */
+    color: var(--as-text-dark);
+    font-weight: 700;
+    border-radius: 0;
+    margin: 0;
+    padding: 0.7rem 1rem;
+}
+
+div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item--active:hover {
+    background: #e6f5e9;
+    color: var(--as-text-dark);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN
+   ═══════════════════════════════════════════════════════════════ */
+div.as-page main.as-main {
+    padding: 2.5rem 2.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow: hidden;
+}
+
+/* Page header */
+div.as-page main.as-main .as-main__header {
+    margin-bottom: 0.5rem;
+}
+
+div.as-page main.as-main .as-main__header .as-main__title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--as-text-dark);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 0.3rem;
+}
+
+div.as-page main.as-main .as-main__header .as-main__subtitle {
+    font-size: 0.9rem;
+    color: var(--as-text-muted);
+}
+
+/* ── CARD ────────────────────────────────────────────────────── */
+div.as-page main.as-main section.as-card {
+    background: var(--as-white);
+    border: 1px solid var(--as-border);
+    border-radius: 14px;
+    padding: 1.75rem 2rem;
+    box-shadow: var(--as-shadow-card);
+}
+
+/* ── SECTION HEADING ─────────────────────────────────────────── */
+div.as-page main.as-main .as-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+
+div.as-page main.as-main .as-section-heading .as-section-heading__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--as-green-dark);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+div.as-page main.as-main .as-section-heading .as-section-heading__icon--yellow {
+    background: rgba(245, 187, 0, 0.12);
+    color: var(--as-yellow-dark);
+}
+
+div.as-page main.as-main .as-section-heading .as-section-heading__text {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--as-text-dark);
+    letter-spacing: -0.01em;
+}
+
+div.as-page main.as-main .as-section-heading .as-section-heading__link {
+    margin-left: auto;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--as-yellow-dark);
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+div.as-page main.as-main .as-section-heading .as-section-heading__link:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
+
+/* ── PROFILE BLOCK ───────────────────────────────────────────── */
+div.as-page main.as-main section.as-card .as-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__avatar-wrap .as-profile__avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--as-white);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    display: block;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__avatar-wrap .as-profile__edit-btn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 28px;
+    height: 28px;
+    background: var(--as-yellow);
+    border: 2px solid var(--as-white);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__avatar-wrap .as-profile__edit-btn:hover {
+    background: var(--as-yellow-dark);
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__name-row .as-profile__name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--as-text-dark);
+    letter-spacing: -0.02em;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__name-row .as-profile__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border: 1.5px solid var(--as-green);
+    border-radius: 99px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--as-green-dark);
+    background: rgba(34, 197, 94, 0.08);
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__meta {
+    font-size: 0.85rem;
+    color: var(--as-text-muted);
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__actions {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 0.35rem;
+}
+
+/* Change Photo button */
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__actions .as-btn-change-photo.bulma-button {
+    background: var(--as-white);
+    border: 1.5px solid var(--as-border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--as-text-dark);
+    height: 2.25rem;
+    padding: 0 1rem;
+    cursor: pointer;
+    box-shadow: var(--as-shadow-sm);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__actions .as-btn-change-photo.bulma-button:hover {
+    border-color: var(--as-green);
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
+}
+
+/* Remove Photo button */
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__actions .as-btn-remove-photo.bulma-button {
+    background: transparent;
+    border: 1.5px solid var(--as-border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--as-text-muted);
+    height: 2.25rem;
+    padding: 0 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+div.as-page main.as-main section.as-card .as-profile .as-profile__info .as-profile__actions .as-btn-remove-photo.bulma-button:hover {
+    border-color: #ccc;
+    color: var(--as-text-dark);
+}
+
+/* ── FORM GRID ───────────────────────────────────────────────── */
+div.as-page main.as-main section.as-card .as-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1.5rem;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Field */
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field {
+    margin-bottom: 0;
+}
+
+/* Label */
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-label.bulma-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--as-text-mid);
+    margin-bottom: 0.4rem;
+}
+
+/* Input */
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .as-input.bulma-input {
+    background: var(--as-input-bg);
+    border: 1.5px solid var(--as-border);
+    border-radius: 8px;
+    height: 2.75rem;
+    font-size: 0.9rem;
+    color: var(--as-text-dark);
+    box-shadow: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .as-input.bulma-input::placeholder {
+    color: #c0bdb5;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .as-input.bulma-input:focus {
+    border-color: var(--as-green);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    outline: none;
+}
+
+/* Password eye toggle */
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .as-pw-toggle.bulma-icon.bulma-is-right {
+    height: 2.75rem;
+    width: 2.75rem;
+    color: var(--as-text-muted);
+    pointer-events: all;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .as-pw-toggle.bulma-icon.bulma-is-right:hover {
+    color: var(--as-text-dark);
+}
+
+/* Phone group */
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-phone-group {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-phone-group .as-phone-group__prefix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.85rem;
+    height: 2.75rem;
+    background: #f2f0eb;
+    border: 1.5px solid var(--as-border);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--as-text-mid);
+    flex-shrink: 0;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-phone-group .as-control--flex.bulma-control {
+    flex: 1;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-phone-group .as-control--flex.bulma-control .as-input.bulma-input {
+    border-radius: 0 8px 8px 0;
+}
+
+/* Select */
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .bulma-select.bulma-is-fullwidth.as-select-wrap {
+    width: 100%;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .bulma-select.bulma-is-fullwidth.as-select-wrap .as-select {
+    background: var(--as-input-bg);
+    border: 1.5px solid var(--as-border);
+    border-radius: 8px;
+    height: 2.75rem;
+    font-size: 0.9rem;
+    color: var(--as-text-dark);
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 0.18s;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control.bulma-control .bulma-select.bulma-is-fullwidth.as-select-wrap .as-select:focus {
+    border-color: var(--as-green);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    outline: none;
+}
+
+div.as-page main.as-main section.as-card .as-form-grid .as-field.bulma-field .as-control .as-btn-logout-sec.bulma-button {
+    font-size: 0.85rem;
+    font-weight: 600;
+    height: 2.75rem;
+    width: 100%;
+}
+
+/* ── SAVE ROW ────────────────────────────────────────────────── */
+div.as-page main.as-main .as-save-row {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0.25rem;
+    padding-bottom: 1rem;
+}
+
+div.as-page main.as-main .as-save-row .as-btn-save.bulma-button.bulma-is-success {
+    background: var(--as-green-bg);
+    color: var(--as-white);
+    border: none;
+    border-radius: 9px;
+    height: 2.75rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0 1.5rem;
+    gap: 0.45rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.28);
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+}
+
+div.as-page main.as-main .as-save-row .as-btn-save.bulma-button.bulma-is-success:hover {
+    background: var(--as-green-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.36);
+}
+
+div.as-page main.as-main .as-save-row .as-btn-save.bulma-button.bulma-is-success:active {
+    transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+    div.as-page {
+        grid-template-columns: 1fr;
+    }
+
+    div.as-page aside.as-sidebar {
+        min-height: unset;
+        border-right: none;
+        border-bottom: 1px solid var(--as-border);
+        padding: 1rem 0.75rem;
+    }
+
+    div.as-page aside.as-sidebar nav.as-sidebar__nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item {
+        padding: 0.5rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+    }
+
+    div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item--active {
+        margin: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    div.as-page main.as-main {
+        padding: 1.5rem 1rem;
+    }
+
+    div.as-page main.as-main section.as-card .as-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    div.as-page main.as-main section.as-card .as-form-grid--3col {
+        grid-template-columns: 1fr;
+    }
+
+    div.as-page main.as-main section.as-card .as-profile {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
