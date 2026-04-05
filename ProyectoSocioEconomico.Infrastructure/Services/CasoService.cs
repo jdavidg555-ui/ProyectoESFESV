@@ -64,5 +64,11 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
             context.Casos.Add(caso);
             await context.SaveChangesAsync();
         }
+
+        public async Task<List<Categoria>> ObtenerCategorias()
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Categorias.ToListAsync();
+        }
     }
 }

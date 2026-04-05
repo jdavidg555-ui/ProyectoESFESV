@@ -1,0 +1,343 @@
+/* NewCaseStep2.razor.css */
+/* Alta especificidad como en tu CSS global (register-page) + uso intensivo de Bulma con prefijo bulma- */
+
+.newcasestep2-page {
+    min-height: 100vh;
+    background: var(--rp-bg);
+    background-image: radial-gradient(ellipse 420px 520px at 92% 48%, var(--rp-glow) 0%, transparent 70%);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 2rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newcasestep2__container {
+    width: 100%;
+    max-width: 680px;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem 2rem;
+}
+
+/* ───────── PROGRESS ───────── */
+.newcasestep2-page .newcasestep2__progress-section {
+    margin-bottom: 2.4rem;
+}
+.newcasestep2-page .newcasestep2__progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+.newcasestep2-page .newcasestep2__step {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--rp-text-muted);
+}
+.newcasestep2-page .newcasestep2__step-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--rp-yellow);
+}
+.newcasestep2-page .newcasestep2__progress-bar.bulma-progress {
+    height: 6px;
+    border-radius: 99px;
+    background-color: #e5e3da;
+}
+.newcasestep2-page .newcasestep2__progress-bar.bulma-progress::-webkit-progress-bar {
+    background-color: #e5e3da;
+    border-radius: 99px;
+}
+.newcasestep2-page .newcasestep2__progress-bar.bulma-progress::-webkit-progress-value {
+    background-color: var(--rp-yellow) !important;
+    border-radius: 99px;
+}
+.newcasestep2-page .newcasestep2__progress-bar.bulma-progress::-moz-progress-bar {
+    background-color: var(--rp-yellow) !important;
+    border-radius: 99px;
+}
+
+/* ───────── HEADING ───────── */
+.newcasestep2-page .newcasestep2__heading-block {
+    margin-bottom: 2.25rem;
+}
+.newcasestep2-page .newcasestep2__title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--rp-text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+.newcasestep2-page .newcasestep2__subtitle {
+    font-size: 0.95rem;
+    color: var(--rp-text-mid);
+    line-height: 1.5;
+}
+
+/* ───────── SECTIONS ───────── */
+.newcasestep2-page .newcasestep2__section {
+    margin-bottom: 2.5rem;
+}
+.newcasestep2-page .newcasestep2__section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.newcasestep2-page .newcasestep2__section-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: #fef2f2;
+    color: #f5bb00;
+    border-radius: 6px;
+    font-size: 1.35rem;
+}
+.newcasestep2-page .newcasestep2__section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--rp-text-dark);
+    margin: 0;
+}
+.newcasestep2-page .newcasestep2__section-description {
+    color: var(--rp-text-mid);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+}
+
+/* ───────── UPLOAD EVIDENCE ───────── */
+.newcasestep2__upload-area {
+    display: block;
+    cursor: pointer;
+}
+.newcasestep2__dropzone {
+    border: 2px dashed #e2e0d8;
+    border-radius: 12px;
+    background: #faf9f5;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.newcasestep2__dropzone:hover {
+    border-color: var(--rp-yellow);
+    background: #fffdf5;
+}
+.newcasestep2__cloud-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: #d1c9b8;
+}
+.newcasestep2__drop-text {
+    font-size: 1.05rem;
+    color: var(--rp-text-mid);
+    margin-bottom: 0.5rem;
+}
+.newcasestep2__select-btn {
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+/* Ocultar input file real */
+.newcasestep2__file-input {
+    display: none;
+}
+
+/* ───────── THUMBNAIL ───────── */
+.newcasestep2__thumbnail-wrapper {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+.newcasestep2__thumbnail-box {
+    display: block;
+    cursor: pointer;
+    border: 2px dashed #e2e0d8;
+    border-radius: 12px;
+    background: #f9f7f0;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+.newcasestep2__thumbnail-box:hover {
+    border-color: var(--rp-yellow);
+}
+.newcasestep2__upload-placeholder {
+    text-align: center;
+}
+.newcasestep2__camera-icon {
+    font-size: 3.5rem;
+    color: #d1c9b8;
+    position: relative;
+}
+.newcasestep2__plus {
+    position: absolute;
+    font-size: 1.5rem;
+    bottom: -4px;
+    right: -8px;
+    color: var(--rp-yellow);
+}
+.newcasestep2__upload-text {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--rp-text-mid);
+}
+.newcasestep2__thumbnail-info p {
+    font-size: 0.95rem;
+    color: var(--rp-text-mid);
+    margin-bottom: 1rem;
+}
+.newcasestep2__thumbnail-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+.newcasestep2__thumbnail-list li {
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--rp-text-mid);
+}
+.newcasestep2__recommended {
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+}
+
+/* ───────── METHODS GRID ───────── */
+.newcasestep2__methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.newcasestep2__method-card {
+    border: 2px solid #e2e0d8;
+    border-radius: 12px;
+    padding: 1.25rem;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+.newcasestep2__method-card:hover {
+    border-color: #f5bb00;
+}
+.newcasestep2__method-card--selected {
+    border-color: var(--rp-yellow);
+    box-shadow: 0 0 0 4px rgba(245, 187, 0, 0.15);
+}
+.newcasestep2__method-icon {
+    font-size: 2.25rem;
+    width: 52px;
+    flex-shrink: 0;
+}
+.newcasestep2__method-title {
+    font-weight: 700;
+    color: var(--rp-text-dark);
+    margin: 0;
+}
+.newcasestep2__method-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--rp-yellow);
+    background: #fffdf5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+.newcasestep2__check-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.35rem;
+    color: var(--rp-yellow);
+}
+
+/* ───────── BANK FORM ───────── */
+.newcasestep2__bank-form {
+    background: #f9f7f0;
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-top: 1rem;
+}
+.newcasestep2-page .newcasestep2__bank-form .bulma-input {
+    background: #fff;
+    border: 1.5px solid var(--rp-border);
+    border-radius: 10px;
+    height: 3rem;
+    font-size: 0.95rem;
+    color: var(--rp-text-dark);
+    box-shadow: var(--rp-shadow);
+    padding-left: 1rem;
+}
+.newcasestep2-page .newcasestep2__bank-form .bulma-input:focus {
+    border-color: var(--rp-yellow);
+    box-shadow: 0 0 0 3px rgba(245, 187, 0, 0.15);
+}
+
+/* ───────── CERTIFICATION ───────── */
+.newcasestep2__certification {
+    margin: 2rem 0 1.5rem;
+}
+.newcasestep2__checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+.newcasestep2__checkbox {
+    margin-top: 3px;
+    accent-color: var(--rp-yellow);
+}
+.newcasestep2__checkbox-text {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--rp-text-mid);
+}
+.newcasestep2__link {
+    color: var(--rp-yellow-dark) !important;
+    font-weight: 600;
+}
+
+/* ───────── FOOTER ───────── */
+.newcasestep2__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.newcasestep2__back-btn {
+    font-weight: 600;
+}
+.newcasestep2__submit-btn {
+    font-weight: 700;
+    padding: 0 2rem;
+}
+
+/* ───────── RESPONSIVE ───────── */
+@media (max-width: 640px) {
+    .newcasestep2__thumbnail-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .newcasestep2__methods-grid {
+        grid-template-columns: 1fr;
+    }
+    .newcasestep2__container {
+        padding: 1.75rem 1.25rem;
+    }
+}

@@ -11,5 +11,6 @@ namespace ProyectoSocioEconomico.Application.Interfaces
         Task<List<Caso>> ObtenerActivosParaHome(int cantidad);
         Task<Caso?> ObtenerPorIdConDetallesAsync(int id);
         Task Crear(Caso caso);
+        Task<List<Categoria>> ObtenerCategorias();
     }
 }

@@ -1,0 +1,147 @@
+@page "/cases/new/step1"
+@using ProyectoSocioEconomico.WebUI.Services
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using Microsoft.AspNetCore.Components.Forms
+@inject NewCaseState CaseState
+@inject ICasoService CasoService
+@inject NavigationManager Navigation
+
+<div class="nc1-page">
+
+    <!-- ═══════════════ PAGE HEADER ═══════════════ -->
+    <div class="nc1-header">
+        <div class="nc1-header__top">
+            <div>
+                <h1 class="nc1-header__title">Create New Donation Campaign</h1>
+            </div>
+            <span class="nc1-header__pct">50% Complete</span>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="nc1-progress-wrap">
+            <div class="nc1-progress-track">
+                <div class="nc1-progress-fill" style="width: 50%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ FORM CARD ═══════════════ -->
+    <div class="nc1-card">
+        <EditForm Model="CaseState" OnValidSubmit="HandleNextStep" FormName="NewCaseStep1Form">
+            <DataAnnotationsValidator />
+
+            <!-- Row 1: Category + Title -->
+            <div class="nc1-row nc1-row--2col">
+
+                <div class="bulma-field nc1-field">
+                    <label class="bulma-label nc1-label" for="category">
+                        Campaign Category
+                        <span class="nc1-required">*</span>
+                    </label>
+                    <div class="bulma-control nc1-control">
+                        <div class="bulma-select bulma-is-fullwidth nc1-select-wrap">
+                            <InputSelect id="category" class="nc1-select" @bind-Value="CaseState.CategoryId">
+                                <option value="">Select a category</option>
+                                @if (categories != null)
+                                {
+                                    @foreach (var cat in categories)
+                                    {
+                                        <option value="@cat.Id">@cat.Nombre</option>
+                                    }
+                                }
+                            </InputSelect>
+                        </div>
+                        <ValidationMessage For="@(() => CaseState.CategoryId)" class="bulma-help bulma-is-danger" />
+                    </div>
+                </div>
+
+                <div class="bulma-field nc1-field">
+                    <label class="bulma-label nc1-label" for="case-title">
+                        Case Title
+                        <span class="nc1-required">*</span>
+                    </label>
+                    <div class="bulma-control nc1-control">
+                        <InputText id="case-title"
+                                   class="bulma-input nc1-input"
+                                   placeholder="e.g., Medical Support for Village Clinic"
+                                   @bind-Value="CaseState.CaseTitle" />
+                    </div>
+                    <ValidationMessage For="@(() => CaseState.CaseTitle)" class="bulma-help bulma-is-danger" />
+                </div>
+
+            </div>
+
+            <!-- Row 2: Description -->
+            <div class="bulma-field nc1-field">
+                <label class="bulma-label nc1-label" for="description">
+                    Detailed Description
+                    <span class="nc1-required">*</span>
+                </label>
+                <p class="nc1-field-hint">Explain the need, who it helps, and the urgency of the situation.</p>
+                <div class="bulma-control nc1-control">
+                    <InputTextArea id="description"
+                              class="bulma-textarea nc1-textarea"
+                              placeholder="Provide a thorough explanation of why this donation is needed..."
+                              rows="7"
+                              @bind-Value="CaseState.Description">
+                    </InputTextArea>
+                </div>
+                <ValidationMessage For="@(() => CaseState.Description)" class="bulma-help bulma-is-danger" />
+            </div>
+
+            <!-- Row 3: Target Financial Goal -->
+            <div class="bulma-field nc1-field nc1-field--half">
+                <label class="bulma-label nc1-label" for="goal">
+                    Target Financial Goal
+                    <span class="nc1-required">*</span>
+                </label>
+                <div class="bulma-control nc1-control">
+                    <div class="nc1-money-input-wrap">
+                        <span class="nc1-money-prefix">$</span>
+                        <InputNumber id="goal"
+                               class="bulma-input nc1-input nc1-input--money"
+                               step="0.01"
+                               placeholder="0.00"
+                               @bind-Value="CaseState.FinancialGoal" />
+                    </div>
+                </div>
+                <ValidationMessage For="@(() => CaseState.FinancialGoal)" class="bulma-help bulma-is-danger" />
+                @* <p class="nc1-field-note">
+                    <span class="bulma-icon bulma-is-small"><i class="far fa-circle-info"></i></span>
+                    This is the total amount required to fully fund and close this aid case.
+                </p> *@
+            </div>
+
+            <!-- Action row -->
+            <div class="nc1-actions">
+                <p class="nc1-actions__security">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-lock"></i></span>
+                    Your data is stored securely and can be edited later.
+                </p>
+                <div class="nc1-actions__btns">
+                    <button type="submit"
+                       class="bulma-button bulma-is-warning nc1-btn-next">
+                        <strong>Next: Evidence</strong>
+                        <span class="bulma-icon bulma-is-small"><i class="fas fa-arrow-right"></i></span>
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    </div><!-- /nc1-card -->
+</div>
+
+@code {
+    private List<Categoria>? categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CasoService.ObtenerCategorias();
+    }
+
+    private void HandleNextStep()
+    {
+        CaseState.Step1Completed = true;
+        Navigation.NavigateTo("/cases/new/step2");
+    }
+}
