@@ -234,18 +234,6 @@ div.dp-page .dp-body main.dp-main .dp-history-card .dp-history-card__header .dp-
     color: var(--dp-text-dark);
 }
 
-div.dp-page .dp-body main.dp-main .dp-history-card .dp-history-card__header .dp-history-card__view-all {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--dp-text-muted);
-    text-decoration: none;
-    transition: color 0.15s;
-}
-
-div.dp-page .dp-body main.dp-main .dp-history-card .dp-history-card__header .dp-history-card__view-all:hover {
-    color: var(--dp-yellow-dark);
-}
-
 /* Table */
 div.dp-page .dp-body main.dp-main .dp-history-card table.dp-history-table.bulma-table {
     background: transparent;
