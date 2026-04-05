@@ -1,121 +1,151 @@
 @page "/cases"
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using System.Globalization
+@inject ICasoService CasoService
 
-<div class="ic-page">
+<div class="cap-page">
 
-    <!-- ═══════════════ PAGE HEADER ═══════════════ -->
-    <div class="ic-header">
-        <h1 class="ic-header__title">Directory of Individual Aid Cases</h1>
-        <p class="ic-header__subtitle">
-            Visualizing socioeconomic priority for verified families and individuals.<br />
-            Currently showing <strong>4,208</strong> active cases awaiting intervention.
+    <!-- ═══════════════ HEADER ═══════════════ -->
+    <div class="cap-header">
+        <h1 class="cap-header__title">Direct Aid Cases</h1>
+        <p class="cap-header__subtitle">
+            Support individual cases and families in need. Your direct contribution makes a tangible difference
+            in someone's life today.
         </p>
     </div>
 
-    <!-- ═══════════════ CASES GRID ═══════════════ -->
-    <div class="ic-grid">
-        @foreach (var c in Cases)
+    <!-- ═══════════════ SEARCH + FILTERS ═══════════════ -->
+    <div class="cap-toolbar">
+        <div class="bulma-control bulma-has-icons-left cap-toolbar__search-wrap">
+            <input class="bulma-input cap-toolbar__search"
+                   type="text"
+                   placeholder="Search for cases (e.g., 'Emergency Medical')"
+                   @bind="SearchQuery"
+                   @oninput="OnSearch" />
+            <span class="bulma-icon bulma-is-left cap-toolbar__search-icon">
+                <i class="fas fa-magnifying-glass"></i>
+            </span>
+        </div>
+
+        <div class="cap-toolbar__filters">
+            @foreach (var filter in Filters)
+            {
+                <button class="cap-filter-btn @(ActiveFilter == filter.Key ? "cap-filter-btn--active" : "")"
+                        @onclick="() => SetFilter(filter.Key)">
+                    <span class="bulma-icon bulma-is-small">
+                        <i class="@filter.Icon"></i>
+                    </span>
+                    @filter.Label
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- ═══════════════ CASE GRID ═══════════════ -->
+    <div class="cap-grid">
+        @if (PagedCases != null)
         {
-            <article class="ic-card @(c.Priority.HasValue ? "ic-card--has-priority" : "")">
+            @foreach (var caso in PagedCases)
+            {
+                decimal totalRecaudado = caso.Donaciones?.Sum(d => d.Monto) ?? 0m;
+                int progreso = CalcularPorcentaje(caso.Meta, totalRecaudado);
 
-                @if (c.Priority.HasValue)
-                {
-                    <div class="ic-card__priority-badge">
-                        <span class="ic-card__priority-label">Priority:</span>
-                        <span class="ic-card__priority-value">@c.Priority/100</span>
-                    </div>
-                }
-
-                <!-- Identity row -->
-                <div class="ic-card__identity">
-                    <img class="ic-card__avatar" src="@c.AvatarUrl" alt="@c.Name" />
-                    <div class="ic-card__id-text">
-                        <h2 class="ic-card__name">@c.Name</h2>
-                        <span class="ic-card__sector ic-card__sector--@c.SectorClass">
-                            @c.Sector<br />SECTOR
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <p class="ic-card__desc">@c.Description</p>
-
-                <!-- Goal + progress -->
-                <div class="ic-card__goal-wrap">
-                    <div class="ic-card__goal-header">
-                        <span class="ic-card__goal-label">Goal: @c.GoalLabel</span>
-                        @if (c.Priority.HasValue)
-                        {
-                            <span class="ic-card__goal-pct">@c.FundingPct%</span>
-                        }
-                    </div>
-                    <div class="ic-card__progress-track">
-                        <div class="ic-card__progress-fill" style="width: @(c.FundingPct)%"></div>
-                    </div>
-                </div>
-
-                <!-- CTA -->
-                <a href="/cases/@c.Id" class="bulma-button bulma-is-warning bulma-is-fullwidth ic-card__btn">
-                    <span class="bulma-icon bulma-is-small"><i class="fas fa-hand-holding-heart"></i></span>
-                    <strong>@(c.Priority.HasValue ? "Help this Case" : "Help this")</strong>
-                </a>
-
-            </article>
+                <CaseCardComponent Id="@caso.Id"
+                                   Title="@caso.Titulo"
+                                   Description="@caso.Descripcion"
+                                   Category="@caso.IdCategoriaNavigation?.Nombre"
+                                   MoneyRaised="@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))"
+                                   Progress="@progreso"
+                                   ImageUrl="@caso.ImagenUrl" />
+            }
         }
     </div>
+
+    <!-- ═══════════════ PAGINATION ═══════════════ -->
+    <nav class="cap-pagination" aria-label="pagination">
+        <button class="cap-pagination__btn"
+                disabled="@(CurrentPage == 1)"
+                @onclick="() => GoToPage(CurrentPage - 1)">
+            Previous
+        </button>
+
+        @for (int p = 1; p <= TotalPages; p++)
+        {
+            int pageNumber = p;
+            <button class="cap-pagination__btn @(CurrentPage == pageNumber ? "cap-pagination__btn--active" : "")"
+                    @onclick="() => GoToPage(pageNumber)">
+                @pageNumber
+            </button>
+        }
+
+        <button class="cap-pagination__btn"
+                disabled="@(CurrentPage == TotalPages)"
+                @onclick="() => GoToPage(CurrentPage + 1)">
+            Next
+        </button>
+    </nav>
 
 </div>
 
 @code {
-    private record CaseItem(
-        int     Id,
-        string  Name,
-        string  Sector,
-        string  SectorClass,
-        string  Description,
-        string  GoalLabel,
-        int     FundingPct,
-        string  AvatarUrl,
-        int?    Priority = null
-    );
+    private record FilterOption(string Key, string Label, string Icon);
 
-    private List<CaseItem> Cases = new()
+    private string SearchQuery  { get; set; } = string.Empty;
+    private string ActiveFilter { get; set; } = "all";
+    private int    CurrentPage  { get; set; } = 1;
+    private const int PageSize  = 6;
+
+    private List<FilterOption> Filters = new()
     {
-        new(1,  "Sarah Jenkins",
-            "HEALTH",     "health",
-            "Post-operative care and medical supplies required for chronic kidney condition. Single elderly living in rural area.",
-            "Medical Support", 95,
-            "https://i.pravatar.cc/80?img=5"),
-
-        new(2,  "The Martinez Family",
-            "HOUSING",    "housing",
-            "Urgent roof repairs needed due to recent storm damage. Family of five including three children. Current living conditions are unsafe.",
-            "Roof Restoration", 62,
-            "https://i.pravatar.cc/80?img=25"),
-
-        new(3,  "Liam O'Connor",
-            "EDUCATION",  "education",
-            "Support for specialized learning materials and school transport for a gifted student from a low-income household.",
-            "Yearly Tuition", 92,
-            "https://i.pravatar.cc/80?img=12",
-            Priority: 88),
-
-        new(4,  "Samuel Rivera",
-            "EDUCATION",  "education",
-            "Vocational training scholarship for community leadership and technical skills. Samuel is an advocate for his neighborhood.",
-            "Training Kit", 28,
-            "https://i.pravatar.cc/80?img=15"),
-
-        new(5,  "Elena Rodriguez",
-            "HOUSING",    "housing",
-            "Rental assistance for single-parent household in transition. Seeking stability for two school-aged children.",
-            "Security Deposit", 47,
-            "https://i.pravatar.cc/80?img=9"),
-
-        new(6,  "The Chen Family",
-            "HEALTH",     "health",
-            "Nutritional support and pediatric follow-up for three children. Family facing economic hardship due to job loss.",
-            "6-Month Nutrition", 33,
-            "https://i.pravatar.cc/80?img=32",
-            Priority: 79),
+        new("all",            "All",            "fas fa-table-cells-large"),
+        new("salud",          "Salud",          "fas fa-heart-pulse"),
+        new("educación",      "Educación",      "fas fa-graduation-cap"),
+        new("vivienda",       "Vivienda",       "fas fa-house-user"),
+        new("emergencia",     "Emergencia",     "fas fa-kit-medical"),
+        new("otros",          "Otros",          "fas fa-ellipsis-h"),
     };
+
+    private List<Caso> AllCases = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllCases = await CasoService.ObtenerTodosConDetallesAsync();
+    }
+
+    private IEnumerable<Caso> FilteredCases =>
+        AllCases
+            .Where(c => ActiveFilter == "all" || c.IdCategoriaNavigation?.Nombre.ToLower() == ActiveFilter)
+            .Where(c => string.IsNullOrWhiteSpace(SearchQuery) ||
+                        c.Titulo.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ||
+                        c.Descripcion.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)FilteredCases.Count() / PageSize));
+
+    private IEnumerable<Caso> PagedCases =>
+        FilteredCases.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+
+    private void SetFilter(string key)
+    {
+        ActiveFilter = key;
+        CurrentPage  = 1;
+    }
+
+    private void OnSearch(ChangeEventArgs e)
+    {
+        SearchQuery = e.Value?.ToString() ?? string.Empty;
+        CurrentPage = 1;
+    }
+
+    private void GoToPage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+            CurrentPage = page;
+    }
+
+    private int CalcularPorcentaje(decimal meta, decimal actual)
+    {
+        if (meta <= 0) return 0;
+        return Math.Clamp((int)Math.Round((actual / meta) * 100), 0, 100);
+    }
 }

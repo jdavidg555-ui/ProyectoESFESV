@@ -1,48 +1,57 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProyectoSocioEconomico.Application.Interfaces;
 using ProyectoSocioEconomico.Domain.Entities;
 using ProyectoSocioEconomico.Infrastructure.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ProyectoSocioEconomico.Infrastructure.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly AppDbContext _context;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        public UsuarioService(AppDbContext context)
+        public UsuarioService(IDbContextFactory<AppDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Usuario>> ObtenerTodos()
         {
-            return await _context.Usuarios.ToListAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Usuarios.ToListAsync();
         }
 
-        public async Task<Usuario> ObtenerPorId(int id)
+        public async Task<Usuario?> ObtenerPorId(int id)
         {
-            return await _context.Usuarios.FindAsync(id);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Usuarios.FindAsync(id);
         }
 
         public async Task Crear(Usuario usuario)
         {
-            _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            context.Usuarios.Add(usuario);
+            await context.SaveChangesAsync();
         }
 
         public async Task Actualizar(Usuario usuario)
         {
-            _context.Entry(usuario).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            context.Entry(usuario).State = EntityState.Modified;
+            await context.SaveChangesAsync();
         }
 
         public async Task ActualizarPassword(int usuarioId, string passwordHash)
         {
-            var user = await _context.Usuarios.FindAsync(usuarioId);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var user = await context.Usuarios.FindAsync(usuarioId);
             if (user != null)
             {
                 user.PasswordHash = passwordHash;
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
 
@@ -56,7 +65,8 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
         public async Task<Usuario?> VerificarCredenciales(string email, string password)
         {
             var passwordHash = HashPassword(password);
-            return await _context.Usuarios
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Usuarios
                 .Include(u => u.IdRolNavigation)
                 .FirstOrDefaultAsync(u => 
                     u.Email.ToLower() == email.Trim().ToLower() && 

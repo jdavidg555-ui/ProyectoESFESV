@@ -9,16 +9,17 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
 {
     public class ProgramaService : IProgramaService
     {
-        private readonly AppDbContext _context;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        public ProgramaService(AppDbContext context)
+        public ProgramaService(IDbContextFactory<AppDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Programa>> ObtenerTodosConCasosAsync()
         {
-            return await _context.Programas
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Programas
                 .Include(p => p.IdCasos)
                     .ThenInclude(c => c.Donaciones)
                 .ToListAsync();
@@ -26,7 +27,8 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
 
         public async Task<Programa?> ObtenerPorIdConDetallesAsync(int id)
         {
-            return await _context.Programas
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Programas
                 .Include(p => p.IdCasos)
                     .ThenInclude(c => c.Donaciones)
                 .Include(p => p.IdCasos)
