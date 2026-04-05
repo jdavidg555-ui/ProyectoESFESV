@@ -1,0 +1,279 @@
+/* ═══════════════════════════════════════════════════════════════
+   AidCasesDirectory.razor.css
+   Scoped styles – always use div.ic-page as root for specificity
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── TOKENS ──────────────────────────────────────────────────── */
+div.ic-page {
+    --ic-yellow:        #f5bb00;
+    --ic-yellow-dark:   #d9a600;
+    --ic-green:         #22c55e;
+    --ic-green-dark:    #16a34a;
+    --ic-blue:          #3b82f6;
+    --ic-orange:        #f97316;
+    --ic-bg:            #f9f8f3;
+    --ic-white:         #ffffff;
+    --ic-text-dark:     #111111;
+    --ic-text-mid:      #444;
+    --ic-text-muted:    #888;
+    --ic-border:        #e4e2d8;
+    --ic-shadow-card:   0 2px 12px rgba(0,0,0,0.07);
+    --ic-radius:        14px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    background-color: var(--ic-bg);
+    padding: 3rem 2.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE HEADER
+   ═══════════════════════════════════════════════════════════════ */
+div.ic-page .ic-header .ic-header__title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--ic-text-dark);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 0.55rem;
+}
+
+div.ic-page .ic-header .ic-header__subtitle {
+    font-size: 0.92rem;
+    color: var(--ic-text-muted);
+    line-height: 1.6;
+}
+
+div.ic-page .ic-header .ic-header__subtitle strong {
+    color: var(--ic-text-dark);
+    font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CASES GRID — uniform 3-column, no stretching
+   ═══════════════════════════════════════════════════════════════ */
+div.ic-page .ic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;        /* cards don't stretch to row height */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CASE CARD
+   ═══════════════════════════════════════════════════════════════ */
+div.ic-page .ic-grid article.ic-card {
+    background: var(--ic-white);
+    border: 1px solid var(--ic-border);
+    border-radius: var(--ic-radius);
+    padding: 1.35rem 1.4rem 1.25rem;
+    box-shadow: var(--ic-shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;       /* for priority badge absolute positioning */
+    transition: transform 0.18s, box-shadow 0.18s;
+}
+
+div.ic-page .ic-grid article.ic-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+}
+
+/* ── PRIORITY BADGE (absolutely positioned — never stretches the card) ── */
+div.ic-page .ic-grid article.ic-card .ic-card__priority-badge {
+    position: absolute;
+    top: -0.6rem;
+    right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    background: var(--ic-green);
+    color: var(--ic-white);
+    border-radius: 99px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.35);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__priority-badge .ic-card__priority-label {
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__priority-badge .ic-card__priority-value {
+    font-weight: 900;
+}
+
+/* Add top padding on priority cards so badge doesn't overlap identity */
+div.ic-page .ic-grid article.ic-card.ic-card--has-priority {
+    padding-top: 1.7rem;
+}
+
+/* ── IDENTITY ROW ── */
+div.ic-page .ic-grid article.ic-card .ic-card__identity {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--ic-border);
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__id-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__id-text .ic-card__name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ic-text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+/* Sector labels */
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__id-text .ic-card__sector {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__id-text .ic-card__sector--health {
+    color: var(--ic-green-dark);
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__id-text .ic-card__sector--housing {
+    color: var(--ic-yellow-dark);
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__identity .ic-card__id-text .ic-card__sector--education {
+    color: var(--ic-blue);
+}
+
+/* ── DESCRIPTION ── */
+div.ic-page .ic-grid article.ic-card .ic-card__desc {
+    font-size: 0.85rem;
+    color: var(--ic-text-mid);
+    line-height: 1.6;
+    /* Clamp to 3 lines for uniform card height */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ── GOAL + PROGRESS ── */
+div.ic-page .ic-grid article.ic-card .ic-card__goal-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: auto;          /* push to bottom of flex col before button */
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__goal-wrap .ic-card__goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__goal-wrap .ic-card__goal-header .ic-card__goal-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--ic-text-muted);
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__goal-wrap .ic-card__goal-header .ic-card__goal-pct {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--ic-text-muted);
+}
+
+/* Custom progress track (not Bulma, for full color control) */
+div.ic-page .ic-grid article.ic-card .ic-card__goal-wrap .ic-card__progress-track {
+    width: 100%;
+    height: 6px;
+    background: #e8e6de;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__goal-wrap .ic-card__progress-track .ic-card__progress-fill {
+    height: 100%;
+    background: var(--ic-green);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+}
+
+/* Yellow fill for housing sector */
+div.ic-page .ic-grid article.ic-card:has(.ic-card__sector--housing) .ic-card__goal-wrap .ic-card__progress-track .ic-card__progress-fill {
+    background: var(--ic-yellow);
+}
+
+/* ── CTA BUTTON ── */
+div.ic-page .ic-grid article.ic-card .ic-card__btn.bulma-button.bulma-is-warning.bulma-is-fullwidth {
+    background-color: var(--ic-yellow);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 9px;
+    height: 2.9rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(245,187,0,0.22);
+    transition: background-color 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__btn.bulma-button.bulma-is-warning.bulma-is-fullwidth:hover {
+    background-color: var(--ic-yellow-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(245,187,0,0.38);
+}
+
+div.ic-page .ic-grid article.ic-card .ic-card__btn.bulma-button.bulma-is-warning.bulma-is-fullwidth:active {
+    transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+    div.ic-page .ic-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    div.ic-page {
+        padding: 2rem 1.25rem 3rem;
+    }
+
+    div.ic-page .ic-grid {
+        grid-template-columns: 1fr;
+    }
+
+    div.ic-page .ic-header .ic-header__title {
+        font-size: 1.65rem;
+    }
+}

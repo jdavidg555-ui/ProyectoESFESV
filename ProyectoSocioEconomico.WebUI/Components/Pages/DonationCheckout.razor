@@ -1,0 +1,287 @@
+@page "/donate/{CauseId:int}"
+
+<div class="dn-page">
+
+    <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+    <nav class="dn-breadcrumb" aria-label="breadcrumb">
+        <a href="/"        class="dn-breadcrumb__item">Home</a>
+        <span class="dn-breadcrumb__sep"><i class="fas fa-chevron-right"></i></span>
+        <a href="/causes"  class="dn-breadcrumb__item">Causes</a>
+        <span class="dn-breadcrumb__sep"><i class="fas fa-chevron-right"></i></span>
+        <span class="dn-breadcrumb__item dn-breadcrumb__item--current">Donation Checkout</span>
+    </nav>
+
+    <!-- ═══════════════ BODY ═══════════════ -->
+    <div class="dn-body">
+
+        <!-- ── LEFT: MAIN FORM CARD ── -->
+        <div class="dn-card">
+            <div class="dn-card__top">
+                <h1 class="dn-card__title">Support this Cause</h1>
+                <p class="dn-card__subtitle">Every contribution brings us one step closer to making a global impact.</p>
+            </div>
+
+            <!-- STEP 1 – Amount -->
+            <section class="dn-step">
+                <h2 class="dn-step__heading">
+                    <span class="dn-step__num">1</span>
+                    Select Donation Amount
+                </h2>
+
+                <div class="dn-amounts">
+                    @foreach (var preset in PresetAmounts)
+                    {
+                        <button type="button"
+                                class="dn-amount-btn @(SelectedAmount == preset ? "dn-amount-btn--active" : "")"
+                                @onclick="() => SelectAmount(preset)">
+                            $@preset
+                        </button>
+                    }
+                </div>
+
+                <div class="bulma-control dn-custom-wrap">
+                    <span class="dn-custom-prefix bulma-icon bulma-is-left">
+                        <i class="fas fa-dollar-sign"></i>
+                    </span>
+                    <input class="bulma-input dn-custom-input"
+                           type="number"
+                           min="1"
+                           placeholder="Custom Amount"
+                           @bind="CustomAmount"
+                           @oninput="OnCustomInput" />
+                </div>
+            </section>
+
+            <!-- STEP 2 – Payment Method -->
+            <section class="dn-step">
+                <h2 class="dn-step__heading">
+                    <span class="dn-step__num">2</span>
+                    Payment Method
+                </h2>
+
+                <div class="dn-methods">
+                    <button type="button"
+                            class="dn-method-btn @(PaymentMethod == "card" ? "dn-method-btn--active" : "")"
+                            @onclick='() => PaymentMethod = "card"'>
+                        <i class="far fa-credit-card"></i>
+                        CARD
+                    </button>
+                    <button type="button"
+                            class="dn-method-btn @(PaymentMethod == "paypal" ? "dn-method-btn--active" : "")"
+                            @onclick='() => PaymentMethod = "paypal"'>
+                        <i class="fab fa-paypal"></i>
+                        PAYPAL
+                    </button>
+                    <button type="button"
+                            class="dn-method-btn @(PaymentMethod == "transfer" ? "dn-method-btn--active" : "")"
+                            @onclick='() => PaymentMethod = "transfer"'>
+                        <i class="fas fa-landmark"></i>
+                        TRANSFER
+                    </button>
+                </div>
+
+                <!-- Card fields (shown only when card selected) -->
+                @if (PaymentMethod == "card")
+                {
+                    <div class="dn-card-fields">
+                        <div class="bulma-field dn-field">
+                            <div class="bulma-control dn-control">
+                                <input class="bulma-input dn-input"
+                                       type="text"
+                                       placeholder="Cardholder Name"
+                                       @bind="CardName" />
+                            </div>
+                        </div>
+
+                        <div class="bulma-field dn-field">
+                            <div class="bulma-control bulma-has-icons-right dn-control">
+                                <input class="bulma-input dn-input"
+                                       type="text"
+                                       placeholder="Card Number"
+                                       maxlength="19"
+                                       @bind="CardNumber" />
+                                <span class="bulma-icon bulma-is-right dn-input-icon">
+                                    <i class="far fa-credit-card"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="dn-card-row">
+                            <div class="bulma-field dn-field">
+                                <div class="bulma-control dn-control">
+                                    <input class="bulma-input dn-input"
+                                           type="text"
+                                           placeholder="MM/YY"
+                                           maxlength="5"
+                                           @bind="CardExpiry" />
+                                </div>
+                            </div>
+                            <div class="bulma-field dn-field">
+                                <div class="bulma-control dn-control">
+                                    <input class="bulma-input dn-input"
+                                           type="text"
+                                           placeholder="CVC"
+                                           maxlength="4"
+                                           @bind="CardCvc" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </section>
+
+            <!-- Options -->
+            <div class="dn-options">
+                <label class="dn-checkbox-row">
+                    <input type="checkbox" class="dn-checkbox-input" @bind="DonateAnonymously" />
+                    <span class="dn-checkbox-box"></span>
+                    <span class="dn-checkbox-text">
+                        <strong>Donate Anonymously</strong><br />
+                        <span class="dn-checkbox-sub">Hide your name from the public supporters list.</span>
+                    </span>
+                </label>
+
+                <label class="dn-checkbox-row">
+                    <input type="checkbox" class="dn-checkbox-input" @bind="ReceiveNotification" />
+                    <span class="dn-checkbox-box"></span>
+                    <span class="dn-checkbox-text">
+                        <strong>Recibir notificacion</strong><br />
+                        <span class="dn-checkbox-sub">Te caera una notificacion cuando la ayuda le llegue al usuario beneficiado</span>
+                    </span>
+                </label>
+
+                <a href="/donate/@CauseId/dedicate" class="dn-dedicate-link">
+                    <span class="bulma-icon bulma-is-small"><i class="far fa-circle-question"></i></span>
+                    Dedicate this donation to someone
+                </a>
+            </div>
+
+            <!-- Submit -->
+            <div class="dn-submit-wrap">
+                <button type="button"
+                        class="bulma-button bulma-is-warning bulma-is-fullwidth dn-btn-complete"
+                        @onclick="HandleDonate">
+                    <strong>Complete Donation</strong>
+                </button>
+                <p class="dn-submit-note">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-lock"></i></span>
+                    Secure 256-bit SSL Encrypted Payment
+                </p>
+            </div>
+        </div><!-- /dn-card -->
+
+        <!-- ── RIGHT: SIDEBAR ── -->
+        <aside class="dn-sidebar">
+
+            <!-- Cause preview -->
+            <div class="dn-sidebar__cause-card">
+                <div class="dn-sidebar__image-wrap">
+                    <img class="dn-sidebar__image"
+                         src="https://images.unsplash.com/photo-1567878378484-b2a8b2f49e44?w=600&q=80"
+                         alt="Community Clean Water Initiative" />
+                    <span class="dn-sidebar__tag">EMERGENCY AID</span>
+                </div>
+
+                <div class="dn-sidebar__cause-info">
+                    <p class="dn-sidebar__supporting-label">YOU ARE SUPPORTING</p>
+                    <h3 class="dn-sidebar__cause-title">Community Clean Water Initiative 2024</h3>
+                    <p class="dn-sidebar__cause-desc">
+                        Providing sustainable filtration systems for over 500 households in rural communities.
+                        100% of proceeds go directly to the field.
+                    </p>
+
+                    <div class="dn-sidebar__summary">
+                        <div class="dn-sidebar__summary-row">
+                            <span class="dn-sidebar__summary-label">Donation Amount</span>
+                            <span class="dn-sidebar__summary-value dn-sidebar__summary-value--yellow">
+                                $@DonationDisplay
+                            </span>
+                        </div>
+                        <div class="dn-sidebar__summary-row">
+                            <span class="dn-sidebar__summary-label">Processing Fee</span>
+                            <span class="dn-sidebar__summary-value">$0.00</span>
+                        </div>
+                        <div class="dn-sidebar__summary-divider"></div>
+                        <div class="dn-sidebar__summary-row dn-sidebar__summary-row--total">
+                            <span class="dn-sidebar__summary-label">Total Contribution</span>
+                            <span class="dn-sidebar__summary-value dn-sidebar__summary-value--total">
+                                $@DonationDisplay
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security badge -->
+            <div class="dn-sidebar__secure">
+                <span class="dn-sidebar__secure-icon">
+                    <i class="fas fa-shield-check"></i>
+                </span>
+                <div class="dn-sidebar__secure-text">
+                    <p class="dn-sidebar__secure-title">VERIFIED SECURE</p>
+                    <p class="dn-sidebar__secure-desc">
+                        SocialAid ensures your donation is handled with industry-standard security protocols.
+                    </p>
+                </div>
+            </div>
+
+            <a href="/faq/donations" class="dn-sidebar__help-link">
+                <span class="bulma-icon bulma-is-small"><i class="far fa-circle-question"></i></span>
+                Questions about your donation?
+            </a>
+
+        </aside>
+    </div><!-- /dn-body -->
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer class="dn-footer">
+        <div class="dn-footer__icons">
+            <i class="fas fa-headset"></i>
+            <i class="fas fa-landmark"></i>
+            <i class="fas fa-scale-balanced"></i>
+        </div>
+        <p class="dn-footer__legal">
+            SocialAid is a registered non-profit organization. Your donations may be tax-deductible according to your local laws.
+            By clicking "Complete Donation" you agree to our
+            <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
+            All financial transactions are processed securely through our partners.
+        </p>
+    </footer>
+
+</div>
+
+@code {
+    [Parameter] public int CauseId { get; set; }
+
+    private List<int> PresetAmounts = new() { 10, 25, 50, 100 };
+    private int    SelectedAmount      { get; set; } = 25;
+    private string CustomAmount        { get; set; } = string.Empty;
+    private string PaymentMethod       { get; set; } = "card";
+    private string CardName            { get; set; } = string.Empty;
+    private string CardNumber          { get; set; } = string.Empty;
+    private string CardExpiry          { get; set; } = string.Empty;
+    private string CardCvc             { get; set; } = string.Empty;
+    private bool   DonateAnonymously   { get; set; } = false;
+    private bool   ReceiveNotification { get; set; } = false;
+
+    private string DonationDisplay =>
+        string.IsNullOrWhiteSpace(CustomAmount) ? $"{SelectedAmount:0.00}" : $"{CustomAmount}";
+
+    private void SelectAmount(int amount)
+    {
+        SelectedAmount = amount;
+        CustomAmount   = string.Empty;
+    }
+
+    private void OnCustomInput(ChangeEventArgs e)
+    {
+        CustomAmount = e.Value?.ToString() ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(CustomAmount))
+            SelectedAmount = 0;
+    }
+
+    private void HandleDonate()
+    {
+        // Donation processing logic here
+    }
+}

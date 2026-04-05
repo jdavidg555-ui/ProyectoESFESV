@@ -1,0 +1,208 @@
+@page "/cases/{Id:int}"
+
+<div class="cd-page">
+    <div class="cd-layout">
+
+        <!-- ═══════════════ LEFT / MAIN ═══════════════ -->
+        <div class="cd-main">
+
+            <!-- ── HERO CARD ── -->
+            <div class="cd-hero-card">
+                <div class="cd-hero-card__image-wrap">
+                    <img class="cd-hero-card__image"
+                         src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80"
+                         alt="Elena Rodriguez" />
+                    <div class="cd-hero-card__overlay"></div>
+                    <div class="cd-hero-card__identity">
+                        <img class="cd-hero-card__avatar"
+                             src="https://i.pravatar.cc/80?img=47"
+                             alt="Elena Rodriguez" />
+                        <div class="cd-hero-card__id-text">
+                            <h1 class="cd-hero-card__name">Elena Rodriguez</h1>
+                            <p class="cd-hero-card__location">
+                                <span class="bulma-icon bulma-is-small"><i class="fas fa-location-dot"></i></span>
+                                San Juan District, Peru
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cd-hero-card__body">
+                    <!-- Tags -->
+                    <div class="cd-tags">
+                        <span class="cd-tag cd-tag--verified">SOCIOECONOMIC VERIFIED</span>
+                        <span class="cd-tag">EDUCATION SUPPORT</span>
+                        <span class="cd-tag">COMMUNITY GROWTH</span>
+                    </div>
+
+                    <!-- Impact Statement -->
+                    <div class="cd-impact">
+                        <h2 class="cd-impact__title">The Impact Statement</h2>
+                        <blockquote class="cd-impact__quote">
+                            "By establishing this community garden, I can provide fresh produce for my three children
+                            and teach 15 local families sustainable farming practices, breaking the cycle of nutritional poverty."
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── THE STORY ── -->
+            <div class="cd-story-card">
+                <h2 class="cd-story-card__title">
+                    <span class="cd-story-card__title-icon">
+                        <i class="fas fa-book-open-reader"></i>
+                    </span>
+                    The Story
+                </h2>
+
+                <div class="cd-story-card__body">
+                    <p>Elena is a single mother of three living in the outskirts of San Juan. Despite having a background in
+                    local agriculture, the lack of initial capital and access to modern irrigation has limited her ability to
+                    provide consistent nutrition for her family.</p>
+
+                    <p>The "Green Hope" project aims to transform her small backyard into a highly productive bio-intensive garden.
+                    This isn't just about food — it's about economic independence. By selling surplus organic vegetables to the
+                    local market, Elena can secure the funds needed for her children's secondary education.</p>
+
+                    <p>The SocialAid analysis system has flagged this case as high-impact because it addresses three UN Sustainable
+                    Development Goals: No Poverty, Zero Hunger, and Quality Education.</p>
+                </div>
+            </div>
+
+            <!-- ── METRICS CARD ── -->
+            <div class="cd-metrics-card">
+
+                <!-- Vulnerability Index -->
+                <div class="cd-vuln">
+                    <p class="cd-vuln__label">VULNERABILITY INDEX</p>
+                    <div class="cd-vuln__ring-wrap">
+                        <svg class="cd-vuln__svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="cd-vuln__track" cx="60" cy="60" r="50"
+                                    fill="none" stroke="#e5e3da" stroke-width="10" />
+                            <!-- 75/100 → circumference 314.16 → offset = 314.16 * (1 - 0.75) = 78.54 -->
+                            <circle class="cd-vuln__fill" cx="60" cy="60" r="50"
+                                    fill="none" stroke="#22c55e" stroke-width="10"
+                                    stroke-linecap="round"
+                                    stroke-dasharray="314.16"
+                                    stroke-dashoffset="78.54"
+                                    transform="rotate(-90 60 60)" />
+                        </svg>
+                        <div class="cd-vuln__center">
+                            <span class="cd-vuln__score">75<span class="cd-vuln__denom">/100</span></span>
+                            <span class="cd-vuln__badge">High Need</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metric Analysis bars -->
+                <div class="cd-metric-analysis">
+                    <p class="cd-metric-analysis__label">METRIC ANALYSIS</p>
+                    @foreach (var m in Metrics)
+                    {
+                        <div class="cd-metric-row">
+                            <div class="cd-metric-row__header">
+                                <span class="cd-metric-row__name">@m.Name</span>
+                                <span class="cd-metric-row__pct">@m.Value%</span>
+                            </div>
+                            <div class="cd-metric-row__track">
+                                <div class="cd-metric-row__fill" style="width: @(m.Value)%"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div><!-- /cd-metrics-card -->
+        </div><!-- /cd-main -->
+
+        <!-- ═══════════════ RIGHT SIDEBAR ═══════════════ -->
+        <aside class="cd-sidebar">
+
+            <!-- Funding card -->
+            <div class="cd-sidebar__funding">
+                <div class="cd-sidebar__funding-top">
+                    <span class="cd-sidebar__amount">$1,840</span>
+                    <span class="cd-sidebar__goal">raised of $2,500</span>
+                </div>
+
+                <div class="cd-sidebar__progress-track">
+                    <div class="cd-sidebar__progress-fill" style="width: 74%"></div>
+                </div>
+
+                <div class="cd-sidebar__funding-meta">
+                    <span class="cd-sidebar__funded-pct">74% FUNDED</span>
+                    <span class="cd-sidebar__days-left">12 DAYS LEFT</span>
+                </div>
+
+                <a href="/donate/1"
+                   class="bulma-button bulma-is-warning bulma-is-fullwidth cd-sidebar__btn-support">
+                    <span class="bulma-icon bulma-is-small"><i class="far fa-heart"></i></span>
+                    <strong>Support this Case</strong>
+                </a>
+
+                <button type="button"
+                        class="bulma-button bulma-is-fullwidth cd-sidebar__btn-share">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-share-nodes"></i></span>
+                    Share Case
+                </button>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="cd-sidebar__trust">
+                <div class="cd-sidebar__trust-item">
+                    <span class="cd-sidebar__trust-icon cd-sidebar__trust-icon--green">
+                        <i class="fas fa-circle-check"></i>
+                    </span>
+                    <div>
+                        <p class="cd-sidebar__trust-title">Transparent Tracking</p>
+                        <p class="cd-sidebar__trust-desc">Funds are released in milestones verified by local field agents.</p>
+                    </div>
+                </div>
+                <div class="cd-sidebar__trust-item">
+                    <span class="cd-sidebar__trust-icon cd-sidebar__trust-icon--yellow">
+                        <i class="fas fa-file-invoice"></i>
+                    </span>
+                    <div>
+                        <p class="cd-sidebar__trust-title">Tax Deductible</p>
+                        <p class="cd-sidebar__trust-desc">Receive an official donation receipt for your records instantly.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System verification -->
+            <div class="cd-sidebar__verification">
+                <p class="cd-sidebar__verification-label">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-shield-check"></i></span>
+                    SYSTEM VERIFICATION
+                </p>
+                <p class="cd-sidebar__verification-desc">
+                    This case has been autonomously audited by the Socioeconomic Analysis Engine v4.2.
+                </p>
+                <div class="cd-sidebar__agents">
+                    <div class="cd-sidebar__agents-avatars">
+                        <img src="https://i.pravatar.cc/28?img=3"  alt="Field agent 1" class="cd-sidebar__agent-avatar" />
+                        <img src="https://i.pravatar.cc/28?img=8"  alt="Field agent 2" class="cd-sidebar__agent-avatar cd-sidebar__agent-avatar--offset" />
+                    </div>
+                    <span class="cd-sidebar__agents-label">Vetted by 2 Field Agents</span>
+                </div>
+                <p class="cd-sidebar__verification-note">
+                    Based on 14 socioeconomic parameters including income, housing, and food security.
+                </p>
+            </div>
+
+        </aside>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private record MetricItem(string Name, int Value);
+
+    private List<MetricItem> Metrics = new()
+    {
+        new("Health Status",       82),
+        new("Education Access",    45),
+        new("Financial Stability", 28),
+        new("Housing Quality",     60),
+    };
+}

@@ -1,0 +1,121 @@
+@page "/cases"
+
+<div class="ic-page">
+
+    <!-- ═══════════════ PAGE HEADER ═══════════════ -->
+    <div class="ic-header">
+        <h1 class="ic-header__title">Directory of Individual Aid Cases</h1>
+        <p class="ic-header__subtitle">
+            Visualizing socioeconomic priority for verified families and individuals.<br />
+            Currently showing <strong>4,208</strong> active cases awaiting intervention.
+        </p>
+    </div>
+
+    <!-- ═══════════════ CASES GRID ═══════════════ -->
+    <div class="ic-grid">
+        @foreach (var c in Cases)
+        {
+            <article class="ic-card @(c.Priority.HasValue ? "ic-card--has-priority" : "")">
+
+                @if (c.Priority.HasValue)
+                {
+                    <div class="ic-card__priority-badge">
+                        <span class="ic-card__priority-label">Priority:</span>
+                        <span class="ic-card__priority-value">@c.Priority/100</span>
+                    </div>
+                }
+
+                <!-- Identity row -->
+                <div class="ic-card__identity">
+                    <img class="ic-card__avatar" src="@c.AvatarUrl" alt="@c.Name" />
+                    <div class="ic-card__id-text">
+                        <h2 class="ic-card__name">@c.Name</h2>
+                        <span class="ic-card__sector ic-card__sector--@c.SectorClass">
+                            @c.Sector<br />SECTOR
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <p class="ic-card__desc">@c.Description</p>
+
+                <!-- Goal + progress -->
+                <div class="ic-card__goal-wrap">
+                    <div class="ic-card__goal-header">
+                        <span class="ic-card__goal-label">Goal: @c.GoalLabel</span>
+                        @if (c.Priority.HasValue)
+                        {
+                            <span class="ic-card__goal-pct">@c.FundingPct%</span>
+                        }
+                    </div>
+                    <div class="ic-card__progress-track">
+                        <div class="ic-card__progress-fill" style="width: @(c.FundingPct)%"></div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <a href="/cases/@c.Id" class="bulma-button bulma-is-warning bulma-is-fullwidth ic-card__btn">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-hand-holding-heart"></i></span>
+                    <strong>@(c.Priority.HasValue ? "Help this Case" : "Help this")</strong>
+                </a>
+
+            </article>
+        }
+    </div>
+
+</div>
+
+@code {
+    private record CaseItem(
+        int     Id,
+        string  Name,
+        string  Sector,
+        string  SectorClass,
+        string  Description,
+        string  GoalLabel,
+        int     FundingPct,
+        string  AvatarUrl,
+        int?    Priority = null
+    );
+
+    private List<CaseItem> Cases = new()
+    {
+        new(1,  "Sarah Jenkins",
+            "HEALTH",     "health",
+            "Post-operative care and medical supplies required for chronic kidney condition. Single elderly living in rural area.",
+            "Medical Support", 95,
+            "https://i.pravatar.cc/80?img=5"),
+
+        new(2,  "The Martinez Family",
+            "HOUSING",    "housing",
+            "Urgent roof repairs needed due to recent storm damage. Family of five including three children. Current living conditions are unsafe.",
+            "Roof Restoration", 62,
+            "https://i.pravatar.cc/80?img=25"),
+
+        new(3,  "Liam O'Connor",
+            "EDUCATION",  "education",
+            "Support for specialized learning materials and school transport for a gifted student from a low-income household.",
+            "Yearly Tuition", 92,
+            "https://i.pravatar.cc/80?img=12",
+            Priority: 88),
+
+        new(4,  "Samuel Rivera",
+            "EDUCATION",  "education",
+            "Vocational training scholarship for community leadership and technical skills. Samuel is an advocate for his neighborhood.",
+            "Training Kit", 28,
+            "https://i.pravatar.cc/80?img=15"),
+
+        new(5,  "Elena Rodriguez",
+            "HOUSING",    "housing",
+            "Rental assistance for single-parent household in transition. Seeking stability for two school-aged children.",
+            "Security Deposit", 47,
+            "https://i.pravatar.cc/80?img=9"),
+
+        new(6,  "The Chen Family",
+            "HEALTH",     "health",
+            "Nutritional support and pediatric follow-up for three children. Family facing economic hardship due to job loss.",
+            "6-Month Nutrition", 33,
+            "https://i.pravatar.cc/80?img=32",
+            Priority: 79),
+    };
+}
