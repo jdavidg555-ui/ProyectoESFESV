@@ -1,4 +1,7 @@
 @page "/programs"
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@inject IProgramaService ProgramaService
 
 <div class="cap-page">
 
@@ -40,36 +43,18 @@
 
     <!-- ═══════════════ PROGRAM GRID ═══════════════ -->
     <div class="cap-grid">
-        @foreach (var program in PagedPrograms)
+        @if (PagedPrograms != null)
         {
-            <article class="cap-card">
-                <div class="cap-card__image-wrap">
-                    <img class="cap-card__image" src="@program.ImageUrl" alt="@program.Title" />
-                    <span class="cap-card__tag cap-card__tag--@program.Category.ToLower()">
-                        @program.Category.ToUpper()
-                    </span>
-                </div>
-
-                <div class="cap-card__body">
-                    <h2 class="cap-card__title">@program.Title</h2>
-                    <p class="cap-card__desc">@program.Description</p>
-
-                    <div class="cap-card__progress-block">
-                        <div class="cap-card__progress-header">
-                            <span class="cap-card__progress-label">@program.ProgressLabel</span>
-                            <span class="cap-card__progress-pct">@program.Progress%</span>
-                        </div>
-                        <progress class="bulma-progress bulma-is-success cap-card__progress-bar"
-                                  value="@program.Progress" max="100">
-                            @program.Progress%
-                        </progress>
-                    </div>
-
-                    <a href="/programs/@program.Id" class="bulma-button bulma-is-warning bulma-is-fullwidth cap-card__btn">
-                        <strong>View Program Details</strong>
-                    </a>
-                </div>
-            </article>
+            @foreach (var program in PagedPrograms)
+            {
+                <ProgramCardComponent Id="@program.Id"
+                                      Title="@program.Nombre"
+                                      Description="@program.Descripcion"
+                                      Category="@GetCategoryName(program)"
+                                      ProgressLabel="Progress"
+                                      Progress="@CalculateOverallProgress(program)"
+                                      ImageUrl="@program.ImagenUrl" />
+            }
         }
     </div>
 
@@ -101,8 +86,6 @@
 
 @code {
     private record FilterOption(string Key, string Label, string Icon);
-    private record ProgramItem(int Id, string Title, string Description, string Category,
-                                string ProgressLabel, int Progress, string ImageUrl);
 
     private string SearchQuery  { get; set; } = string.Empty;
     private string ActiveFilter { get; set; } = "all";
@@ -119,74 +102,23 @@
         new("environment",    "Environment",    "fas fa-leaf"),
     };
 
-    private List<ProgramItem> AllPrograms = new()
+    private List<Programa> AllPrograms = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new(1, "Regional Vaccination Campaign",
-            "Providing essential immunizations to remote villages to improve maternal and child health outcomes.",
-            "Health", "Progress", 85,
-            "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&q=80"),
+        AllPrograms = await ProgramaService.ObtenerTodosConCasosAsync();
+    }
 
-        new(2, "Community Well Construction",
-            "Building sustainable solar-powered wells to provide clean drinking water to over 500 households.",
-            "Infrastructure", "Funding Goal", 42,
-            "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80"),
-
-        new(3, "Adult Literacy Workshop",
-            "Empowering local adults with reading, writing, and digital skills to enhance employability.",
-            "Education", "Completion", 10,
-            "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80"),
-
-        new(4, "Mobile Clinic Expansion",
-            "Scaling existing mobile health units to cover 10 additional districts by the end of the year.",
-            "Health", "Progress", 60,
-            "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&q=80"),
-
-        new(5, "Solar Energy for Schools",
-            "Installing solar panel arrays in rural schools to ensure uninterrupted evening study sessions.",
-            "Infrastructure", "Installation", 95,
-            "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80"),
-
-        new(6, "Youth Vocational Training",
-            "Providing technical skills training in carpentry, welding, and coding for high school graduates.",
-            "Education", "Enrollment", 72,
-            "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80"),
-
-        new(7, "Clean Water Initiative",
-            "Distributing water purification systems to families in underserved rural communities.",
-            "Health", "Progress", 55,
-            "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=600&q=80"),
-
-        new(8, "Rural Road Paving Project",
-            "Constructing paved roads to connect isolated communities with urban centers and markets.",
-            "Infrastructure", "Completion", 38,
-            "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=600&q=80"),
-
-        new(9, "School Nutrition Program",
-            "Providing daily nutritious meals to children in public schools to improve attendance and focus.",
-            "Education", "Coverage", 80,
-            "https://images.unsplash.com/photo-1567337710282-00832b415979?w=600&q=80"),
-
-        new(10, "Post-Earthquake Housing",
-            "Providing temporary housing and reconstruction support for families affected by recent seismic activity.",
-            "Disaster Relief", "Reconstruction", 25,
-            "https://images.unsplash.com/photo-1546146416-45ad4391746a?w=600&q=80"),
-
-        new(11, "Coastal Reforestation",
-            "Planting native mangroves to protect coastal communities from erosion and preserve biodiversity.",
-            "Environment", "Planting", 68,
-            "https://images.unsplash.com/photo-1542601906990-b4d3fb773b09?w=600&q=80"),
-    };
-
-    private IEnumerable<ProgramItem> FilteredPrograms =>
+    private IEnumerable<Programa> FilteredPrograms =>
         AllPrograms
-            .Where(p => ActiveFilter == "all" || p.Category.ToLower() == ActiveFilter)
+            .Where(p => ActiveFilter == "all" || GetCategoryName(p).ToLower() == ActiveFilter)
             .Where(p => string.IsNullOrWhiteSpace(SearchQuery) ||
-                        p.Title.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ||
-                        p.Description.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+                        p.Nombre.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ||
+                        p.Descripcion.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
 
     private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)FilteredPrograms.Count() / PageSize));
 
-    private IEnumerable<ProgramItem> PagedPrograms =>
+    private IEnumerable<Programa> PagedPrograms =>
         FilteredPrograms.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
 
     private void SetFilter(string key)
@@ -205,5 +137,24 @@
     {
         if (page >= 1 && page <= TotalPages)
             CurrentPage = page;
+    }
+
+    private string GetCategoryName(Programa p)
+    {
+        // El programa no tiene categoría directa, se toma la del primer caso si existe
+        // En una implementación real se podría añadir CategoriaId a Programa
+        return p.IdCasos?.FirstOrDefault()?.IdCategoriaNavigation?.Nombre ?? "Other";
+    }
+
+    private int CalculateOverallProgress(Programa p)
+    {
+        if (p.IdCasos == null || !p.IdCasos.Any()) return 0;
+
+        decimal totalMeta = p.IdCasos.Sum(c => c.Meta);
+        decimal totalRecaudado = p.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto);
+
+        if (totalMeta <= 0) return 0;
+
+        return Math.Clamp((int)Math.Round((totalRecaudado / totalMeta) * 100), 0, 100);
     }
 }

@@ -1,153 +1,173 @@
 @page "/programs/{Id:int}"
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using System.Globalization
+@inject IProgramaService ProgramaService
 
-<div class="pd-page">
-    <!-- ═══════════════ HERO ═══════════════ -->
-    <div class="pd-hero">
-        <img class="pd-hero__image" src="@Program.HeroImage" alt="@Program.Title" />
-        <div class="pd-hero__overlay"></div>
-        <div class="pd-hero__content">
-            <span class="pd-hero__status-badge">ACTIVE PROGRAM</span>
-            <h1 class="pd-hero__title">@Program.Title</h1>
-        </div>
+@if (Program == null)
+{
+    <div class="bulma-container">
+        <p>Loading program details...</p>
     </div>
+}
+else
+{
+    <div class="pd-page">
+        <!-- ═══════════════ HERO ═══════════════ -->
+        <div class="pd-hero">
+            @if (!string.IsNullOrEmpty(Program.ImagenUrl))
+            {
+                <img class="pd-hero__image" src="@Program.ImagenUrl" alt="@Program.Nombre" />
+            }
+            else
+            {
+                <img class="pd-hero__image" src="https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=1200&q=80" alt="Placeholder" />
+            }
+            <div class="pd-hero__overlay"></div>
+            <div class="pd-hero__content">
+                <span class="pd-hero__status-badge">@Program.Estado.ToUpper()</span>
+                <h1 class="pd-hero__title">@Program.Nombre</h1>
+            </div>
+        </div>
 
-    <!-- ═══════════════ BODY ═══════════════ -->
-    <div class="pd-body">
+        <!-- ═══════════════ BODY ═══════════════ -->
+        <div class="pd-body">
 
-        <!-- ── LEFT / MAIN COLUMN ── -->
-        <div class="pd-body__main">
+            <!-- ── LEFT / MAIN COLUMN ── -->
+            <div class="pd-body__main">
 
-            <!-- Mission Statement -->
-            <section class="pd-section">
-                <h2 class="pd-section__heading">
-                    <span class="pd-section__heading-icon">
-                        <i class="fas fa-flag"></i>
-                    </span>
-                    Mission Statement
-                </h2>
-                <p class="pd-section__text">@Program.Mission</p>
-            </section>
-
-            <!-- Impact Goals -->
-            <section class="pd-section">
-                <h3 class="pd-section__subheading">Program Impact Goals</h3>
-                <div class="pd-goals-grid">
-                    @foreach (var goal in Program.Goals)
-                    {
-                        <div class="pd-goal-card">
-                            <span class="pd-goal-card__icon">
-                                <i class="@goal.Icon"></i>
-                            </span>
-                            <p class="pd-goal-card__value">@goal.Value</p>
-                            <p class="pd-goal-card__desc">@goal.Description</p>
-                            <div class="pd-goal-card__progress-wrap">
-                                <progress class="bulma-progress bulma-is-success pd-goal-card__bar"
-                                          value="@goal.Progress" max="100">
-                                    @goal.Progress%
-                                </progress>
-                                <p class="pd-goal-card__progress-label">@goal.ProgressLabel</p>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </section>
-
-            <!-- Socioeconomic Impact Data -->
-            <section class="pd-impact-card">
-                <div class="pd-impact-card__header">
-                    <div>
-                        <h3 class="pd-impact-card__title">Socioeconomic Impact Data</h3>
-                        <p class="pd-impact-card__subtitle">Real-time progress vs Baseline metrics</p>
-                    </div>
-                    <div class="pd-impact-card__legend">
-                        <span class="pd-impact-card__legend-item">
-                            <span class="pd-impact-card__legend-dot pd-impact-card__legend-dot--current"></span>
-                            CURRENT
+                <!-- Mission Statement -->
+                <section class="pd-section">
+                    <h2 class="pd-section__heading">
+                        <span class="pd-section__heading-icon">
+                            <i class="fas fa-flag"></i>
                         </span>
-                        <span class="pd-impact-card__legend-item">
-                            <span class="pd-impact-card__legend-dot pd-impact-card__legend-dot--target"></span>
-                            TARGET
-                        </span>
-                    </div>
-                </div>
+                        Mission Statement
+                    </h2>
+                    <p class="pd-section__text">@Program.Descripcion</p>
+                </section>
 
-                <div class="pd-impact-card__metrics">
-                    @foreach (var metric in Program.Metrics)
-                    {
-                        <div class="pd-metric">
-                            <div class="pd-metric__header">
-                                <span class="pd-metric__label">@metric.Label</span>
-                                <span class="pd-metric__achievement">@metric.Achievement</span>
-                            </div>
-                            <div class="pd-metric__track">
-                                <div class="pd-metric__bar-bg">
-                                    <div class="pd-metric__bar-fill" style="width: @(metric.Progress)%">
-                                        <span class="pd-metric__bar-text">@(metric.Progress)% PROGRESS</span>
-                                    </div>
+                <!-- Impact Goals (Based on Cases) -->
+                <section class="pd-section">
+                    <h3 class="pd-section__subheading">Program Impact Goals</h3>
+                    <div class="pd-goals-grid">
+                        @foreach (var caso in Program.IdCasos)
+                        {
+                            decimal totalRecaudado = caso.Donaciones.Sum(d => d.Monto);
+                            int progreso = CalcularPorcentaje(caso.Meta, totalRecaudado);
+
+                            <div class="pd-goal-card">
+                                <span class="pd-goal-card__icon">
+                                    <i class="fas fa-bullseye"></i>
+                                </span>
+                                <p class="pd-goal-card__value">@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))</p>
+                                <p class="pd-goal-card__desc">@caso.Titulo</p>
+                                <div class="pd-goal-card__progress-wrap">
+                                    <progress class="bulma-progress bulma-is-success pd-goal-card__bar"
+                                              value="@progreso" max="100">
+                                        @progreso%
+                                    </progress>
+                                    <p class="pd-goal-card__progress-label">Goal: @caso.Meta.ToString("C", CultureInfo.GetCultureInfo("es-SV")) (@progreso%)</p>
                                 </div>
                             </div>
+                        }
+                    </div>
+                </section>
+
+                <!-- Socioeconomic Impact Data -->
+                <section class="pd-impact-card">
+                    <div class="pd-impact-card__header">
+                        <div>
+                            <h3 class="pd-impact-card__title">Socioeconomic Impact Data</h3>
+                            <p class="pd-impact-card__subtitle">Real-time progress vs Baseline metrics</p>
                         </div>
-                    }
+                        <div class="pd-impact-card__legend">
+                            <span class="pd-impact-card__legend-item">
+                                <span class="pd-impact-card__legend-dot pd-impact-card__legend-dot--current"></span>
+                                CURRENT
+                            </span>
+                            <span class="pd-impact-card__legend-item">
+                                <span class="pd-impact-card__legend-dot pd-impact-card__legend-dot--target"></span>
+                                TARGET
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="pd-impact-card__metrics">
+                        @{
+                            var metrics = GetProgramMetrics();
+                            foreach (var metric in metrics)
+                            {
+                                <div class="pd-metric">
+                                    <div class="pd-metric__header">
+                                        <span class="pd-metric__label">@metric.Label</span>
+                                        <span class="pd-metric__achievement">@metric.Achievement</span>
+                                    </div>
+                                    <div class="pd-metric__track">
+                                        <div class="pd-metric__bar-bg">
+                                            <div class="pd-metric__bar-fill" style="width: @(metric.Progress)%">
+                                                <span class="pd-metric__bar-text">@(metric.Progress)% PROGRESS</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </section>
+
+            </div><!-- /pd-body__main -->
+
+            <!-- ── RIGHT SIDEBAR ── -->
+            <aside class="pd-body__sidebar">
+                <div class="pd-support-card">
+                    <h3 class="pd-support-card__title">Support This Program</h3>
+                    <p class="pd-support-card__desc">
+                        Your contribution directly funds the infrastructure and training initiatives within this program.
+                    </p>
+                    <a href="/donate/program/@Program.Id"
+                       class="bulma-button bulma-is-warning bulma-is-fullwidth pd-support-card__btn">
+                        <strong>Contribute to Program</strong>
+                    </a>
                 </div>
-            </section>
+            </aside>
 
-        </div><!-- /pd-body__main -->
-
-        <!-- ── RIGHT SIDEBAR ── -->
-        <aside class="pd-body__sidebar">
-            <div class="pd-support-card">
-                <h3 class="pd-support-card__title">Support This Program</h3>
-                <p class="pd-support-card__desc">
-                    Your contribution directly funds the infrastructure and training programs in @Program.Region.
-                </p>
-                <a href="/donate/@Program.Id"
-                   class="bulma-button bulma-is-warning bulma-is-fullwidth pd-support-card__btn">
-                    <strong>Contribute to Program</strong>
-                </a>
-            </div>
-        </aside>
-
-    </div><!-- /pd-body -->
-</div>
+        </div><!-- /pd-body -->
+    </div>
+}
 
 @code {
     [Parameter] public int Id { get; set; }
 
-    private record GoalItem(string Icon, string Value, string Description,
-                             int Progress, string ProgressLabel);
+    private Programa? Program { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Program = await ProgramaService.ObtenerPorIdConDetallesAsync(Id);
+    }
+
+    private int CalcularPorcentaje(decimal meta, decimal actual)
+    {
+        if (meta <= 0) return 0;
+        return Math.Clamp((int)Math.Round((actual / meta) * 100), 0, 100);
+    }
 
     private record MetricItem(string Label, string Achievement, int Progress);
 
-    private record ProgramModel(
-        int    Id,
-        string Title,
-        string Region,
-        string HeroImage,
-        string Mission,
-        List<GoalItem>   Goals,
-        List<MetricItem> Metrics
-    );
+    private List<MetricItem> GetProgramMetrics()
+    {
+        if (Program == null || Program.IdCasos == null) return new();
 
-    // In a real app this would come from a service; hardcoded for fidelity
-    private ProgramModel Program => new(
-        Id: 1,
-        Title: "Clean Water Initiative\nRegion A",
-        Region: "Region A",
-        HeroImage: "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=1200&q=80",
-        Mission: "To provide sustainable clean water access and socioeconomic empowerment to 500 " +
-                 "families in Region A through community-led infrastructure development and maintenance training.",
-        Goals: new()
+        var totalCasos = Program.IdCasos.Count;
+        var casosCompletados = Program.IdCasos.Count(c => c.Donaciones.Sum(d => d.Monto) >= c.Meta);
+        var totalDonadores = Program.IdCasos.SelectMany(c => c.Donaciones).Select(d => d.IdDonador).Distinct().Count();
+
+        return new List<MetricItem>
         {
-            new("fas fa-people-group",  "500 Families",  "Access to potable water within 500m of household.",
-                75, "375 Families Reached (75%)"),
-            new("fas fa-droplet",       "10 New Wells",  "Solar-powered deep borehole installations.",
-                60, "6 Wells Completed (60%)"),
-        },
-        Metrics: new()
-        {
-            new("Employment Rate Increase",   "+24% Achieved",   68),
-            new("Reduced Water-Borne Illness","-42% Reduction",  85),
-            new("Household Savings Access",   "+$120 Avg/Mo",    45),
-        }
-    );
+            new("Cases Progress", $"{casosCompletados} of {totalCasos} Completed", CalcularPorcentaje(totalCasos, casosCompletados)),
+            new("Community Engagement", $"{totalDonadores} Active Donors", Math.Min(totalDonadores * 5, 100)), // Dummy calc for progress
+            new("Overall Funding", Program.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto).ToString("C", CultureInfo.GetCultureInfo("es-SV")), 
+                CalcularPorcentaje(Program.IdCasos.Sum(c => c.Meta), Program.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto)))
+        };
+    }
 }
