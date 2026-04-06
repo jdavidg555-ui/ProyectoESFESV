@@ -17,6 +17,8 @@ public partial class Programa
 
     public DateTime FechaCreacion { get; set; }
 
+    public decimal MetaFinanciera { get; set; }
+
     public int IdCategoria { get; set; }
 
     public int CreadoPor { get; set; }

@@ -48,12 +48,7 @@
 
     private static int CalculateOverallProgress(Programa program)
     {
-        if (program.IdCasos == null || !program.IdCasos.Any())
-        {
-            return 0;
-        }
-
-        decimal totalMeta = program.IdCasos.Sum(caso => caso.Meta);
+        decimal totalMeta = program.MetaFinanciera;
         decimal totalRecaudado = program.IdCasos
             .SelectMany(caso => caso.Donaciones ?? [])
             .Where(donacion => string.Equals(donacion.Estado, "Completado", StringComparison.OrdinalIgnoreCase))

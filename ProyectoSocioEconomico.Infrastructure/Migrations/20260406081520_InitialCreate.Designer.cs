@@ -12,8 +12,8 @@ using ProyectoSocioEconomico.Infrastructure.Data;
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260406074353_SeedCatalogosBase")]
-    partial class SeedCatalogosBase
+    [Migration("20260406081520_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -361,6 +361,9 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
 
                     b.Property<string>("ImagenUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("MetaFinanciera")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()

@@ -165,9 +165,7 @@
 
     private int CalculateOverallProgress(Programa p)
     {
-        if (p.IdCasos == null || !p.IdCasos.Any()) return 0;
-
-        decimal totalMeta = p.IdCasos.Sum(c => c.Meta);
+        decimal totalMeta = p.MetaFinanciera;
         decimal totalRecaudado = p.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto);
 
         if (totalMeta <= 0) return 0;

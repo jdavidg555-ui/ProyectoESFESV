@@ -125,6 +125,9 @@ else
                     <p class="pd-support-card__desc">
                         Your contribution directly funds the infrastructure and training initiatives within this program.
                     </p>
+                    <p class="pd-support-card__desc">
+                        Meta financiera: @Program.MetaFinanciera.ToString("C", CultureInfo.GetCultureInfo("es-SV"))
+                    </p>
                     <a href="/donate/program/@Program.Id"
                        class="bulma-button bulma-is-warning bulma-is-fullwidth pd-support-card__btn">
                         <strong>Contribute to Program</strong>
@@ -161,13 +164,14 @@ else
         var totalCasos = Program.IdCasos.Count;
         var casosCompletados = Program.IdCasos.Count(c => c.Donaciones.Sum(d => d.Monto) >= c.Meta);
         var totalDonadores = Program.IdCasos.SelectMany(c => c.Donaciones).Select(d => d.IdDonador).Distinct().Count();
+        var totalRecaudado = Program.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto);
 
         return new List<MetricItem>
         {
             new("Cases Progress", $"{casosCompletados} of {totalCasos} Completed", CalcularPorcentaje(totalCasos, casosCompletados)),
             new("Community Engagement", $"{totalDonadores} Active Donors", Math.Min(totalDonadores * 5, 100)), // Dummy calc for progress
-            new("Overall Funding", Program.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto).ToString("C", CultureInfo.GetCultureInfo("es-SV")), 
-                CalcularPorcentaje(Program.IdCasos.Sum(c => c.Meta), Program.IdCasos.SelectMany(c => c.Donaciones).Sum(d => d.Monto)))
+            new("Overall Funding", totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV")), 
+                CalcularPorcentaje(Program.MetaFinanciera, totalRecaudado))
         };
     }
 }

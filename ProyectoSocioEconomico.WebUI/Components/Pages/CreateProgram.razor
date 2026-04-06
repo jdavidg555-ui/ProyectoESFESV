@@ -104,6 +104,20 @@
                                 <ValidationMessage For="@(() => FormModel.IdCategoria)" class="bulma-help bulma-is-danger" />
                             </div>
                         </div>
+
+                        <div class="bulma-column bulma-is-12">
+                            <div class="bulma-field">
+                                <label class="bulma-label cp-label">Meta financiera</label>
+                                <div class="bulma-control">
+                                    <InputNumber class="bulma-input cp-input"
+                                                 @bind-Value="FormModel.MetaFinanciera"
+                                                 min="0.01"
+                                                 step="0.01"
+                                                 placeholder="Ej. 2500.00" />
+                                </div>
+                                <ValidationMessage For="@(() => FormModel.MetaFinanciera)" class="bulma-help bulma-is-danger" />
+                            </div>
+                        </div>
                     </div>
 
                     <div class="bulma-field">
@@ -221,6 +235,7 @@
                 Descripcion = FormModel.Descripcion.Trim(),
                 Estado = FormModel.Estado,
                 FechaCreacion = DateTime.Now,
+                MetaFinanciera = FormModel.MetaFinanciera!.Value,
                 IdCategoria = FormModel.IdCategoria,
                 CreadoPor = CurrentUser.Id,
                 ImagenUrl = imagePath
@@ -293,5 +308,8 @@
 
         [Range(1, int.MaxValue, ErrorMessage = "Seleccione una categoría.")]
         public int IdCategoria { get; set; }
+
+        [Range(typeof(decimal), "0.01", "999999999", ErrorMessage = "Ingrese una meta financiera válida.")]
+        public decimal? MetaFinanciera { get; set; }
     }
 }

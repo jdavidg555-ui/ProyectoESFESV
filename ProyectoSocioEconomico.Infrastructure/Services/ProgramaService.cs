@@ -49,6 +49,28 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
             await context.SaveChangesAsync();
         }
 
+        public async Task ActualizarAsync(Programa programa)
+        {
+            ArgumentNullException.ThrowIfNull(programa);
+
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var currentProgram = await context.Programas.FirstOrDefaultAsync(p => p.Id == programa.Id);
+
+            if (currentProgram is null)
+            {
+                throw new InvalidOperationException("No se encontró el programa a actualizar.");
+            }
+
+            currentProgram.Nombre = programa.Nombre;
+            currentProgram.Descripcion = programa.Descripcion;
+            currentProgram.Estado = programa.Estado;
+            currentProgram.IdCategoria = programa.IdCategoria;
+            currentProgram.MetaFinanciera = programa.MetaFinanciera;
+            currentProgram.ImagenUrl = programa.ImagenUrl;
+
+            await context.SaveChangesAsync();
+        }
+
         public async Task EliminarAsync(int id)
         {
             using var context = await _contextFactory.CreateDbContextAsync();

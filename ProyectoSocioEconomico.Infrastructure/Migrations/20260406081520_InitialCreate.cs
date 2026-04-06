@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCategoriaToProgramas : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -155,6 +157,7 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MetaFinanciera = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: false),
                     CreadoPor = table.Column<int>(type: "int", nullable: false)
                 },
@@ -300,6 +303,28 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                         column: x => x.DonacionId,
                         principalTable: "Donaciones",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categorias",
+                columns: new[] { "Id", "Descripcion", "Estado", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "Proyectos de construcción, vías, agua y saneamiento", "Activo", "Infraestructura" },
+                    { 2, "Conservación ambiental, reforestación y ecología", "Activo", "Naturaleza" },
+                    { 3, "Educación, becas y formación académica", "Activo", "Educacion" },
+                    { 4, "Salud, atención médica y bienestar", "Activo", "Salud" },
+                    { 5, "Ayuda humanitaria en emergencias y desastres", "Activo", "Desastres naturales" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Descripcion", "Estado", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "Usuario que realiza donaciones a casos y programas", "Activo", "Donante" },
+                    { 2, "Usuario que crea casos y recibe ayuda", "Activo", "Beneficiario" },
+                    { 3, "Administrador del sistema con acceso total", "Activo", "Administrador" }
                 });
 
             migrationBuilder.CreateIndex(

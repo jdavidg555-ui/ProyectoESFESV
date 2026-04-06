@@ -170,6 +170,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.CreadoPor, "IX_Programas_CreadoPor");
 
             entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.MetaFinanciera).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Nombre).HasMaxLength(150);
 
             entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Programas)

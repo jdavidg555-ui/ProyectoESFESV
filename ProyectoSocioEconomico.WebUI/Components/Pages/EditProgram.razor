@@ -1,0 +1,332 @@
+@page "/program/{Id:int}/edit"
+@page "/admin/programs/{Id:int}/edit"
+@layout ProfileLayout
+@rendermode InteractiveServer
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using ProyectoSocioEconomico.WebUI.Services
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
+@inject IProgramaService ProgramaService
+@inject ICasoService CasoService
+@inject IUsuarioService UsuarioService
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+
+<div class="ep-page">
+    @if (IsLoading)
+    {
+        <div class="ep-page-header">
+            <div class="ep-page-header__left">
+                <h1 class="ep-page-header__title">Cargando programa...</h1>
+                <p class="ep-page-header__subtitle">Estamos preparando la información para edición.</p>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(ErrorMessage) && FormModel is null)
+    {
+        <section class="ep-card ep-card--message">
+            <h1 class="ep-page-header__title">No se pudo cargar el programa</h1>
+            <p class="ep-page-header__subtitle">@ErrorMessage</p>
+            <a href="/admin/programs" class="ep-btn-back">Volver a programas</a>
+        </section>
+    }
+    else if (FormModel is not null)
+    {
+        <div class="ep-page-header">
+            <div class="ep-page-header__left">
+                <h1 class="ep-page-header__title">Editar programa</h1>
+                <p class="ep-page-header__subtitle">Actualice la información principal del programa y guarde los cambios.</p>
+            </div>
+            <div class="ep-status-badge">
+                <span class="ep-status-badge__icon"><i class="fas fa-folder-open"></i></span>
+                <span class="ep-status-badge__label">ESTADO:</span>
+                <span class="ep-status-badge__value">@CurrentProgram?.Estado</span>
+            </div>
+        </div>
+
+        <EditForm Model="FormModel" OnValidSubmit="HandleUpdateAsync" FormName="EditProgramForm">
+            <DataAnnotationsValidator />
+
+            <div class="ep-body">
+                <div class="ep-main">
+                    @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                    {
+                        <div class="bulma-notification bulma-is-danger bulma-is-light">@ErrorMessage</div>
+                    }
+
+                    <section class="ep-card">
+                        <h2 class="ep-card__title">
+                            <span class="ep-card__title-icon ep-card__title-icon--yellow">
+                                <i class="fas fa-pen-to-square"></i>
+                            </span>
+                            Información general
+                        </h2>
+
+                        <div class="ep-form-grid ep-form-grid--2col">
+                            <div class="bulma-field ep-field">
+                                <label class="bulma-label ep-label" for="program-title">Nombre del programa</label>
+                                <div class="bulma-control ep-control">
+                                    <InputText id="program-title" class="bulma-input ep-input" @bind-Value="FormModel.ProgramTitle" />
+                                </div>
+                                <ValidationMessage For="@(() => FormModel.ProgramTitle)" class="bulma-help bulma-is-danger" />
+                            </div>
+
+                            <div class="bulma-field ep-field">
+                                <label class="bulma-label ep-label" for="category">Categoría</label>
+                                <div class="bulma-control ep-control">
+                                    <div class="bulma-select bulma-is-fullwidth ep-select-wrap">
+                                        <InputSelect id="category" class="ep-select" @bind-Value="FormModel.CategoryId">
+                                            <option value="">Seleccione una categoría</option>
+                                            @foreach (var category in Categories)
+                                            {
+                                                <option value="@category.Id">@category.Nombre</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </div>
+                                <ValidationMessage For="@(() => FormModel.CategoryId)" class="bulma-help bulma-is-danger" />
+                            </div>
+                        </div>
+
+                        <div class="bulma-field ep-field ep-field--full">
+                            <label class="bulma-label ep-label" for="description">Descripción detallada</label>
+                            <div class="bulma-control ep-control">
+                                <InputTextArea id="description"
+                                               class="bulma-textarea ep-textarea"
+                                               rows="7"
+                                               @bind-Value="FormModel.Description" />
+                            </div>
+                            <ValidationMessage For="@(() => FormModel.Description)" class="bulma-help bulma-is-danger" />
+                            <p class="ep-char-count">Palabras: @WordCount/@MaxWords</p>
+                        </div>
+                    </section>
+
+                    <section class="ep-card">
+                        <h2 class="ep-card__title">
+                            <span class="ep-card__title-icon ep-card__title-icon--yellow">
+                                <i class="fas fa-hand-holding-dollar"></i>
+                            </span>
+                            Meta financiera
+                        </h2>
+
+                        <div class="bulma-field ep-field ep-field--narrow">
+                            <label class="bulma-label ep-label" for="amount">Monto meta</label>
+                            <div class="bulma-control ep-control">
+                                <div class="ep-money-wrap">
+                                    <span class="ep-money-prefix">$</span>
+                                    <InputNumber id="amount"
+                                                 class="bulma-input ep-input ep-input--money"
+                                                 @bind-Value="FormModel.RequiredAmount" />
+                                </div>
+                            </div>
+                            <ValidationMessage For="@(() => FormModel.RequiredAmount)" class="bulma-help bulma-is-danger" />
+                            <p class="ep-field-note">La meta financiera sí puede actualizarse para el programa.</p>
+                        </div>
+                    </section>
+
+                    <section class="ep-card">
+                        <h2 class="ep-card__title">
+                            <span class="ep-card__title-icon ep-card__title-icon--yellow">
+                                <i class="fas fa-circle-info"></i>
+                            </span>
+                            Información adicional
+                        </h2>
+
+                        <div class="ep-summary-grid">
+                            <article class="ep-summary-item">
+                                <span class="ep-summary-item__label">Fecha de creación</span>
+                                <strong class="ep-summary-item__value">@CurrentProgram?.FechaCreacion.ToString("dd/MM/yyyy")</strong>
+                            </article>
+                            <article class="ep-summary-item">
+                                <span class="ep-summary-item__label">Categoría actual</span>
+                                <strong class="ep-summary-item__value">@CurrentProgram?.IdCategoriaNavigation?.Nombre</strong>
+                            </article>
+                            <article class="ep-summary-item">
+                                <span class="ep-summary-item__label">Estado del programa</span>
+                                <strong class="ep-summary-item__value">@CurrentProgram?.Estado</strong>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="ep-sidebar">
+                    <div class="ep-tips-card">
+                        <h3 class="ep-tips-card__title">
+                            <span class="ep-tips-card__icon"><i class="far fa-lightbulb"></i></span>
+                            Recomendaciones
+                        </h3>
+                        <ol class="ep-tips-list">
+                            <li class="ep-tips-list__item">
+                                <span class="ep-tips-list__num">1</span>
+                                <div>
+                                    <strong>Sea claro:</strong>
+                                    <p>Explique el objetivo del programa y su impacto esperado para la comunidad.</p>
+                                </div>
+                            </li>
+                            <li class="ep-tips-list__item">
+                                <span class="ep-tips-list__num">2</span>
+                                <div>
+                                    <strong>Alinee la categoría:</strong>
+                                    <p>Use la categoría correcta para mejorar la búsqueda y el filtrado de programas.</p>
+                                </div>
+                            </li>
+                            <li class="ep-tips-list__item">
+                                <span class="ep-tips-list__num">3</span>
+                                <div>
+                                    <strong>Revise la meta:</strong>
+                                    <p>Mantenga una meta financiera coherente con el alcance real del programa.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="ep-action-bar">
+                <button type="button" class="ep-action-bar__cancel" @onclick="HandleCancel">Cancelar</button>
+                <button type="submit" class="bulma-button bulma-is-warning ep-btn-update" disabled="@IsSaving">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-floppy-disk"></i></span>
+                    <strong>@(IsSaving ? "Actualizando..." : "Actualizar programa")</strong>
+                </button>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private const int MaxWords = 500;
+
+    private Usuario? CurrentUser { get; set; }
+    private Programa? CurrentProgram { get; set; }
+    private EditProgramModel? FormModel { get; set; }
+    private List<Categoria> Categories { get; set; } = new();
+    private bool IsLoading { get; set; } = true;
+    private bool IsSaving { get; set; }
+    private string? ErrorMessage { get; set; }
+
+    private int WordCount => string.IsNullOrWhiteSpace(FormModel?.Description)
+        ? 0
+        : FormModel.Description.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPageAsync();
+    }
+
+    private async Task LoadPageAsync()
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is null || !user.Identity.IsAuthenticated)
+            {
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+            var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdStr, out var userId))
+            {
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+            CurrentUser = await UsuarioService.ObtenerPorId(userId);
+            if (!IsAdmin(CurrentUser))
+            {
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+            Categories = await CasoService.ObtenerCategorias();
+            CurrentProgram = await ProgramaService.ObtenerPorIdConDetallesAsync(Id);
+
+            if (CurrentProgram is null)
+            {
+                ErrorMessage = "No se encontró el programa solicitado.";
+                return;
+            }
+
+            FormModel = new EditProgramModel
+            {
+                ProgramTitle = CurrentProgram.Nombre,
+                CategoryId = CurrentProgram.IdCategoria,
+                Description = CurrentProgram.Descripcion,
+                RequiredAmount = CurrentProgram.MetaFinanciera
+            };
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Ocurrió un error al cargar el programa: " + ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void HandleCancel()
+    {
+        Navigation.NavigateTo("/admin/programs");
+    }
+
+    private async Task HandleUpdateAsync()
+    {
+        if (FormModel is null || CurrentProgram is null)
+        {
+            return;
+        }
+
+        ErrorMessage = null;
+        IsSaving = true;
+
+        try
+        {
+            CurrentProgram.Nombre = FormModel.ProgramTitle.Trim();
+            CurrentProgram.Descripcion = FormModel.Description.Trim();
+            CurrentProgram.IdCategoria = FormModel.CategoryId ?? CurrentProgram.IdCategoria;
+            CurrentProgram.MetaFinanciera = FormModel.RequiredAmount ?? CurrentProgram.MetaFinanciera;
+
+            await ProgramaService.ActualizarAsync(CurrentProgram);
+            Navigation.NavigateTo("/admin/programs");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "No se pudo actualizar el programa: " + ex.Message;
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    private static bool IsAdmin(Usuario? usuario)
+    {
+        var roleName = usuario?.IdRolNavigation?.Nombre;
+        return !string.IsNullOrWhiteSpace(roleName) &&
+               roleName.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed class EditProgramModel
+    {
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(120, ErrorMessage = "El nombre no puede exceder 120 caracteres.")]
+        public string ProgramTitle { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Seleccione una categoría.")]
+        public int? CategoryId { get; set; }
+
+        [Required(ErrorMessage = "La descripción es obligatoria.")]
+        [StringLength(3000, ErrorMessage = "La descripción no puede exceder 3000 caracteres.")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "La meta financiera es obligatoria.")]
+        [Range(typeof(decimal), "0.01", "999999999", ErrorMessage = "Ingrese una meta financiera válida.")]
+        public decimal? RequiredAmount { get; set; }
+    }
+}

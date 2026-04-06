@@ -359,6 +359,9 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.Property<string>("ImagenUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("MetaFinanciera")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(150)
