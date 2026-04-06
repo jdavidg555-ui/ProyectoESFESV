@@ -15,6 +15,7 @@
   --white-cream: #fef2f2;
   --health-color: #ef4444; /* Rojo */
   --education-color: #3b82f6; /* Azul */
+  --infrastructure-color: #7c3aed; /* Morado */
   --rp-yellow: #f5bb00;
   --rp-yellow-dark: #d9a600;
   --rp-green: #22c55e;
@@ -134,6 +135,10 @@ article.icon-category {
 
   .icon-category__icon--health {
     color: var(--health-color);
+  }
+
+  .icon-category__icon--infrastructure {
+    color: var(--infrastructure-color);
   }
 
   .icon-category__icon--disaster-relief {

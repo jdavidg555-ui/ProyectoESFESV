@@ -171,7 +171,7 @@
                     <div class="dn-submit-wrap">
                         <button type="submit"
                                 class="bulma-button bulma-is-warning bulma-is-fullwidth dn-btn-complete"
-                                disabled="@(IsSubmitting || IsOwnCaseDonationBlocked || IsCaseDonationClosed)">
+                                disabled="@(IsSubmitting || CurrentUser is null || IsOwnCaseDonationBlocked || IsCaseDonationClosed)">
                             <strong>@(IsSubmitting ? "Procesando..." : "Completar donación")</strong>
                         </button>
                         <p class="dn-submit-note">
@@ -261,6 +261,29 @@
         </div>
     }
 
+    @if (ShowLoginRequiredDialog)
+    {
+        <div class="dn-modal">
+            <div class="dn-modal__card">
+                <div class="dn-modal__icon">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h2 class="dn-modal__title">Debe iniciar sesión para donar</h2>
+                <p class="dn-modal__text">
+                    Para registrar esta donación primero necesita ingresar con su cuenta.
+                </p>
+                <div class="dn-modal__actions">
+                    <button type="button" class="dn-modal__btn dn-modal__btn--ghost" @onclick="CloseLoginRequiredDialog">
+                        Cerrar
+                    </button>
+                    <button type="button" class="dn-modal__btn dn-modal__btn--primary" @onclick="GoToLogin">
+                        Ir a iniciar sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
     @if (ShowCaseUnavailableDialog)
     {
         <div class="dn-modal">
@@ -294,6 +317,7 @@
     private bool IsSubmitting { get; set; }
     private bool IsSuccess { get; set; }
     private bool ShowOwnDonationDialog { get; set; }
+    private bool ShowLoginRequiredDialog { get; set; }
     private bool ShowCaseUnavailableDialog { get; set; }
     private string? FeedbackMessage { get; set; }
 
@@ -328,7 +352,14 @@
                 IsSuccess = false;
             }
 
-            if (!IsOwnCaseDonationBlocked && IsCaseDonationClosed)
+            if (CurrentUser is null)
+            {
+                ShowLoginRequiredDialog = true;
+                FeedbackMessage = "Debe iniciar sesión para poder donar.";
+                IsSuccess = false;
+            }
+
+            if (CurrentUser is not null && !IsOwnCaseDonationBlocked && IsCaseDonationClosed)
             {
                 ShowCaseUnavailableDialog = true;
                 FeedbackMessage = "Este caso ya alcanzó su meta o no está disponible para nuevas donaciones.";
@@ -373,7 +404,9 @@
 
         if (CurrentUser is null)
         {
-            Navigation.NavigateTo("/login");
+            ShowLoginRequiredDialog = true;
+            FeedbackMessage = "Debe iniciar sesión para poder donar.";
+            IsSuccess = false;
             return;
         }
 
@@ -472,6 +505,11 @@
         ShowOwnDonationDialog = false;
     }
 
+    private void CloseLoginRequiredDialog()
+    {
+        ShowLoginRequiredDialog = false;
+    }
+
     private void GoToCaseDetail()
     {
         if (Case is null)
@@ -481,6 +519,11 @@
         }
 
         Navigation.NavigateTo($"/cases/{Case.Id}");
+    }
+
+    private void GoToLogin()
+    {
+        Navigation.NavigateTo("/login");
     }
 
     private sealed class DonationFormModel

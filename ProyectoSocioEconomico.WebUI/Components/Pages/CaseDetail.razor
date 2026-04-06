@@ -1,8 +1,12 @@
 @page "/cases/{Id:int}"
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
+@using ProyectoSocioEconomico.WebUI.Services
 @using System.Globalization
 @inject ICasoService CasoService
+@inject IUsuarioService UsuarioService
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
 
 @if (Caso == null)
 {
@@ -121,10 +125,12 @@ else
 
                     @if (puedeDonar)
                     {
-                        <a href="/donate/@Caso.Id" class="bulma-button bulma-is-warning bulma-is-fullwidth cd-sidebar__btn-support">
+                        <button type="button"
+                                class="bulma-button bulma-is-warning bulma-is-fullwidth cd-sidebar__btn-support"
+                                @onclick="HandleDonateClick">
                             <i class="fas fa-heart"></i>
                             <strong>Donar Ahora</strong>
-                        </a>
+                        </button>
                     }
                     else
                     {
@@ -157,6 +163,28 @@ else
                 </div>
             </aside>
         </div>
+        @if (ShowLoginRequiredDialog)
+        {
+            <div class="cd-modal">
+                <div class="cd-modal__card">
+                    <div class="cd-modal__icon">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <h2 class="cd-modal__title">Debe iniciar sesión para donar</h2>
+                    <p class="cd-modal__text">
+                        Para registrar una donación necesita ingresar con su cuenta. Después podrá continuar con el apoyo a este caso.
+                    </p>
+                    <div class="cd-modal__actions">
+                        <button type="button" class="cd-modal__btn cd-modal__btn--ghost" @onclick="CloseLoginRequiredDialog">
+                            Cerrar
+                        </button>
+                        <button type="button" class="cd-modal__btn cd-modal__btn--primary" @onclick="GoToLogin">
+                            Ir a iniciar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 }
 
@@ -164,15 +192,47 @@ else
     [Parameter] public int Id { get; set; }
 
     private Caso? Caso { get; set; }
+    private Usuario? CurrentUser { get; set; }
+    private bool ShowLoginRequiredDialog { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         Caso = await CasoService.ObtenerPorIdConDetallesAsync(Id);
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userIdStr = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (int.TryParse(userIdStr, out var userId))
+        {
+            CurrentUser = await UsuarioService.ObtenerPorId(userId);
+        }
     }
 
     private int CalcularPorcentaje(decimal meta, decimal actual)
     {
         if (meta <= 0) return 0;
         return Math.Clamp((int)Math.Round((actual / meta) * 100), 0, 100);
+    }
+
+    private void HandleDonateClick()
+    {
+        if (CurrentUser is null)
+        {
+            ShowLoginRequiredDialog = true;
+            return;
+        }
+
+        Navigation.NavigateTo($"/donate/{Id}");
+    }
+
+    private void CloseLoginRequiredDialog()
+    {
+        ShowLoginRequiredDialog = false;
+    }
+
+    private void GoToLogin()
+    {
+        Navigation.NavigateTo("/login");
     }
 }

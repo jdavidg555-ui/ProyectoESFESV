@@ -1,6 +1,7 @@
 @page "/programs"
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
+@using Microsoft.AspNetCore.Components
 @inject IProgramaService ProgramaService
 
 <div class="cap-page">
@@ -87,6 +88,9 @@
 @code {
     private record FilterOption(string Key, string Label, string Icon);
 
+    [SupplyParameterFromQuery(Name = "category")]
+    private string? CategoryFromUrl { get; set; }
+
     private string SearchQuery  { get; set; } = string.Empty;
     private string ActiveFilter { get; set; } = "all";
     private int    CurrentPage  { get; set; } = 1;
@@ -107,6 +111,13 @@
     protected override async Task OnInitializedAsync()
     {
         AllPrograms = await ProgramaService.ObtenerTodosConCasosAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        var normalizedCategory = CategoryFromUrl?.Trim().ToLowerInvariant();
+        ActiveFilter = Filters.Any(filter => filter.Key == normalizedCategory) ? normalizedCategory! : "all";
+        CurrentPage = 1;
     }
 
     private IEnumerable<Programa> FilteredPrograms =>
