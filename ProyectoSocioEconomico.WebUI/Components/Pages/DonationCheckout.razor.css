@@ -21,6 +21,7 @@ div.dn-page {
     --dn-shadow-card:   0 2px 20px rgba(0,0,0,0.08);
     --dn-radius:        14px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color-scheme: light;
     min-height: 100vh;
     background-color: var(--dn-bg);
     display: flex;
@@ -29,6 +30,19 @@ div.dn-page {
     max-width: 1060px;
     margin: 0 auto;
     width: 100%;
+}
+
+div.dn-page,
+div.dn-page h1,
+div.dn-page h2,
+div.dn-page h3,
+div.dn-page strong,
+div.dn-page label,
+div.dn-page p,
+div.dn-page span,
+div.dn-page a,
+div.dn-page button {
+    color: inherit;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -87,6 +101,10 @@ div.dn-page .dn-body .dn-card {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+}
+
+div.dn-page .dn-card--message {
+    margin-top: 2rem;
 }
 
 /* Card top */
@@ -192,13 +210,16 @@ div.dn-page .dn-body .dn-card .dn-step .dn-custom-wrap.bulma-control .dn-custom-
     height: 3rem;
     font-size: 0.9rem;
     color: var(--dn-text-dark);
+    caret-color: var(--dn-text-dark);
+    -webkit-text-fill-color: var(--dn-text-dark);
     padding-left: 2.4rem;
     box-shadow: var(--dn-shadow-sm);
     transition: border-color 0.18s, box-shadow 0.18s;
 }
 
 div.dn-page .dn-body .dn-card .dn-step .dn-custom-wrap.bulma-control .dn-custom-input.bulma-input::placeholder {
-    color: #bbb;
+    color: #888;
+    opacity: 1;
 }
 
 div.dn-page .dn-body .dn-card .dn-step .dn-custom-wrap.bulma-control .dn-custom-input.bulma-input:focus {
@@ -265,12 +286,15 @@ div.dn-page .dn-body .dn-card .dn-step .dn-card-fields .dn-field.bulma-field .dn
     height: 3rem;
     font-size: 0.9rem;
     color: var(--dn-text-dark);
+    caret-color: var(--dn-text-dark);
+    -webkit-text-fill-color: var(--dn-text-dark);
     box-shadow: var(--dn-shadow-sm);
     transition: border-color 0.18s, box-shadow 0.18s;
 }
 
 div.dn-page .dn-body .dn-card .dn-step .dn-card-fields .dn-field.bulma-field .dn-control.bulma-control .dn-input.bulma-input::placeholder {
-    color: #bbb;
+    color: #888;
+    opacity: 1;
 }
 
 div.dn-page .dn-body .dn-card .dn-step .dn-card-fields .dn-field.bulma-field .dn-control.bulma-control .dn-input.bulma-input:focus {
@@ -353,6 +377,11 @@ div.dn-page .dn-body .dn-card .dn-options .dn-checkbox-row .dn-checkbox-text {
     line-height: 1.5;
 }
 
+div.dn-page .dn-body .dn-card .dn-options .dn-checkbox-row .dn-checkbox-text strong {
+    color: var(--dn-text-dark);
+    font-weight: 800;
+}
+
 div.dn-page .dn-body .dn-card .dn-options .dn-checkbox-row .dn-checkbox-text .dn-checkbox-sub {
     font-size: 0.78rem;
     color: var(--dn-text-muted);
@@ -395,6 +424,20 @@ div.dn-page .dn-body .dn-card .dn-submit-wrap .dn-btn-complete.bulma-button.bulm
     box-shadow: 0 4px 16px rgba(245,187,0,0.35);
     transition: background-color 0.15s, transform 0.12s, box-shadow 0.15s;
     letter-spacing: 0.01em;
+}
+
+div.dn-page .dn-btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    min-height: 3rem;
+    padding: 0 1.2rem;
+    border-radius: 10px;
+    background: var(--dn-yellow);
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 800;
 }
 
 div.dn-page .dn-body .dn-card .dn-submit-wrap .dn-btn-complete.bulma-button.bulma-is-warning.bulma-is-fullwidth:hover {
@@ -634,6 +677,80 @@ div.dn-page footer.dn-footer .dn-footer__legal a:hover {
     text-decoration: underline;
 }
 
+div.dn-page .dn-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 17, 17, 0.48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+div.dn-page .dn-modal__card {
+    width: 100%;
+    max-width: 30rem;
+    background: var(--dn-white);
+    border-radius: 16px;
+    border: 1px solid var(--dn-border);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+    padding: 2rem 1.75rem;
+    text-align: center;
+}
+
+div.dn-page .dn-modal__icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 1rem;
+    background: #fff3cd;
+    color: #b77900;
+    font-size: 1.8rem;
+}
+
+div.dn-page .dn-modal__title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--dn-text-dark);
+    margin-bottom: 0.65rem;
+}
+
+div.dn-page .dn-modal__text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--dn-text-mid);
+}
+
+div.dn-page .dn-modal__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+div.dn-page .dn-modal__btn {
+    min-height: 2.9rem;
+    padding: 0 1.2rem;
+    border-radius: 10px;
+    font-weight: 800;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+div.dn-page .dn-modal__btn--ghost {
+    background: #f3f1eb;
+    color: var(--dn-text-dark);
+    border-color: var(--dn-border);
+}
+
+div.dn-page .dn-modal__btn--primary {
+    background: var(--dn-yellow);
+    color: #1a1a1a;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════ */
@@ -667,5 +784,9 @@ div.dn-page footer.dn-footer .dn-footer__legal a:hover {
 
     div.dn-page .dn-body .dn-card .dn-step .dn-methods {
         grid-template-columns: 1fr;
+    }
+
+    div.dn-page .dn-modal__actions {
+        flex-direction: column;
     }
 }

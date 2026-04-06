@@ -1,287 +1,458 @@
 @page "/donate/{CauseId:int}"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Forms
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using ProyectoSocioEconomico.Infrastructure.Data
+@using ProyectoSocioEconomico.WebUI.Services
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+@using System.Security.Claims
+@inject ICasoService CasoService
+@inject IUsuarioService UsuarioService
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject AppDbContext DbContext
+@inject NavigationManager Navigation
 
 <div class="dn-page">
+    @if (IsLoading)
+    {
+        <div class="dn-card dn-card--message">
+            <h1 class="dn-card__title">Cargando checkout...</h1>
+            <p class="dn-card__subtitle">Estamos preparando la información de la donación.</p>
+        </div>
+    }
+    else if (Case is null)
+    {
+        <div class="dn-card dn-card--message">
+            <h1 class="dn-card__title">Caso no encontrado</h1>
+            <p class="dn-card__subtitle">No se pudo cargar el caso seleccionado para donar.</p>
+            <a href="/cases" class="dn-btn-back">Volver a casos</a>
+        </div>
+    }
+    else
+    {
+        <div class="dn-body">
+            <EditForm Model="FormModel" OnValidSubmit="HandleDonateAsync" FormName="DonationCheckoutForm">
+                <DataAnnotationsValidator />
 
-    <!-- ═══════════════ BREADCRUMB ═══════════════ -->
-    <nav class="dn-breadcrumb" aria-label="breadcrumb">
-        <a href="/"        class="dn-breadcrumb__item">Home</a>
-        <span class="dn-breadcrumb__sep"><i class="fas fa-chevron-right"></i></span>
-        <a href="/causes"  class="dn-breadcrumb__item">Causes</a>
-        <span class="dn-breadcrumb__sep"><i class="fas fa-chevron-right"></i></span>
-        <span class="dn-breadcrumb__item dn-breadcrumb__item--current">Donation Checkout</span>
-    </nav>
+                <div class="dn-card">
+                    <div class="dn-card__top">
+                        <h1 class="dn-card__title">Apoyar este caso</h1>
+                        <p class="dn-card__subtitle">Su contribución se registra directamente en este caso solidario.</p>
+                    </div>
 
-    <!-- ═══════════════ BODY ═══════════════ -->
-    <div class="dn-body">
-
-        <!-- ── LEFT: MAIN FORM CARD ── -->
-        <div class="dn-card">
-            <div class="dn-card__top">
-                <h1 class="dn-card__title">Support this Cause</h1>
-                <p class="dn-card__subtitle">Every contribution brings us one step closer to making a global impact.</p>
-            </div>
-
-            <!-- STEP 1 – Amount -->
-            <section class="dn-step">
-                <h2 class="dn-step__heading">
-                    <span class="dn-step__num">1</span>
-                    Select Donation Amount
-                </h2>
-
-                <div class="dn-amounts">
-                    @foreach (var preset in PresetAmounts)
+                    @if (!string.IsNullOrWhiteSpace(FeedbackMessage))
                     {
-                        <button type="button"
-                                class="dn-amount-btn @(SelectedAmount == preset ? "dn-amount-btn--active" : "")"
-                                @onclick="() => SelectAmount(preset)">
-                            $@preset
-                        </button>
+                        <div class="bulma-notification @(IsSuccess ? "bulma-is-success" : "bulma-is-danger") bulma-is-light">
+                            @FeedbackMessage
+                        </div>
                     }
-                </div>
 
-                <div class="bulma-control dn-custom-wrap">
-                    <span class="dn-custom-prefix bulma-icon bulma-is-left">
-                        <i class="fas fa-dollar-sign"></i>
-                    </span>
-                    <input class="bulma-input dn-custom-input"
-                           type="number"
-                           min="1"
-                           placeholder="Custom Amount"
-                           @bind="CustomAmount"
-                           @oninput="OnCustomInput" />
-                </div>
-            </section>
+                    <section class="dn-step">
+                        <h2 class="dn-step__heading">
+                            <span class="dn-step__num">1</span>
+                            Seleccione el monto
+                        </h2>
 
-            <!-- STEP 2 – Payment Method -->
-            <section class="dn-step">
-                <h2 class="dn-step__heading">
-                    <span class="dn-step__num">2</span>
-                    Payment Method
-                </h2>
-
-                <div class="dn-methods">
-                    <button type="button"
-                            class="dn-method-btn @(PaymentMethod == "card" ? "dn-method-btn--active" : "")"
-                            @onclick='() => PaymentMethod = "card"'>
-                        <i class="far fa-credit-card"></i>
-                        CARD
-                    </button>
-                    <button type="button"
-                            class="dn-method-btn @(PaymentMethod == "paypal" ? "dn-method-btn--active" : "")"
-                            @onclick='() => PaymentMethod = "paypal"'>
-                        <i class="fab fa-paypal"></i>
-                        PAYPAL
-                    </button>
-                    <button type="button"
-                            class="dn-method-btn @(PaymentMethod == "transfer" ? "dn-method-btn--active" : "")"
-                            @onclick='() => PaymentMethod = "transfer"'>
-                        <i class="fas fa-landmark"></i>
-                        TRANSFER
-                    </button>
-                </div>
-
-                <!-- Card fields (shown only when card selected) -->
-                @if (PaymentMethod == "card")
-                {
-                    <div class="dn-card-fields">
-                        <div class="bulma-field dn-field">
-                            <div class="bulma-control dn-control">
-                                <input class="bulma-input dn-input"
-                                       type="text"
-                                       placeholder="Cardholder Name"
-                                       @bind="CardName" />
-                            </div>
+                        <div class="dn-amounts">
+                            @foreach (var preset in PresetAmounts)
+                            {
+                                <button type="button"
+                                        class="dn-amount-btn @(SelectedAmount == preset ? "dn-amount-btn--active" : "")"
+                                        @onclick="() => SelectAmount(preset)">
+                                    $@preset
+                                </button>
+                            }
                         </div>
 
-                        <div class="bulma-field dn-field">
-                            <div class="bulma-control bulma-has-icons-right dn-control">
-                                <input class="bulma-input dn-input"
-                                       type="text"
-                                       placeholder="Card Number"
-                                       maxlength="19"
-                                       @bind="CardNumber" />
-                                <span class="bulma-icon bulma-is-right dn-input-icon">
-                                    <i class="far fa-credit-card"></i>
+                        <div class="bulma-control dn-custom-wrap">
+                            <span class="dn-custom-prefix bulma-icon bulma-is-left">
+                                <i class="fas fa-dollar-sign"></i>
+                            </span>
+                            <InputNumber class="bulma-input dn-custom-input"
+                                         min="1"
+                                         placeholder="Monto personalizado"
+                                         @bind-Value="FormModel.CustomAmount"
+                                         @oninput="OnCustomInput" />
+                        </div>
+                        <ValidationMessage For="@(() => FormModel.CustomAmount)" class="bulma-help bulma-is-danger" />
+                    </section>
+
+                    <section class="dn-step">
+                        <h2 class="dn-step__heading">
+                            <span class="dn-step__num">2</span>
+                            Método de pago
+                        </h2>
+
+                        <div class="dn-methods">
+                            <button type="button"
+                                    class="dn-method-btn @(FormModel.PaymentMethod == "Tarjeta" ? "dn-method-btn--active" : "")"
+                                    @onclick="@(() => SelectMethod("Tarjeta"))">
+                                <i class="far fa-credit-card"></i>
+                                TARJETA
+                            </button>
+                            <button type="button"
+                                    class="dn-method-btn @(FormModel.PaymentMethod == "PayPal" ? "dn-method-btn--active" : "")"
+                                    @onclick="@(() => SelectMethod("PayPal"))">
+                                <i class="fab fa-paypal"></i>
+                                PAYPAL
+                            </button>
+                            <button type="button"
+                                    class="dn-method-btn @(FormModel.PaymentMethod == "Transferencia" ? "dn-method-btn--active" : "")"
+                                    @onclick="@(() => SelectMethod("Transferencia"))">
+                                <i class="fas fa-landmark"></i>
+                                TRANSFERENCIA
+                            </button>
+                        </div>
+
+                        @if (FormModel.PaymentMethod == "Tarjeta")
+                        {
+                            <div class="dn-card-fields">
+                                <div class="bulma-field dn-field">
+                                    <div class="bulma-control dn-control">
+                                        <InputText class="bulma-input dn-input"
+                                                   placeholder="Nombre del titular"
+                                                   @bind-Value="FormModel.CardName" />
+                                    </div>
+                                </div>
+
+                                <div class="bulma-field dn-field">
+                                    <div class="bulma-control bulma-has-icons-right dn-control">
+                                        <InputText class="bulma-input dn-input"
+                                                   placeholder="Número de tarjeta"
+                                                   @bind-Value="FormModel.CardNumber" />
+                                        <span class="bulma-icon bulma-is-right dn-input-icon">
+                                            <i class="far fa-credit-card"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="dn-card-row">
+                                    <div class="bulma-field dn-field">
+                                        <div class="bulma-control dn-control">
+                                            <InputText class="bulma-input dn-input"
+                                                       placeholder="MM/YY"
+                                                       @bind-Value="FormModel.CardExpiry" />
+                                        </div>
+                                    </div>
+                                    <div class="bulma-field dn-field">
+                                        <div class="bulma-control dn-control">
+                                            <InputText class="bulma-input dn-input"
+                                                       placeholder="CVC"
+                                                       @bind-Value="FormModel.CardCvc" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </section>
+
+                    <div class="dn-options">
+                        <label class="dn-checkbox-row">
+                            <input type="checkbox" class="dn-checkbox-input" @bind="FormModel.DonateAnonymously" />
+                            <span class="dn-checkbox-box"></span>
+                            <span class="dn-checkbox-text">
+                                <strong>Donar anónimamente</strong><br />
+                                <span class="dn-checkbox-sub">Oculta su nombre en la lista pública de donantes.</span>
+                            </span>
+                        </label>
+
+                        <label class="dn-checkbox-row">
+                            <input type="checkbox" class="dn-checkbox-input" @bind="FormModel.ReceiveNotification" />
+                            <span class="dn-checkbox-box"></span>
+                            <span class="dn-checkbox-text">
+                                <strong>Recibir notificación</strong><br />
+                                <span class="dn-checkbox-sub">Le avisaremos cuando haya novedades relacionadas con este apoyo.</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="dn-submit-wrap">
+                        <button type="submit"
+                                class="bulma-button bulma-is-warning bulma-is-fullwidth dn-btn-complete"
+                                disabled="@(IsSubmitting || IsOwnCaseDonationBlocked)">
+                            <strong>@(IsSubmitting ? "Procesando..." : "Completar donación")</strong>
+                        </button>
+                        <p class="dn-submit-note">
+                            <span class="bulma-icon bulma-is-small"><i class="fas fa-lock"></i></span>
+                            Pago registrado de forma segura en la plataforma
+                        </p>
+                    </div>
+                </div>
+            </EditForm>
+
+            <aside class="dn-sidebar">
+                <div class="dn-sidebar__cause-card">
+                    <div class="dn-sidebar__image-wrap">
+                        <img class="dn-sidebar__image"
+                             src="@GetCaseImage()"
+                             alt="@Case.Titulo" />
+                        <span class="dn-sidebar__tag">@((Case.IdCategoriaNavigation?.Nombre ?? "Caso").ToUpper())</span>
+                    </div>
+
+                    <div class="dn-sidebar__cause-info">
+                        <p class="dn-sidebar__supporting-label">USTED ESTÁ APOYANDO</p>
+                        <h3 class="dn-sidebar__cause-title">@Case.Titulo</h3>
+                        <p class="dn-sidebar__cause-desc">@GetShortDescription()</p>
+
+                        <div class="dn-sidebar__summary">
+                            <div class="dn-sidebar__summary-row">
+                                <span class="dn-sidebar__summary-label">Monto de donación</span>
+                                <span class="dn-sidebar__summary-value dn-sidebar__summary-value--yellow">
+                                    @SelectedDonationAmount.ToString("C", CultureInfo.GetCultureInfo("es-SV"))
+                                </span>
+                            </div>
+                            <div class="dn-sidebar__summary-row">
+                                <span class="dn-sidebar__summary-label">Comisión</span>
+                                <span class="dn-sidebar__summary-value">$0.00</span>
+                            </div>
+                            <div class="dn-sidebar__summary-divider"></div>
+                            <div class="dn-sidebar__summary-row dn-sidebar__summary-row--total">
+                                <span class="dn-sidebar__summary-label">Total</span>
+                                <span class="dn-sidebar__summary-value dn-sidebar__summary-value--total">
+                                    @SelectedDonationAmount.ToString("C", CultureInfo.GetCultureInfo("es-SV"))
                                 </span>
                             </div>
                         </div>
-
-                        <div class="dn-card-row">
-                            <div class="bulma-field dn-field">
-                                <div class="bulma-control dn-control">
-                                    <input class="bulma-input dn-input"
-                                           type="text"
-                                           placeholder="MM/YY"
-                                           maxlength="5"
-                                           @bind="CardExpiry" />
-                                </div>
-                            </div>
-                            <div class="bulma-field dn-field">
-                                <div class="bulma-control dn-control">
-                                    <input class="bulma-input dn-input"
-                                           type="text"
-                                           placeholder="CVC"
-                                           maxlength="4"
-                                           @bind="CardCvc" />
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                }
-            </section>
+                </div>
 
-            <!-- Options -->
-            <div class="dn-options">
-                <label class="dn-checkbox-row">
-                    <input type="checkbox" class="dn-checkbox-input" @bind="DonateAnonymously" />
-                    <span class="dn-checkbox-box"></span>
-                    <span class="dn-checkbox-text">
-                        <strong>Donate Anonymously</strong><br />
-                        <span class="dn-checkbox-sub">Hide your name from the public supporters list.</span>
+                <div class="dn-sidebar__secure">
+                    <span class="dn-sidebar__secure-icon">
+                        <i class="fas fa-shield-heart"></i>
                     </span>
-                </label>
+                    <div class="dn-sidebar__secure-text">
+                        <p class="dn-sidebar__secure-title">DONACIÓN SEGURA</p>
+                        <p class="dn-sidebar__secure-desc">
+                            El aporte se registra directamente en la base de datos del caso seleccionado.
+                        </p>
+                    </div>
+                </div>
 
-                <label class="dn-checkbox-row">
-                    <input type="checkbox" class="dn-checkbox-input" @bind="ReceiveNotification" />
-                    <span class="dn-checkbox-box"></span>
-                    <span class="dn-checkbox-text">
-                        <strong>Recibir notificacion</strong><br />
-                        <span class="dn-checkbox-sub">Te caera una notificacion cuando la ayuda le llegue al usuario beneficiado</span>
-                    </span>
-                </label>
-
-                <a href="/donate/@CauseId/dedicate" class="dn-dedicate-link">
-                    <span class="bulma-icon bulma-is-small"><i class="far fa-circle-question"></i></span>
-                    Dedicate this donation to someone
+                <a href="/cases/@Case.Id" class="dn-sidebar__help-link">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-arrow-left"></i></span>
+                    Volver al detalle del caso
                 </a>
-            </div>
-
-            <!-- Submit -->
-            <div class="dn-submit-wrap">
-                <button type="button"
-                        class="bulma-button bulma-is-warning bulma-is-fullwidth dn-btn-complete"
-                        @onclick="HandleDonate">
-                    <strong>Complete Donation</strong>
-                </button>
-                <p class="dn-submit-note">
-                    <span class="bulma-icon bulma-is-small"><i class="fas fa-lock"></i></span>
-                    Secure 256-bit SSL Encrypted Payment
-                </p>
-            </div>
-        </div><!-- /dn-card -->
-
-        <!-- ── RIGHT: SIDEBAR ── -->
-        <aside class="dn-sidebar">
-
-            <!-- Cause preview -->
-            <div class="dn-sidebar__cause-card">
-                <div class="dn-sidebar__image-wrap">
-                    <img class="dn-sidebar__image"
-                         src="https://images.unsplash.com/photo-1567878378484-b2a8b2f49e44?w=600&q=80"
-                         alt="Community Clean Water Initiative" />
-                    <span class="dn-sidebar__tag">EMERGENCY AID</span>
-                </div>
-
-                <div class="dn-sidebar__cause-info">
-                    <p class="dn-sidebar__supporting-label">YOU ARE SUPPORTING</p>
-                    <h3 class="dn-sidebar__cause-title">Community Clean Water Initiative 2024</h3>
-                    <p class="dn-sidebar__cause-desc">
-                        Providing sustainable filtration systems for over 500 households in rural communities.
-                        100% of proceeds go directly to the field.
-                    </p>
-
-                    <div class="dn-sidebar__summary">
-                        <div class="dn-sidebar__summary-row">
-                            <span class="dn-sidebar__summary-label">Donation Amount</span>
-                            <span class="dn-sidebar__summary-value dn-sidebar__summary-value--yellow">
-                                $@DonationDisplay
-                            </span>
-                        </div>
-                        <div class="dn-sidebar__summary-row">
-                            <span class="dn-sidebar__summary-label">Processing Fee</span>
-                            <span class="dn-sidebar__summary-value">$0.00</span>
-                        </div>
-                        <div class="dn-sidebar__summary-divider"></div>
-                        <div class="dn-sidebar__summary-row dn-sidebar__summary-row--total">
-                            <span class="dn-sidebar__summary-label">Total Contribution</span>
-                            <span class="dn-sidebar__summary-value dn-sidebar__summary-value--total">
-                                $@DonationDisplay
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Security badge -->
-            <div class="dn-sidebar__secure">
-                <span class="dn-sidebar__secure-icon">
-                    <i class="fas fa-shield-check"></i>
-                </span>
-                <div class="dn-sidebar__secure-text">
-                    <p class="dn-sidebar__secure-title">VERIFIED SECURE</p>
-                    <p class="dn-sidebar__secure-desc">
-                        SocialAid ensures your donation is handled with industry-standard security protocols.
-                    </p>
-                </div>
-            </div>
-
-            <a href="/faq/donations" class="dn-sidebar__help-link">
-                <span class="bulma-icon bulma-is-small"><i class="far fa-circle-question"></i></span>
-                Questions about your donation?
-            </a>
-
-        </aside>
-    </div><!-- /dn-body -->
-
-    <!-- ═══════════════ FOOTER ═══════════════ -->
-    <footer class="dn-footer">
-        <div class="dn-footer__icons">
-            <i class="fas fa-headset"></i>
-            <i class="fas fa-landmark"></i>
-            <i class="fas fa-scale-balanced"></i>
+            </aside>
         </div>
-        <p class="dn-footer__legal">
-            SocialAid is a registered non-profit organization. Your donations may be tax-deductible according to your local laws.
-            By clicking "Complete Donation" you agree to our
-            <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
-            All financial transactions are processed securely through our partners.
-        </p>
-    </footer>
+    }
 
+    @if (ShowOwnDonationDialog)
+    {
+        <div class="dn-modal">
+            <div class="dn-modal__card">
+                <div class="dn-modal__icon">
+                    <i class="fas fa-circle-exclamation"></i>
+                </div>
+                <h2 class="dn-modal__title">No puede donar a su propio caso</h2>
+                <p class="dn-modal__text">
+                    Las donaciones al mismo caso publicado por usted no están permitidas. Puede volver al detalle del caso o revisar otros casos disponibles.
+                </p>
+                <div class="dn-modal__actions">
+                    <button type="button" class="dn-modal__btn dn-modal__btn--ghost" @onclick="CloseOwnDonationDialog">
+                        Cerrar
+                    </button>
+                    <button type="button" class="dn-modal__btn dn-modal__btn--primary" @onclick="GoToCaseDetail">
+                        Volver al caso
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @code {
     [Parameter] public int CauseId { get; set; }
 
-    private List<int> PresetAmounts = new() { 10, 25, 50, 100 };
-    private int    SelectedAmount      { get; set; } = 25;
-    private string CustomAmount        { get; set; } = string.Empty;
-    private string PaymentMethod       { get; set; } = "card";
-    private string CardName            { get; set; } = string.Empty;
-    private string CardNumber          { get; set; } = string.Empty;
-    private string CardExpiry          { get; set; } = string.Empty;
-    private string CardCvc             { get; set; } = string.Empty;
-    private bool   DonateAnonymously   { get; set; } = false;
-    private bool   ReceiveNotification { get; set; } = false;
+    private Caso? Case { get; set; }
+    private Usuario? CurrentUser { get; set; }
+    private DonationFormModel FormModel { get; set; } = new();
+    private readonly List<decimal> PresetAmounts = new() { 10, 25, 50, 100 };
+    private decimal SelectedAmount { get; set; } = 25;
+    private bool IsLoading { get; set; } = true;
+    private bool IsSubmitting { get; set; }
+    private bool IsSuccess { get; set; }
+    private bool ShowOwnDonationDialog { get; set; }
+    private string? FeedbackMessage { get; set; }
 
-    private string DonationDisplay =>
-        string.IsNullOrWhiteSpace(CustomAmount) ? $"{SelectedAmount:0.00}" : $"{CustomAmount}";
+    private decimal SelectedDonationAmount => FormModel.CustomAmount > 0 ? FormModel.CustomAmount.Value : SelectedAmount;
+    private bool IsOwnCaseDonationBlocked => CurrentUser is not null && Case is not null && CurrentUser.Id == Case.IdBeneficiado;
 
-    private void SelectAmount(int amount)
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Case = await CasoService.ObtenerPorIdConDetallesAsync(CauseId);
+
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (int.TryParse(userIdStr, out var userId))
+            {
+                CurrentUser = await UsuarioService.ObtenerPorId(userId);
+            }
+
+            FormModel.PaymentMethod = "Tarjeta";
+
+            if (IsOwnCaseDonationBlocked)
+            {
+                ShowOwnDonationDialog = true;
+                FeedbackMessage = "No puede donar a un caso publicado por usted mismo.";
+                IsSuccess = false;
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void SelectAmount(decimal amount)
     {
         SelectedAmount = amount;
-        CustomAmount   = string.Empty;
+        FormModel.CustomAmount = null;
     }
 
-    private void OnCustomInput(ChangeEventArgs e)
+    private void OnCustomInput(ChangeEventArgs _)
     {
-        CustomAmount = e.Value?.ToString() ?? string.Empty;
-        if (!string.IsNullOrWhiteSpace(CustomAmount))
+        if (FormModel.CustomAmount > 0)
+        {
             SelectedAmount = 0;
+        }
     }
 
-    private void HandleDonate()
+    private void SelectMethod(string method)
     {
-        // Donation processing logic here
+        FormModel.PaymentMethod = method;
+    }
+
+    private async Task HandleDonateAsync()
+    {
+        FeedbackMessage = null;
+
+        if (Case is null)
+        {
+            FeedbackMessage = "No se encontró el caso para registrar la donación.";
+            IsSuccess = false;
+            return;
+        }
+
+        if (CurrentUser is null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        if (IsOwnCaseDonationBlocked)
+        {
+            ShowOwnDonationDialog = true;
+            FeedbackMessage = "No puede donar a un caso publicado por usted mismo.";
+            IsSuccess = false;
+            return;
+        }
+
+        if (SelectedDonationAmount <= 0)
+        {
+            FeedbackMessage = "Seleccione un monto válido para donar.";
+            IsSuccess = false;
+            return;
+        }
+
+        if (FormModel.PaymentMethod == "Tarjeta" &&
+            (string.IsNullOrWhiteSpace(FormModel.CardName) ||
+             string.IsNullOrWhiteSpace(FormModel.CardNumber) ||
+             string.IsNullOrWhiteSpace(FormModel.CardExpiry) ||
+             string.IsNullOrWhiteSpace(FormModel.CardCvc)))
+        {
+            FeedbackMessage = "Complete los datos de la tarjeta para continuar.";
+            IsSuccess = false;
+            return;
+        }
+
+        IsSubmitting = true;
+
+        try
+        {
+            var donation = new Donacione
+            {
+                IdCaso = Case.Id,
+                IdDonador = CurrentUser.Id,
+                Monto = SelectedDonationAmount,
+                Anonimo = FormModel.DonateAnonymously,
+                FechaDonacion = DateTime.Now,
+                Estado = "Completado",
+                MetodoPago = FormModel.PaymentMethod
+            };
+
+            DbContext.Donaciones.Add(donation);
+            await DbContext.SaveChangesAsync();
+
+            IsSuccess = true;
+            FeedbackMessage = "La donación se registró correctamente.";
+            Navigation.NavigateTo($"/cases/{Case.Id}", true);
+        }
+        catch (Exception ex)
+        {
+            IsSuccess = false;
+            FeedbackMessage = "No se pudo procesar la donación: " + ex.Message;
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+
+    private string GetCaseImage()
+    {
+        if (!string.IsNullOrWhiteSpace(Case?.ImagenUrl))
+        {
+            return Case.ImagenUrl;
+        }
+
+        return "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=1200&q=80";
+    }
+
+    private string GetShortDescription()
+    {
+        if (string.IsNullOrWhiteSpace(Case?.Descripcion))
+        {
+            return "Su apoyo ayudará directamente a cubrir la necesidad de este caso.";
+        }
+
+        return Case.Descripcion.Length <= 140
+            ? Case.Descripcion
+            : Case.Descripcion[..140] + "...";
+    }
+
+    private void CloseOwnDonationDialog()
+    {
+        ShowOwnDonationDialog = false;
+    }
+
+    private void GoToCaseDetail()
+    {
+        if (Case is null)
+        {
+            Navigation.NavigateTo("/cases");
+            return;
+        }
+
+        Navigation.NavigateTo($"/cases/{Case.Id}");
+    }
+
+    private sealed class DonationFormModel
+    {
+        [Range(typeof(decimal), "0.01", "99999999", ErrorMessage = "Ingrese un monto válido.")]
+        public decimal? CustomAmount { get; set; }
+
+        public string PaymentMethod { get; set; } = "Tarjeta";
+        public string CardName { get; set; } = string.Empty;
+        public string CardNumber { get; set; } = string.Empty;
+        public string CardExpiry { get; set; } = string.Empty;
+        public string CardCvc { get; set; } = string.Empty;
+        public bool DonateAnonymously { get; set; }
+        public bool ReceiveNotification { get; set; }
     }
 }
