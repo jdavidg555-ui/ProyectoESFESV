@@ -1,4 +1,5 @@
 @page "/donor/dashboard"
+@layout ProfileLayout
 @using ProyectoSocioEconomico.WebUI.Services
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
@@ -10,35 +11,7 @@
 @inject AppDbContext DbContext
 
 <div class="dp-page">
-
-
-    <!-- ═══════════════ BODY ═══════════════ -->
-    <div class="dp-body">
-
-        <!-- ── SIDEBAR ── -->
-        <aside class="dp-sidebar">
-            <p class="dp-sidebar__heading">SETTINGS MENU</p>
-
-            <!-- Nav links -->
-            <nav class="dp-sidebar__nav">
-                <a href="/account/settings" class="dp-sidebar__nav-item">
-                    <span class="bulma-icon bulma-is-small"><i class="far fa-user"></i></span>
-                    Account Settings
-                </a>
-                <a href="/donor/dashboard" class="dp-sidebar__nav-item dp-sidebar__nav-item--active">
-                    <span class="bulma-icon bulma-is-small"><i class="fas fa-table-cells-large"></i></span>
-                    Mis donaciones
-                </a>
-                @* TODO: quiero que solo aparezca si el usuuario es beneficiado *@
-                <a href="/donor/dashboard" class="dp-sidebar__nav-item">
-                    <span class="bulma-icon bulma-is-small"><i class="fa-solid fa-trowel"></i></span>
-                    Mi caso
-                </a>
-            </nav>
-        </aside>
-
-        <!-- ── MAIN CONTENT ── -->
-        <main class="dp-main">
+    <main class="dp-main">
 
             <!-- Page header -->
             <div class="dp-main__header">
@@ -89,7 +62,8 @@
                 @if (Donations == null || !Donations.Any())
                 {
                     <div class="bulma-notification bulma-is-info bulma-is-light bulma-m-5">
-                        <i class="fas fa-circle-info"></i> Aún no has realizado ninguna donación. ¡Empieza hoy a cambiar vidas!
+                        <i class="fas fa-circle-info"></i> Aún no has realizado ninguna donación. ¡Empieza hoy a cambiar
+                        vidas!
                     </div>
                 }
                 else
@@ -122,8 +96,7 @@
                     </table>
                 }
             </div>
-        </main>
-    </div>
+    </main>
 </div>
 
 @code {

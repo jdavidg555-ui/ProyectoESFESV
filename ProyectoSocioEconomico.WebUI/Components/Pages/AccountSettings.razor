@@ -1,4 +1,5 @@
 @page "/account/settings"
+@layout ProfileLayout
 @using ProyectoSocioEconomico.WebUI.Services
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
@@ -11,29 +12,6 @@
 @inject IWebHostEnvironment Environment
 
 <div class="as-page">
-
-    <!-- ═══════════════ SIDEBAR ═══════════════ -->
-    <aside class="as-sidebar">
-        <p class="as-sidebar__heading">SETTINGS MENU</p>
-
-        <nav class="as-sidebar__nav">
-            <a href="/account/settings" class="as-sidebar__nav-item as-sidebar__nav-item--active">
-                <span class="bulma-icon bulma-is-small"><i class="far fa-user"></i></span>
-                Account Settings
-            </a>
-            <a href="/donor/dashboard" class="as-sidebar__nav-item">
-                <span class="bulma-icon bulma-is-small"><i class="fas fa-table-cells-large"></i></span>
-                Mis donaciones
-            </a>
-            <a href="" class="as-sidebar__nav-item">
-                <span class="bulma-icon bulma-is-small"><i class="fa-solid fa-trowel"></i></span>
-                @* TODO: quiero que solo aparezca si el usuuario es beneficiado *@
-                Mi caso
-            </a>
-        </nav>
-    </aside>
-
-    <!-- ═══════════════ MAIN ═══════════════ -->
     <main class="as-main">
 
         <!-- Page title -->
@@ -56,7 +34,8 @@
                         <label class="as-profile__edit-btn" for="profile-upload" style="cursor: pointer;">
                             <i class="fas fa-pencil"></i>
                         </label>
-                        <InputFile id="profile-upload" OnChange="HandleFileSelected" style="display: none;" accept="image/*" />
+                        <InputFile id="profile-upload" OnChange="HandleFileSelected" style="display: none;"
+                                   accept="image/*" />
                     </div>
 
                     <div class="as-profile__info">
@@ -65,173 +44,179 @@
                             <span class="as-profile__badge">@UserRole</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-                            <p class="as-profile__meta" style="margin-bottom: 0;">@(string.IsNullOrEmpty(CurrentUser.Direccion) ? "País no especificado" : CurrentUser.Direccion)</p>
-                            <button class="bulma-button bulma-is-small bulma-is-ghost" @onclick="ScrollToCountry" style="padding: 0; height: auto; color: #888; text-decoration: none;">
-                                <span class="bulma-icon bulma-is-small"><i class="fas fa-pen-to-square"></i></span>
-                            </button>
-                        </div>
-                        <div class="as-profile__actions">
-                            <label class="bulma-button as-btn-change-photo" for="profile-upload" style="cursor: pointer;">Change Photo</label>
-                            <button class="bulma-button as-btn-remove-photo" @onclick="RemovePhoto">Remove Photo</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── PERSONAL INFORMATION ── -->
-            <div class="as-section-heading">
-                <span class="as-section-heading__icon">
-                    <i class="fas fa-id-card-clip"></i>
-                </span>
-                <h2 class="as-section-heading__text">Personal Information</h2>
-            </div>
-
-            <section class="as-card">
-                <div class="as-form-grid">
-
-                    <!-- First Name -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="first-name">Nombre</label>
-                        <div class="bulma-control as-control">
-                            <input id="first-name" class="bulma-input as-input" type="text" @bind="CurrentUser.Nombre" />
-                        </div>
-                    </div>
-
-                    <!-- Last Name -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="last-name">Apellido</label>
-                        <div class="bulma-control as-control">
-                            <input id="last-name" class="bulma-input as-input" type="text" @bind="CurrentUser.Apellido" />
-                        </div>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="email">Email Address</label>
-                        <div class="bulma-control as-control">
-                            <input id="email" class="bulma-input as-input" type="email" @bind="CurrentUser.Email" />
-                        </div>
-                    </div>
-
-                    <!-- Phone Number -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="phone">Número de Teléfono</label>
-                        <div class="as-phone-group" style="display: flex; gap: 0.5rem;">
-                            <div style="background: #f5f3ee; border: 1.5px solid #e4e2da; border-radius: 8px; display: flex; align-items: center; padding: 0 0.8rem; font-weight: 600; color: #555; font-size: 0.9rem;">
-                                @GetPhonePrefix()
+                            <p class="as-profile__meta" style="margin-bottom: 0;">
+                                @(string.IsNullOrEmpty(CurrentUser.Direccion) ? "País no especificado" :
+                                CurrentUser.Direccion)</p>
+                                <button class="bulma-button bulma-is-small bulma-is-ghost" @onclick="ScrollToCountry"
+                                        style="padding: 0; height: auto; color: #888; text-decoration: none;">
+                                    <span class="bulma-icon bulma-is-small"><i class="fas fa-pen-to-square"></i></span>
+                                </button>
                             </div>
-                            <div class="bulma-control as-control as-control--flex" style="flex: 1;">
-                                <input id="phone" class="bulma-input as-input" type="tel" @bind="CurrentUser.Telefono" placeholder="0000-0000" />
+                            <div class="as-profile__actions">
+                                <label class="bulma-button as-btn-change-photo" for="profile-upload"
+                                       style="cursor: pointer;">Change Photo</label>
+                                <button class="bulma-button as-btn-remove-photo" @onclick="RemovePhoto">Remove Photo</button>
                             </div>
                         </div>
                     </div>
+                </section>
 
-                    <!-- Country (Stored in Direccion) -->
-                    <div class="bulma-field as-field" id="country-field">
-                        <label class="bulma-label as-label" for="country">País de Residencia</label>
-                        <div class="bulma-control as-control">
-                            <div class="bulma-select bulma-is-fullwidth as-select-wrap">
-                                <select id="country" class="as-select" @bind="CurrentUser.Direccion">
-                                    <option value="">Seleccione un país</option>
-                                    @foreach (var country in countryPrefixes.Keys)
-                                    {
-                                        <option value="@country">@country</option>
-                                    }
-                                </select>
+                <!-- ── PERSONAL INFORMATION ── -->
+                <div class="as-section-heading">
+                    <span class="as-section-heading__icon">
+                        <i class="fas fa-id-card-clip"></i>
+                    </span>
+                    <h2 class="as-section-heading__text">Personal Information</h2>
+                </div>
+
+                <section class="as-card">
+                    <div class="as-form-grid">
+
+                        <!-- First Name -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="first-name">Nombre</label>
+                            <div class="bulma-control as-control">
+                                <input id="first-name" class="bulma-input as-input" type="text" @bind="CurrentUser.Nombre" />
                             </div>
                         </div>
-                    </div>
 
+                        <!-- Last Name -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="last-name">Apellido</label>
+                            <div class="bulma-control as-control">
+                                <input id="last-name" class="bulma-input as-input" type="text" @bind="CurrentUser.Apellido" />
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="email">Email Address</label>
+                            <div class="bulma-control as-control">
+                                <input id="email" class="bulma-input as-input" type="email" @bind="CurrentUser.Email" />
+                            </div>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="phone">Número de Teléfono</label>
+                            <div class="as-phone-group" style="display: flex; gap: 0.5rem;">
+                                <div
+                                    style="background: #f5f3ee; border: 1.5px solid #e4e2da; border-radius: 8px; display: flex; align-items: center; padding: 0 0.8rem; font-weight: 600; color: #555; font-size: 0.9rem;">
+                                    @GetPhonePrefix()
+                                </div>
+                                <div class="bulma-control as-control as-control--flex" style="flex: 1;">
+                                    <input id="phone" class="bulma-input as-input" type="tel" @bind="CurrentUser.Telefono"
+                                           placeholder="0000-0000" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Country (Stored in Direccion) -->
+                        <div class="bulma-field as-field" id="country-field">
+                            <label class="bulma-label as-label" for="country">País de Residencia</label>
+                            <div class="bulma-control as-control">
+                                <div class="bulma-select bulma-is-fullwidth as-select-wrap">
+                                    <select id="country" class="as-select" @bind="CurrentUser.Direccion">
+                                        <option value="">Seleccione un país</option>
+                                        @foreach (var country in countryPrefixes.Keys)
+                                        {
+                                            <option value="@country">@country</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ── SECURITY ── -->
+                <div class="as-section-heading">
+                    <span class="as-section-heading__icon as-section-heading__icon--yellow">
+                        <i class="fas fa-shield-halved"></i>
+                    </span>
+                    <h2 class="as-section-heading__text">Security</h2>
                 </div>
-            </section>
 
-            <!-- ── SECURITY ── -->
-            <div class="as-section-heading">
-                <span class="as-section-heading__icon as-section-heading__icon--yellow">
-                    <i class="fas fa-shield-halved"></i>
-                </span>
-                <h2 class="as-section-heading__text">Security</h2>
-            </div>
-
-            <section class="as-card">
-                @if (!string.IsNullOrEmpty(ErrorMessage))
-                {
-                    <div class="bulma-notification bulma-is-danger">
-                        @ErrorMessage
-                    </div>
-                }
-                @if (!string.IsNullOrEmpty(SuccessMessage))
-                {
-                    <div class="bulma-notification bulma-is-success">
-                        @SuccessMessage
-                    </div>
-                }
-
-                <div class="as-form-grid as-form-grid--3col">
-
-                    <!-- Current Password -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="current-pw">Current Password</label>
-                        <div class="bulma-control bulma-has-icons-right as-control">
-                            <input id="current-pw" class="bulma-input as-input" type="@(ShowCurrent ? "text" : "password")"
-                                   placeholder="••••••••" @bind="CurrentPassword" />
-                            <span class="bulma-icon bulma-is-right as-pw-toggle"
-                                  @onclick="() => ShowCurrent = !ShowCurrent">
-                                <i class="@(ShowCurrent ? "far fa-eye-slash" : "far fa-eye")"></i>
-                            </span>
+                <section class="as-card">
+                    @if (!string.IsNullOrEmpty(ErrorMessage))
+                    {
+                        <div class="bulma-notification bulma-is-danger">
+                            @ErrorMessage
                         </div>
-                    </div>
-
-                    <!-- New Password -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="new-pw">New Password</label>
-                        <div class="bulma-control bulma-has-icons-right as-control">
-                            <input id="new-pw" class="bulma-input as-input" type="@(ShowNew ? "text" : "password")"
-                                   placeholder="••••••••" @bind="NewPassword" />
-                            <span class="bulma-icon bulma-is-right as-pw-toggle" @onclick="() => ShowNew = !ShowNew">
-                                <i class="@(ShowNew ? "far fa-eye-slash" : "far fa-eye")"></i>
-                            </span>
+                    }
+                    @if (!string.IsNullOrEmpty(SuccessMessage))
+                    {
+                        <div class="bulma-notification bulma-is-success">
+                            @SuccessMessage
                         </div>
-                    </div>
+                    }
 
-                    <!-- Confirm Password -->
-                    <div class="bulma-field as-field">
-                        <label class="bulma-label as-label" for="confirm-pw">Confirm Password</label>
-                        <div class="bulma-control bulma-has-icons-right as-control">
-                            <input id="confirm-pw" class="bulma-input as-input" type="@(ShowConfirm ? "text" : "password")"
-                                   placeholder="••••••••" @bind="ConfirmPassword" />
-                            <span class="bulma-icon bulma-is-right as-pw-toggle"
-                                  @onclick="() => ShowConfirm = !ShowConfirm">
-                                <i class="@(ShowConfirm ? "far fa-eye-slash" : "far fa-eye")"></i>
-                            </span>
+                    <div class="as-form-grid as-form-grid--3col">
+
+                        <!-- Current Password -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="current-pw">Current Password</label>
+                            <div class="bulma-control bulma-has-icons-right as-control">
+                                <input id="current-pw" class="bulma-input as-input" type="@(ShowCurrent ? "text" : "password")"
+                                       placeholder="••••••••" @bind="CurrentPassword" />
+                                <span class="bulma-icon bulma-is-right as-pw-toggle"
+                                      @onclick="() => ShowCurrent = !ShowCurrent">
+                                    <i class="@(ShowCurrent ? "far fa-eye-slash" : "far fa-eye")"></i>
+                                </span>
+                            </div>
                         </div>
+
+                        <!-- New Password -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="new-pw">New Password</label>
+                            <div class="bulma-control bulma-has-icons-right as-control">
+                                <input id="new-pw" class="bulma-input as-input" type="@(ShowNew ? "text" : "password")"
+                                       placeholder="••••••••" @bind="NewPassword" />
+                                <span class="bulma-icon bulma-is-right as-pw-toggle" @onclick="() => ShowNew = !ShowNew">
+                                    <i class="@(ShowNew ? "far fa-eye-slash" : "far fa-eye")"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="bulma-field as-field">
+                            <label class="bulma-label as-label" for="confirm-pw">Confirm Password</label>
+                            <div class="bulma-control bulma-has-icons-right as-control">
+                                <input id="confirm-pw" class="bulma-input as-input" type="@(ShowConfirm ? "text" : "password")"
+                                       placeholder="••••••••" @bind="ConfirmPassword" />
+                                <span class="bulma-icon bulma-is-right as-pw-toggle"
+                                      @onclick="() => ShowConfirm = !ShowConfirm">
+                                    <i class="@(ShowConfirm ? "far fa-eye-slash" : "far fa-eye")"></i>
+                                </span>
+                            </div>
+                        </div>
+
+
                     </div>
+                </section>
 
-
+                <!-- Logout button -->
+                <div class="bulma-field as-field">
+                    <label class="bulma-label as-label">&nbsp;</label>
+                    <div class="bulma-control">
+                        <button class="bulma-button bulma-is-danger bulma-is-light as-btn-logout-sec" @onclick="HandleLogout">
+                            <span class="bulma-icon bulma-is-small"><i class="fas fa-right-from-bracket"></i></span>
+                            <span>Cerrar Sesión</span>
+                        </button>
+                    </div>
                 </div>
-            </section>
-
-            <!-- Logout button -->
-            <div class="bulma-field as-field">
-                <label class="bulma-label as-label">&nbsp;</label>
-                <div class="bulma-control">
-                    <button class="bulma-button bulma-is-danger bulma-is-light as-btn-logout-sec" @onclick="HandleLogout">
-                        <span class="bulma-icon bulma-is-small"><i class="fas fa-right-from-bracket"></i></span>
-                        <span>Cerrar Sesión</span>
+                <!-- ── SAVE BUTTON ── -->
+                <div class="as-save-row">
+                    <button class="bulma-button bulma-is-success as-btn-save" @onclick="HandleSave">
+                        <span class="bulma-icon bulma-is-small"><i class="fas fa-floppy-disk"></i></span>
+                        <strong>Save Changes</strong>
                     </button>
                 </div>
-            </div>
-            <!-- ── SAVE BUTTON ── -->
-            <div class="as-save-row">
-                <button class="bulma-button bulma-is-success as-btn-save" @onclick="HandleSave">
-                    <span class="bulma-icon bulma-is-small"><i class="fas fa-floppy-disk"></i></span>
-                    <strong>Save Changes</strong>
-                </button>
-            </div>
-        }
+            }
 
-    </main>
-</div>
+        </main>
+    </div>
 
 @code {
     private Usuario? CurrentUser { get; set; }
@@ -268,7 +253,7 @@
             if (int.TryParse(userIdStr, out int userId))
             {
                 CurrentUser = await UsuarioService.ObtenerPorId(userId);
-                UserRole = user.FindFirst(ClaimTypes.Role)?.Value ?? "Usuario";
+                UserRole = CurrentUser?.IdRolNavigation?.Nombre ?? user.FindFirst(ClaimTypes.Role)?.Value ?? "Usuario";
             }
         }
 
@@ -374,7 +359,8 @@
         try
         {
             // If any password field is filled, validate password change
-            if (!string.IsNullOrEmpty(CurrentPassword) || !string.IsNullOrEmpty(NewPassword) || !string.IsNullOrEmpty(ConfirmPassword))
+            if (!string.IsNullOrEmpty(CurrentPassword) || !string.IsNullOrEmpty(NewPassword) ||
+!string.IsNullOrEmpty(ConfirmPassword))
             {
                 // Verify current password
                 var hashedCurrent = UsuarioService.HashPassword(CurrentPassword);

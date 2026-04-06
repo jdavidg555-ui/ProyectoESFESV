@@ -1,0 +1,250 @@
+@page "/cases/{Id:int}/edit"
+
+<div class="ec-page">
+
+    <!-- ═══════════════ PAGE HEADER ═══════════════ -->
+    <div class="ec-page-header">
+        <div class="ec-page-header__left">
+            <h1 class="ec-page-header__title">Edit Your Case</h1>
+            <p class="ec-page-header__subtitle">Update your assistance request details and supporting documents.</p>
+        </div>
+        <div class="ec-status-badge">
+            <span class="ec-status-badge__icon"><i class="fas fa-circle-check"></i></span>
+            <span class="ec-status-badge__label">CURRENT STATUS:</span>
+            <span class="ec-status-badge__value">ACTIVE</span>
+        </div>
+    </div>
+
+    <!-- ═══════════════ BODY ═══════════════ -->
+    <div class="ec-body">
+
+        <!-- ── LEFT / MAIN ── -->
+        <div class="ec-main">
+
+            <!-- GENERAL INFORMATION -->
+            <section class="ec-card">
+                <h2 class="ec-card__title">
+                    <span class="ec-card__title-icon ec-card__title-icon--yellow">
+                        <i class="fas fa-pen-to-square"></i>
+                    </span>
+                    General Information
+                </h2>
+
+                <div class="ec-form-grid ec-form-grid--2col">
+
+                    <!-- Case Title -->
+                    <div class="bulma-field ec-field">
+                        <label class="bulma-label ec-label" for="case-title">Case Title</label>
+                        <div class="bulma-control ec-control">
+                            <input id="case-title"
+                                   class="bulma-input ec-input"
+                                   type="text"
+                                   @bind="CaseTitle" />
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="bulma-field ec-field">
+                        <label class="bulma-label ec-label" for="category">Category</label>
+                        <div class="bulma-control ec-control">
+                            <div class="bulma-select bulma-is-fullwidth ec-select-wrap">
+                                <select id="category" class="ec-select" @bind="Category">
+                                    <option value="healthcare">Healthcare &amp; Medical</option>
+                                    <option value="education">Education</option>
+                                    <option value="housing">Housing</option>
+                                    <option value="food">Food Security</option>
+                                    <option value="infrastructure">Infrastructure</option>
+                                    <option value="disaster">Disaster Relief</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Detailed Description -->
+                <div class="bulma-field ec-field ec-field--full">
+                    <label class="bulma-label ec-label" for="description">Detailed Description</label>
+                    <div class="bulma-control ec-control">
+                        <textarea id="description"
+                                  class="bulma-textarea ec-textarea"
+                                  rows="6"
+                                  maxlength="@MaxChars"
+                                  @bind="Description"
+                                  @oninput="OnDescriptionInput">
+                        </textarea>
+                    </div>
+                    <p class="ec-char-count">Word count: @WordCount/@MaxWords</p>
+                </div>
+            </section>
+
+            <!-- FINANCIAL GOAL -->
+            <section class="ec-card">
+                <h2 class="ec-card__title">
+                    <span class="ec-card__title-icon ec-card__title-icon--yellow">
+                        <i class="fas fa-hand-holding-dollar"></i>
+                    </span>
+                    Financial Goal
+                </h2>
+
+                <div class="bulma-field ec-field ec-field--narrow">
+                    <label class="bulma-label ec-label" for="amount">Required Amount (USD)</label>
+                    <div class="bulma-control ec-control">
+                        <div class="ec-money-wrap">
+                            <span class="ec-money-prefix">$</span>
+                            <input id="amount"
+                                   class="bulma-input ec-input ec-input--money"
+                                   type="number"
+                                   min="0"
+                                   step="1"
+                                   @bind="RequiredAmount" />
+                        </div>
+                    </div>
+                    <p class="ec-field-note">Changing the goal may require a new review process.</p>
+                </div>
+            </section>
+
+            <!-- CASE EVIDENCE -->
+            <section class="ec-card">
+                <div class="ec-card__evidence-header">
+                    <h2 class="ec-card__title">
+                        <span class="ec-card__title-icon ec-card__title-icon--yellow">
+                            <i class="fas fa-file-image"></i>
+                        </span>
+                        Case Evidence
+                    </h2>
+                    <span class="ec-doc-count">@ExistingDocs.Count DOCUMENTS ATTACHED</span>
+                </div>
+
+                <!-- Evidence grid -->
+                <div class="ec-evidence-grid">
+
+                    @foreach (var doc in ExistingDocs)
+                    {
+                        <div class="ec-evidence-thumb">
+                            <img src="@doc.PreviewUrl" alt="@doc.Name" class="ec-evidence-thumb__img" />
+                            <button type="button"
+                                    class="ec-evidence-thumb__remove"
+                                    aria-label="Remove document"
+                                    @onclick="() => RemoveDoc(doc.Id)">
+                                <i class="fas fa-xmark"></i>
+                            </button>
+                        </div>
+                    }
+
+                    <!-- Add evidence slot -->
+                    <label class="ec-evidence-add" for="evidence-upload">
+                        <input id="evidence-upload"
+                               type="file"
+                               accept=".pdf,.jpg,.jpeg,.png"
+                               class="ec-evidence-add__input"
+                               multiple />
+                        <span class="ec-evidence-add__icon">
+                            <i class="fas fa-camera-plus"></i>
+                        </span>
+                        <span class="ec-evidence-add__label">ADD EVIDENCE</span>
+                    </label>
+
+                </div>
+
+                <p class="ec-evidence-note">
+                    <span class="bulma-icon bulma-is-small"><i class="fas fa-circle-info"></i></span>
+                    Accepted formats: PDF, JPG, PNG (Max 5MB each). Please ensure all text in images is legible for faster verification.
+                </p>
+            </section>
+
+        </div><!-- /ec-main -->
+
+        <!-- ── RIGHT SIDEBAR ── -->
+        <aside class="ec-sidebar">
+            <div class="ec-tips-card">
+                <h3 class="ec-tips-card__title">
+                    <span class="ec-tips-card__icon"><i class="far fa-lightbulb"></i></span>
+                    Tips for Success
+                </h3>
+                <ol class="ec-tips-list">
+                    <li class="ec-tips-list__item">
+                        <span class="ec-tips-list__num">1</span>
+                        <div>
+                            <strong>Be Specific:</strong>
+                            <p>Explain exactly what the funds will be used for (e.g., medicine names or treatment types).</p>
+                        </div>
+                    </li>
+                    <li class="ec-tips-list__item">
+                        <span class="ec-tips-list__num">2</span>
+                        <div>
+                            <strong>Use Clear Photos:</strong>
+                            <p>High-quality evidence helps donors trust your request more quickly.</p>
+                        </div>
+                    </li>
+                    <li class="ec-tips-list__item">
+                        <span class="ec-tips-list__num">3</span>
+                        <div>
+                            <strong>Keep it Professional:</strong>
+                            <p>Check for typos and ensure your tone is polite and clear.</p>
+                        </div>
+                    </li>
+                    <li class="ec-tips-list__item">
+                        <span class="ec-tips-list__num">4</span>
+                        <div>
+                            <strong>Recent Dates:</strong>
+                            <p>Ensure bills and prescriptions are from within the last 6 months.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </aside>
+
+    </div><!-- /ec-body -->
+
+    <!-- ═══════════════ BOTTOM ACTION BAR ═══════════════ -->
+    <div class="ec-action-bar">
+        <a href="/cases/@Id" class="ec-action-bar__cancel">Cancel Changes</a>
+        <button type="button"
+                class="bulma-button bulma-is-warning ec-btn-update"
+                @onclick="HandleUpdate">
+            <span class="bulma-icon bulma-is-small"><i class="fas fa-floppy-disk"></i></span>
+            <strong>Update Case</strong>
+        </button>
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private const int MaxChars = 3000;
+    private const int MaxWords = 500;
+
+    private string  CaseTitle      { get; set; } = "Emergency Medical Assistance for Rehabilitation";
+    private string  Category       { get; set; } = "healthcare";
+    private string  Description    { get; set; } = "I am seeking financial assistance to cover the costs of my physical rehabilitation therapy following a recent surgery. The prescribed sessions are essential for my mobility, but they are currently beyond my monthly budget. Any help would be greatly appreciated to get me back on my feet and back to work.";
+    private decimal RequiredAmount { get; set; } = 1250;
+
+    private int WordCount => string.IsNullOrWhiteSpace(Description)
+        ? 0
+        : Description.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+
+    private record DocItem(int Id, string Name, string PreviewUrl);
+
+    private List<DocItem> ExistingDocs = new()
+    {
+        new(1, "Prescription",    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=70"),
+        new(2, "Hospital Bill",   "https://images.unsplash.com/photo-1554774853-719586f82d77?w=300&q=70"),
+    };
+
+    private void OnDescriptionInput(ChangeEventArgs e)
+    {
+        Description = e.Value?.ToString() ?? string.Empty;
+    }
+
+    private void RemoveDoc(int docId)
+    {
+        ExistingDocs = ExistingDocs.Where(d => d.Id != docId).ToList();
+    }
+
+    private void HandleUpdate()
+    {
+        // Update logic here
+    }
+}

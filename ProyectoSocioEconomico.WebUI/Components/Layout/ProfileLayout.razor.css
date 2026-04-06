@@ -1,0 +1,188 @@
+.page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.profile-pic-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+}
+
+.profile-pic {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+div.pl-shell {
+    --pl-green: #22c55e;
+    --pl-bg: #f2f2f0;
+    --pl-white: #ffffff;
+    --pl-text-dark: #1a1a1a;
+    --pl-text-mid: #4a4a4a;
+    --pl-text-muted: #888888;
+    --pl-border: #e0dfd8;
+    --pl-sidebar-w: 280px;
+    background-color: var(--pl-bg);
+    display: grid;
+    grid-template-columns: var(--pl-sidebar-w) 1fr;
+    min-height: calc(100vh - 4rem);
+}
+
+div.pl-shell aside.pl-sidebar {
+    background: var(--pl-white);
+    border-right: 1px solid var(--pl-border);
+    padding: 2.25rem 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+div.pl-shell .pl-sidebar__heading {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pl-text-muted);
+    text-transform: uppercase;
+    padding: 0 0.75rem;
+    margin-bottom: 1.1rem;
+}
+
+div.pl-shell .pl-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding-top: 0.25rem;
+}
+
+div.pl-shell a.pl-sidebar__nav-item,
+div.pl-shell a.pl-sidebar__nav-item:link,
+div.pl-shell a.pl-sidebar__nav-item:visited {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--pl-text-mid);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+div.pl-shell a.pl-sidebar__nav-item:hover {
+    background: #f7f5ef;
+    color: var(--pl-text-dark);
+    border-color: #ece8dd;
+}
+
+div.pl-shell a.pl-sidebar__nav-item--active,
+div.pl-shell a.pl-sidebar__nav-item--active:link,
+div.pl-shell a.pl-sidebar__nav-item--active:visited,
+div.pl-shell a.pl-sidebar__nav-item--active:hover {
+    border-color: rgba(34, 197, 94, 0.2);
+    box-shadow: inset 3px 0 0 var(--pl-green);
+    background: #f0faf1;
+    color: var(--pl-text-dark);
+    font-weight: 700;
+}
+
+div.pl-shell a.pl-sidebar__nav-item .bulma-icon {
+    color: inherit;
+    flex-shrink: 0;
+}
+
+div.pl-shell section.pl-content {
+    min-width: 0;
+}
+
+footer.bulma-footer {
+    background-color: var(--primary-color-dark) !important;
+    color: white;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+footer.bulma-footer .bulma-title,
+footer.bulma-footer .bulma-subtitle {
+    color: white !important;
+}
+
+footer.bulma-footer a {
+    color: #b8b8b8;
+    transition: color 0.2s ease;
+}
+
+footer.bulma-footer a:hover {
+    color: var(--primary-color) !important;
+}
+
+footer.bulma-footer .bulma-menu-list li {
+    margin-bottom: 0.65rem;
+}
+
+footer.bulma-footer hr {
+    border-color: #333 !important;
+}
+
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+@media (max-width: 860px) {
+    div.pl-shell {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    div.pl-shell aside.pl-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--pl-border);
+        padding: 1rem 0.75rem 1.1rem;
+    }
+
+    div.pl-shell .pl-sidebar__nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    div.pl-shell a.pl-sidebar__nav-item,
+    div.pl-shell a.pl-sidebar__nav-item:link,
+    div.pl-shell a.pl-sidebar__nav-item:visited {
+        padding: 0.5rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+    }
+}

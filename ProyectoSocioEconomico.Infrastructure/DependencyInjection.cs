@@ -19,6 +19,7 @@ namespace ProyectoSocioEconomico.Infrastructure
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<ICasoService, CasoService>();
             services.AddScoped<IProgramaService, ProgramaService>();
+            services.AddScoped<IRetiroService, RetiroService>();
 
             return services;
         }

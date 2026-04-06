@@ -1,0 +1,174 @@
+@page "/beneficiary/withdrawals"
+@layout ProfileLayout
+@rendermode InteractiveServer
+@using ProyectoSocioEconomico.WebUI.Services
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using System.Security.Claims
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject IUsuarioService UsuarioService
+@inject ICasoService CasoService
+@inject IRetiroService RetiroService
+@inject NavigationManager Navigation
+
+<div class="wh-page">
+    <main class="wh-main">
+        @if (IsLoading)
+        {
+            <div class="wh-header">
+                <div>
+                    <h1 class="wh-title">Cargando historial...</h1>
+                    <p class="wh-subtitle">Estamos obteniendo sus retiros registrados.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="wh-header">
+                <div>
+                    <h1 class="wh-title">Historial de retiros</h1>
+                    <p class="wh-subtitle">Revise cada solicitud enviada y su estado actual.</p>
+                </div>
+                <a href="/beneficiary/dashboard" class="wh-btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al caso
+                </a>
+            </div>
+
+            <section class="wh-stats">
+                <article class="wh-stat-card">
+                    <span class="wh-stat-card__label">Solicitudes</span>
+                    <strong class="wh-stat-card__value">@Withdrawals.Count</strong>
+                </article>
+                <article class="wh-stat-card">
+                    <span class="wh-stat-card__label">Monto solicitado</span>
+                    <strong class="wh-stat-card__value">@TotalSolicitado.ToString("C")</strong>
+                </article>
+                <article class="wh-stat-card">
+                    <span class="wh-stat-card__label">Pendientes</span>
+                    <strong class="wh-stat-card__value">@PendingCount</strong>
+                </article>
+            </section>
+
+            <section class="wh-card">
+                <div class="wh-card__header">
+                    <div>
+                        <h2 class="wh-card__title">Detalle de retiros</h2>
+                        <p class="wh-card__text">
+                            @if (CurrentCase is not null)
+                            {
+                                <span>Caso asociado: @CurrentCase.Titulo</span>
+                            }
+                            else
+                            {
+                                <span>Se muestran todas las solicitudes del beneficiario autenticado.</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                @if (Withdrawals.Count == 0)
+                {
+                    <div class="wh-empty-state">
+                        <div class="wh-empty-state__icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <h3>No hay retiros registrados</h3>
+                        <p>Todavía no ha realizado solicitudes de retiro. Puede hacerlo desde su panel del caso.</p>
+                        <a href="/beneficiary/dashboard" class="wh-btn-primary">Ir al panel</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="wh-table-wrapper">
+                        <table class="wh-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Monto</th>
+                                    <th>Método</th>
+                                    <th>Datos</th>
+                                    <th>Estado</th>
+                                    <th>Procesado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var retiro in Withdrawals)
+                                {
+                                    <tr>
+                                        <td>@retiro.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                        <td class="wh-amount">@retiro.Monto.ToString("C")</td>
+                                        <td>@retiro.MetodoPago</td>
+                                        <td>@(string.IsNullOrWhiteSpace(retiro.DatosPago) ? "Sin detalle" : retiro.DatosPago)</td>
+                                        <td>
+                                            <span class="wh-status @GetStatusClass(retiro.Estado)">
+                                                @retiro.Estado
+                                            </span>
+                                        </td>
+                                        <td>@(retiro.FechaProcesado?.ToString("dd/MM/yyyy hh:mm tt") ?? "Aun no procesado")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </section>
+        }
+    </main>
+</div>
+
+@code {
+    private Usuario? CurrentUser { get; set; }
+    private Caso? CurrentCase { get; set; }
+    private List<Retiro> Withdrawals { get; set; } = new();
+    private bool IsLoading { get; set; } = true;
+
+    private decimal TotalSolicitado => Withdrawals.Sum(retiro => retiro.Monto);
+    private int PendingCount => Withdrawals.Count(retiro => string.Equals(retiro.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(userIdStr, out var userId))
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        CurrentUser = await UsuarioService.ObtenerPorId(userId);
+        if (CurrentUser is null)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        CurrentCase = await CasoService.ObtenerPorBeneficiadoIdAsync(userId);
+        Withdrawals = await RetiroService.ObtenerPorBeneficiadoIdAsync(userId);
+        IsLoading = false;
+    }
+
+    private static string GetStatusClass(string? estado)
+    {
+        if (string.Equals(estado, "Aprobado", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(estado, "Procesado", StringComparison.OrdinalIgnoreCase))
+        {
+            return "wh-status--success";
+        }
+
+        if (string.Equals(estado, "Rechazado", StringComparison.OrdinalIgnoreCase))
+        {
+            return "wh-status--danger";
+        }
+
+        return "wh-status--warning";
+    }
+}

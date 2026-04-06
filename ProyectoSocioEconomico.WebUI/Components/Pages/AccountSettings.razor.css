@@ -19,70 +19,8 @@ div.as-page {
     --as-input-bg:     #ffffff;
     --as-shadow-sm:    0 1px 3px rgba(0,0,0,0.06);
     --as-shadow-card:  0 2px 12px rgba(0,0,0,0.06);
-    --as-sidebar-w:    280px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    min-height: 100vh;
     background-color: var(--as-bg);
-    display: grid;
-    grid-template-columns: var(--as-sidebar-w) 1fr;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SIDEBAR
-   ═══════════════════════════════════════════════════════════════ */
-div.as-page aside.as-sidebar {
-    background: var(--as-white);
-    border-right: 1px solid var(--as-border);
-    padding: 2rem 0 2rem;
-    min-height: 100vh;
-}
-
-div.as-page aside.as-sidebar .as-sidebar__heading {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--as-text-muted);
-    text-transform: uppercase;
-    padding: 0 1.5rem;
-    margin-bottom: 1rem;
-}
-
-div.as-page aside.as-sidebar nav.as-sidebar__nav {
-    display: flex;
-    flex-direction: column;
-}
-
-div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--as-text-mid);
-    text-decoration: none;
-    border-radius: 0;
-    transition: background 0.15s, color 0.15s;
-}
-
-div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item:hover {
-    background: #f5f4f0;
-    color: var(--as-text-dark);
-}
-
-div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item--active {
-    border-left: 3px solid var(--as-green);
-    background: #f0faf1; /* Light green to match dp-green-light */
-    color: var(--as-text-dark);
-    font-weight: 700;
-    border-radius: 0;
-    margin: 0;
-    padding: 0.7rem 1rem;
-}
-
-div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item--active:hover {
-    background: #e6f5e9;
-    color: var(--as-text-dark);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -455,32 +393,6 @@ div.as-page main.as-main .as-save-row .as-btn-save.bulma-button.bulma-is-success
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 860px) {
-    div.as-page {
-        grid-template-columns: 1fr;
-    }
-
-    div.as-page aside.as-sidebar {
-        min-height: unset;
-        border-right: none;
-        border-bottom: 1px solid var(--as-border);
-        padding: 1rem 0.75rem;
-    }
-
-    div.as-page aside.as-sidebar nav.as-sidebar__nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 0.35rem;
-    }
-
-    div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item {
-        padding: 0.5rem 0.9rem;
-        border-radius: 8px;
-        font-size: 0.82rem;
-    }
-
-    div.as-page aside.as-sidebar nav.as-sidebar__nav .as-sidebar__nav-item--active {
-        margin: 0;
-    }
 }
 
 @media (max-width: 640px) {

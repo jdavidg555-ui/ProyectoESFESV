@@ -1,27 +1,25 @@
 @inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Authorization
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using ProyectoSocioEconomico.WebUI.Services
 @using System.Security.Claims
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject IUsuarioService UsuarioService
+@inject ICasoService CasoService
+@inject NavigationManager Navigation
 
 <div class="page">
-
     <nav class="bulma-navbar bulma-px-1 bulma-px-5">
         <section class="bulma-navbar-brand">
             <a class="bulma-navbar-item bulma-title" href="/">AidPortal</a>
         </section>
         <section class="bulma-navbar-menu">
             <ul class="bulma-navbar-start">
-                <a class="bulma-navbar-item" href="/programs">
-                    Programas
-                </a>
-                <a class="bulma-navbar-item" href="/about-us">
-                    Acerca de nosotros
-                </a>
-                <a class="bulma-navbar-item" href="/cases">
-                    Casos
-                </a>
-                <a class="bulma-navbar-item" href="#">
-                    Ser volunatario
-                </a>
+                <a class="bulma-navbar-item" href="/programs">Programas</a>
+                <a class="bulma-navbar-item" href="/about-us">Acerca de nosotros</a>
+                <a class="bulma-navbar-item" href="/cases">Casos</a>
+                <a class="bulma-navbar-item" href="#">Ser volunatario</a>
             </ul>
             <section class="bulma-navbar-end bulma-is-flex bulma-is-align-items-center">
                 <AuthorizeView>
@@ -34,14 +32,11 @@
                         <a class="bulma-navbar-item" href="/account/settings">
                             <div class="bulma-is-flex bulma-is-align-items-center">
                                 <figure class="bulma-image profile-pic-container bulma-mr-3">
-                                    <img class="profile-pic" src="@GetProfileImage(context.User)"
-                                         alt="Foto de perfil" />
+                                    <img class="profile-pic" src="@GetProfileImage(context.User)" alt="Foto de perfil" />
                                 </figure>
                                 <div class="bulma-is-flex bulma-is-flex-direction-column">
-                                    <span class="bulma-has-text-weight-bold"
-                                          style="line-height: 1.2;">@context.User.Identity?.Name</span>
-                                    <span class="bulma-is-size-7 bulma-has-text-grey"
-                                          style="line-height: 1.2;">@context.User.FindFirst(ClaimTypes.Role)?.Value</span>
+                                    <span class="bulma-has-text-weight-bold" style="line-height: 1.2;">@context.User.Identity?.Name</span>
+                                    <span class="bulma-is-size-7 bulma-has-text-grey" style="line-height: 1.2;">@context.User.FindFirst(ClaimTypes.Role)?.Value</span>
                                 </div>
                             </div>
                         </a>
@@ -57,19 +52,47 @@
     </nav>
 
     <main>
-        @Body
+        <div class="pl-shell">
+            <aside class="pl-sidebar">
+                <p class="pl-sidebar__heading">SETTINGS MENU</p>
+
+                <nav class="pl-sidebar__nav">
+                    <a href="/account/settings" class="@GetNavItemClass("/account/settings")">
+                        <span class="bulma-icon bulma-is-small"><i class="far fa-user"></i></span>
+                        Account Settings
+                    </a>
+
+                    <a href="/donor/dashboard" class="@GetNavItemClass("/donor/dashboard")">
+                        <span class="bulma-icon bulma-is-small"><i class="fas fa-table-cells-large"></i></span>
+                        Mis donaciones
+                    </a>
+
+                    @if (IsBeneficiario)
+                    {
+                        <a href="@MyCaseUrl" class="@GetNavItemClass(MyCaseUrl)">
+                            <span class="bulma-icon bulma-is-small"><i class="fa-solid fa-trowel"></i></span>
+                            Mi caso
+                        </a>
+
+                        <a href="/beneficiary/withdrawals" class="@GetNavItemClass("/beneficiary/withdrawals")">
+                            <span class="bulma-icon bulma-is-small"><i class="fas fa-clock-rotate-left"></i></span>
+                            Mis retiros
+                        </a>
+                    }
+                </nav>
+            </aside>
+
+            <section class="pl-content">
+                @Body
+            </section>
+        </div>
     </main>
 
     <footer class="bulma-footer bulma-has-background-dark bulma-py-6">
         <div class="bulma-container bulma-is-max-desktop">
             <div class="bulma-columns bulma-is-multiline">
-
-                <!-- Columna 1: Logo + Descripción -->
                 <div class="bulma-column bulma-is-12 bulma-is-6-desktop">
                     <div class="bulma-is-flex bulma-is-align-items-center bulma-mb-3">
-                        @* <figure class="bulma-image bulma-mr-3" style="width: 48px; height: 48px;">
-                            <img src="/images/aidportal-logo-green.svg" alt="AidPortal Logo" class="bulma-image">
-                        </figure> *@
                         <h3 class="bulma-title bulma-is-4 bulma-has-text-white">AIDPORTAL</h3>
                     </div>
                     <p class="bulma-has-text-grey-light">
@@ -78,24 +101,17 @@
                     </p>
                     <div class="bulma-is-flex bulma-gap-3 bulma-mt-5">
                         <a href="#" class="bulma-button bulma-is-small bulma-is-dark bulma-is-outlined">
-                            <span class="icon">
-                                <i class="fab fa-facebook-f"></i>
-                            </span>
+                            <span class="icon"><i class="fab fa-facebook-f"></i></span>
                         </a>
                         <a href="#" class="bulma-button bulma-is-small bulma-is-dark bulma-is-outlined">
-                            <span class="icon">
-                                <i class="fab fa-instagram"></i>
-                            </span>
+                            <span class="icon"><i class="fab fa-instagram"></i></span>
                         </a>
                         <a href="#" class="bulma-button bulma-is-small bulma-is-dark bulma-is-outlined">
-                            <span class="icon">
-                                <i class="fab fa-twitter"></i>
-                            </span>
+                            <span class="icon"><i class="fab fa-twitter"></i></span>
                         </a>
                     </div>
                 </div>
 
-                <!-- Columna 2: Programas -->
                 <div class="bulma-column bulma-is-12 bulma-is-3-desktop">
                     <h4 class="bulma-subtitle bulma-is-6 bulma-has-text-white bulma-mb-4">Programas</h4>
                     <ul class="bulma-menu-list">
@@ -105,7 +121,6 @@
                     </ul>
                 </div>
 
-                <!-- Columna 3: Organización -->
                 <div class="bulma-column bulma-is-12 bulma-is-3-desktop">
                     <h4 class="bulma-subtitle bulma-is-6 bulma-has-text-white bulma-mb-4">Organización</h4>
                     <ul class="bulma-menu-list">
@@ -117,7 +132,6 @@
                 </div>
             </div>
 
-            <!-- Línea inferior -->
             <hr class="bulma-has-background-grey-dark bulma-my-5">
 
             <div class="bulma-level bulma-is-mobile">
@@ -138,6 +152,7 @@
             </div>
         </div>
     </footer>
+
     <div id="blazor-error-ui" data-nosnippet>
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
@@ -146,12 +161,71 @@
 </div>
 
 @code {
+    private Usuario? CurrentUser { get; set; }
+    private bool IsBeneficiario { get; set; }
+    private string MyCaseUrl { get; set; } = "/cases/new/step1";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        CurrentUser = null;
+        IsBeneficiario = false;
+        MyCaseUrl = "/cases/new/step1";
+
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            return;
+        }
+
+        var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(userIdStr, out var userId))
+        {
+            return;
+        }
+
+        CurrentUser = await UsuarioService.ObtenerPorId(userId);
+        IsBeneficiario = HasBeneficiaryRole(CurrentUser);
+
+        if (!IsBeneficiario)
+        {
+            return;
+        }
+
+        var casoUsuario = await CasoService.ObtenerPorBeneficiadoIdAsync(userId);
+        MyCaseUrl = casoUsuario is null ? "/cases/new/step1" : "/beneficiary/dashboard";
+    }
+
+    private static bool HasBeneficiaryRole(Usuario? usuario)
+    {
+        var roleName = usuario?.IdRolNavigation?.Nombre;
+        return !string.IsNullOrWhiteSpace(roleName) &&
+               (roleName.Equals("Beneficiario", StringComparison.OrdinalIgnoreCase) ||
+                roleName.Equals("Beneficiado", StringComparison.OrdinalIgnoreCase));
+    }
+
     private string GetProfileImage(ClaimsPrincipal user)
     {
         var imagePath = user.FindFirst("ImagenPerfil")?.Value;
         if (string.IsNullOrEmpty(imagePath))
+        {
             return "/uploads/profiles/DefaultProfile.png";
+        }
 
         return imagePath.StartsWith("/") ? imagePath : "/" + imagePath;
+    }
+
+    private string GetNavItemClass(string href)
+    {
+        var currentPath = "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/');
+        var normalizedHref = string.IsNullOrWhiteSpace(href) ? "/" : href;
+
+        if (string.Equals(currentPath, normalizedHref, StringComparison.OrdinalIgnoreCase))
+        {
+            return "pl-sidebar__nav-item pl-sidebar__nav-item--active";
+        }
+
+        return "pl-sidebar__nav-item";
     }
 }

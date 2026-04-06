@@ -58,6 +58,16 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Caso?> ObtenerPorBeneficiadoIdAsync(int usuarioId)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Casos
+                .Include(c => c.IdCategoriaNavigation)
+                .Include(c => c.IdBeneficiadoNavigation)
+                .OrderByDescending(c => c.FechaCreacion)
+                .FirstOrDefaultAsync(c => c.IdBeneficiado == usuarioId);
+        }
+
         public async Task<bool> UsuarioYaTieneCasoAsync(int usuarioId)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
