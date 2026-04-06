@@ -12,13 +12,13 @@
 }
 else
 {
+    var totalRecaudado = Caso.Donaciones?.Where(d => d.Estado == "Completado").Sum(d => d.Monto) ?? 0m;
+    var progreso = CalcularPorcentaje(Caso.Meta, totalRecaudado);
+    var puedeDonar = !string.Equals(Caso.Estado, "Inactivo", StringComparison.OrdinalIgnoreCase) && totalRecaudado < Caso.Meta;
+
     <div class="cd-page">
         <div class="cd-layout">
-            
-            <!-- ── COLUMNA PRINCIPAL ── -->
             <main class="cd-main">
-                
-                <!-- Hero Card (Imagen e Identidad) -->
                 <article class="cd-hero-card">
                     <div class="cd-hero-card__image-wrap">
                         @if (!string.IsNullOrEmpty(Caso.ImagenUrl))
@@ -58,7 +58,6 @@ else
                     </div>
                 </article>
 
-                <!-- Story Card (Descripción) -->
                 <section class="cd-story-card">
                     <h3 class="cd-story-card__title">
                         <i class="fas fa-book-open cd-story-card__title-icon"></i>
@@ -69,18 +68,13 @@ else
                     </div>
                 </section>
 
-                <!-- Metrics Card (Progreso) -->
-                @{
-                    decimal totalRecaudado = Caso.Donaciones?.Sum(d => d.Monto) ?? 0m;
-                    int progreso = CalcularPorcentaje(Caso.Meta, totalRecaudado);
-                }
                 <section class="cd-metrics-card">
                     <div class="cd-vuln">
                         <span class="cd-vuln__label">ESTADO ACTUAL</span>
                         <div class="cd-vuln__ring-wrap">
                             <svg class="cd-vuln__svg" viewBox="0 0 100 100">
                                 <circle cx="50" cy="50" r="45" fill="none" stroke="#e6e4dc" stroke-width="8" />
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="#22c55e" stroke-width="8" 
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#22c55e" stroke-width="8"
                                         stroke-dasharray="@(progreso * 2.82) 282" stroke-linecap="round" transform="rotate(-90 50 50)" />
                             </svg>
                             <div class="cd-vuln__center">
@@ -109,12 +103,9 @@ else
                         </div>
                     </div>
                 </section>
-
             </main>
 
-            <!-- ── SIDEBAR ── -->
             <aside class="cd-sidebar">
-                
                 <div class="cd-sidebar__funding">
                     <div class="cd-sidebar__funding-top">
                         <span class="cd-sidebar__amount">@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))</span>
@@ -125,13 +116,23 @@ else
                     </div>
                     <div class="cd-sidebar__funding-meta">
                         <span class="cd-sidebar__funded-pct">@progreso% COMPLETADO</span>
-                        <span class="cd-sidebar__days-left">@Caso.Donaciones?.Count() DONANTES</span>
+                        <span class="cd-sidebar__days-left">@Caso.Donaciones?.Count(d => d.Estado == "Completado") DONANTES</span>
                     </div>
-                    
-                    <a href="/donate/@Caso.Id" class="bulma-button bulma-is-warning bulma-is-fullwidth cd-sidebar__btn-support">
-                        <i class="fas fa-heart"></i>
-                        <strong>Donar Ahora</strong>
-                    </a>
+
+                    @if (puedeDonar)
+                    {
+                        <a href="/donate/@Caso.Id" class="bulma-button bulma-is-warning bulma-is-fullwidth cd-sidebar__btn-support">
+                            <i class="fas fa-heart"></i>
+                            <strong>Donar Ahora</strong>
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="bulma-button bulma-is-fullwidth cd-sidebar__btn-support cd-sidebar__btn-support--disabled" disabled>
+                            <i class="fas fa-lock"></i>
+                            <strong>Meta alcanzada</strong>
+                        </button>
+                    }
                 </div>
 
                 <div class="cd-sidebar__trust">
@@ -154,23 +155,7 @@ else
                         </div>
                     </div>
                 </div>
-
-                @* <div class="cd-sidebar__verification">
-                    <span class="cd-sidebar__verification-label">
-                        <i class="fas fa-user-shield"></i> VERIFICACIÓN AGENTES
-                    </span>
-                    <p class="cd-sidebar__verification-desc">Este caso ha sido auditado por nuestro equipo de campo.</p>
-                    <div class="cd-sidebar__agents">
-                        <div class="cd-sidebar__agents-avatars">
-                            <img class="cd-sidebar__agent-avatar" src="https://i.pravatar.cc/150?u=1" alt="A1" />
-                            <img class="cd-sidebar__agent-avatar cd-sidebar__agent-avatar--offset" src="https://i.pravatar.cc/150?u=2" alt="A2" />
-                        </div>
-                        <span class="cd-sidebar__agents-label">2 Agentes Asignados</span>
-                    </div>
-                </div> *@
-
             </aside>
-
         </div>
     </div>
 }

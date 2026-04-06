@@ -171,7 +171,7 @@
                     <div class="dn-submit-wrap">
                         <button type="submit"
                                 class="bulma-button bulma-is-warning bulma-is-fullwidth dn-btn-complete"
-                                disabled="@(IsSubmitting || IsOwnCaseDonationBlocked)">
+                                disabled="@(IsSubmitting || IsOwnCaseDonationBlocked || IsCaseDonationClosed)">
                             <strong>@(IsSubmitting ? "Procesando..." : "Completar donación")</strong>
                         </button>
                         <p class="dn-submit-note">
@@ -260,6 +260,26 @@
             </div>
         </div>
     }
+
+    @if (ShowCaseUnavailableDialog)
+    {
+        <div class="dn-modal">
+            <div class="dn-modal__card">
+                <div class="dn-modal__icon">
+                    <i class="fas fa-circle-exclamation"></i>
+                </div>
+                <h2 class="dn-modal__title">Este caso ya no acepta donaciones</h2>
+                <p class="dn-modal__text">
+                    El caso alcanzó su meta o fue deshabilitado, por lo que ya no puede recibir más aportes.
+                </p>
+                <div class="dn-modal__actions">
+                    <button type="button" class="dn-modal__btn dn-modal__btn--primary" @onclick="GoToCaseDetail">
+                        Volver al caso
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @code {
@@ -274,10 +294,15 @@
     private bool IsSubmitting { get; set; }
     private bool IsSuccess { get; set; }
     private bool ShowOwnDonationDialog { get; set; }
+    private bool ShowCaseUnavailableDialog { get; set; }
     private string? FeedbackMessage { get; set; }
 
     private decimal SelectedDonationAmount => FormModel.CustomAmount > 0 ? FormModel.CustomAmount.Value : SelectedAmount;
     private bool IsOwnCaseDonationBlocked => CurrentUser is not null && Case is not null && CurrentUser.Id == Case.IdBeneficiado;
+    private decimal TotalRecaudado => Case?.Donaciones?.Where(d => d.Estado == "Completado").Sum(d => d.Monto) ?? 0m;
+    private bool IsCaseDonationClosed => Case is not null &&
+                                         (string.Equals(Case.Estado, "Inactivo", StringComparison.OrdinalIgnoreCase) ||
+                                          TotalRecaudado >= Case.Meta);
 
     protected override async Task OnInitializedAsync()
     {
@@ -300,6 +325,13 @@
             {
                 ShowOwnDonationDialog = true;
                 FeedbackMessage = "No puede donar a un caso publicado por usted mismo.";
+                IsSuccess = false;
+            }
+
+            if (!IsOwnCaseDonationBlocked && IsCaseDonationClosed)
+            {
+                ShowCaseUnavailableDialog = true;
+                FeedbackMessage = "Este caso ya alcanzó su meta o no está disponible para nuevas donaciones.";
                 IsSuccess = false;
             }
         }
@@ -353,6 +385,14 @@
             return;
         }
 
+        if (IsCaseDonationClosed)
+        {
+            ShowCaseUnavailableDialog = true;
+            FeedbackMessage = "Este caso ya alcanzó su meta o no está disponible para nuevas donaciones.";
+            IsSuccess = false;
+            return;
+        }
+
         if (SelectedDonationAmount <= 0)
         {
             FeedbackMessage = "Seleccione un monto válido para donar.";
@@ -388,6 +428,7 @@
 
             DbContext.Donaciones.Add(donation);
             await DbContext.SaveChangesAsync();
+            await CasoService.SincronizarEstadoPorMetaAsync(Case.Id);
 
             IsSuccess = true;
             FeedbackMessage = "La donación se registró correctamente.";

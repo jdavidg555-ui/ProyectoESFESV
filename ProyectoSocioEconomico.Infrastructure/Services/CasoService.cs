@@ -121,6 +121,27 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
             await context.SaveChangesAsync();
         }
 
+        public async Task SincronizarEstadoPorMetaAsync(int casoId)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+
+            var casoExistente = await context.Casos.FirstOrDefaultAsync(c => c.Id == casoId);
+            if (casoExistente == null)
+            {
+                return;
+            }
+
+            var totalRecaudado = await context.Donaciones
+                .Where(d => d.IdCaso == casoId && d.Estado == "Completado")
+                .SumAsync(d => d.Monto);
+
+            if (totalRecaudado >= casoExistente.Meta)
+            {
+                casoExistente.Estado = "Inactivo";
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async Task<List<Categoria>> ObtenerCategorias()
         {
             using var context = await _contextFactory.CreateDbContextAsync();

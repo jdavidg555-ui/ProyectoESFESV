@@ -32,7 +32,6 @@
                 </a>
             </div>
 
-            <!-- ── ESTADÍSTICAS ── -->
             <div class="bw-stats-grid">
                 <div class="bw-stat-card">
                     <span class="bw-stat-card__label">RECAUDADO</span>
@@ -43,12 +42,15 @@
                     <span class="bw-stat-card__value" style="color: var(--bw-green);">@BalanceDisponible.ToString("C")</span>
                 </div>
                 <div class="bw-stat-card">
+                    <span class="bw-stat-card__label">RETIRADO / SOLICITADO</span>
+                    <span class="bw-stat-card__value">@TotalRetirado.ToString("C")</span>
+                </div>
+                <div class="bw-stat-card">
                     <span class="bw-stat-card__label">META TOTAL</span>
                     <span class="bw-stat-card__value">@CurrentCase.Meta.ToString("C")</span>
                 </div>
             </div>
 
-            <!-- ── GESTIÓN DE RETIRO ── -->
             <section class="bw-card">
                 <h2 class="bw-section-title">
                     <i class="fas fa-hand-holding-dollar" style="color: var(--bw-green);"></i>
@@ -56,12 +58,11 @@
                 </h2>
 
                 <p class="mb-4" style="color: #666; font-size: 0.95rem;">
-                    Seleccione su método de pago preferido e ingrese el monto que desea retirar de su balance disponible.
+                    El progreso del caso se calcula con lo recaudado. El retiro solo afecta el balance disponible para sacar.
                 </p>
 
-                <!-- Método de Pago -->
                 <div class="bw-methods-grid">
-                    <button type="button" 
+                    <button type="button"
                             class="bw-method-card @(SelectedMethod == "bank" ? "bw-method-card--selected" : "")"
                             @onclick='() => SelectedMethod = "bank"'>
                         <div class="bw-method-icon"><i class="fas fa-building-columns"></i></div>
@@ -71,7 +72,7 @@
                         </div>
                     </button>
 
-                    <button type="button" 
+                    <button type="button"
                             class="bw-method-card @(SelectedMethod == "wallet" ? "bw-method-card--selected" : "")"
                             @onclick='() => SelectedMethod = "wallet"'>
                         <div class="bw-method-icon"><i class="fas fa-credit-card"></i></div>
@@ -82,7 +83,6 @@
                     </button>
                 </div>
 
-                <!-- Formulario Dinámico -->
                 <div class="bw-form mb-5">
                     @if (SelectedMethod == "bank")
                     {
@@ -121,7 +121,6 @@
                     </div>
                 </div>
 
-                <!-- Acciones -->
                 <div class="bw-actions">
                     <button class="bw-btn-withdraw" @onclick="HandleWithdraw">
                         <i class="fas fa-circle-check"></i>
@@ -136,7 +135,6 @@
         }
     </main>
 
-    <!-- ── MODAL FEEDBACK ── -->
     @if (ShowModal)
     {
         <div class="bw-modal">
@@ -162,17 +160,16 @@
 @code {
     private Usuario? CurrentUser { get; set; }
     private Caso? CurrentCase { get; set; }
-    
+
     private decimal TotalRecaudado { get; set; }
     private decimal BalanceDisponible { get; set; }
-    
-    // Form fields
+    private decimal TotalRetirado { get; set; }
+
     private string SelectedMethod { get; set; } = "bank";
     private string BankName { get; set; } = "";
     private string AccountNumber { get; set; } = "";
     private decimal WithdrawAmount { get; set; }
 
-    // Modal state
     private bool ShowModal { get; set; }
     private bool IsSuccess { get; set; }
     private string ModalMessage { get; set; } = "";
@@ -197,7 +194,6 @@
                     }
                     else
                     {
-                        // No tiene caso, redirigir o mostrar mensaje
                         Navigation.NavigateTo("/cases/new/step1");
                     }
                 }
@@ -213,11 +209,15 @@
     private async Task LoadStats()
     {
         if (CurrentCase == null) return;
-        
+
+        CurrentCase = await CasoService.ObtenerPorIdConDetallesAsync(CurrentCase.Id);
+        if (CurrentCase == null) return;
+
         TotalRecaudado = CurrentCase.Donaciones
             .Where(d => d.Estado == "Completado")
             .Sum(d => d.Monto);
-            
+
+        TotalRetirado = await RetiroService.ObtenerTotalRetiradoPorCasoAsync(CurrentCase.Id);
         BalanceDisponible = await RetiroService.ObtenerBalanceDisponibleAsync(CurrentCase.Id);
     }
 
@@ -257,12 +257,9 @@
             };
 
             await RetiroService.Crear(nuevoRetiro);
-            
             await LoadStats();
-            
+
             ShowFeedback(true, $"Su solicitud de retiro por {WithdrawAmount:C} ha sido enviada correctamente. Se procesará en un plazo de 24-48 horas.");
-            
-            // Clear amount
             WithdrawAmount = 0;
         }
         catch (Exception ex)
