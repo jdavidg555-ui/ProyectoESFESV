@@ -1,0 +1,297 @@
+@page "/admin/programs/new"
+@page "/create-community-aid-program"
+@layout ProfileLayout
+@using Microsoft.AspNetCore.Components.Forms
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using ProyectoSocioEconomico.WebUI.Services
+@using System.ComponentModel.DataAnnotations
+@using System.IO
+@using System.Security.Claims
+@inject IProgramaService ProgramaService
+@inject ICasoService CasoService
+@inject IUsuarioService UsuarioService
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+@inject IWebHostEnvironment Environment
+
+<div class="cp-page">
+    <div class="cp-container">
+        <div class="cp-header">
+            <h1 class="cp-header__title">Crear programa comunitario</h1>
+            <p class="cp-header__subtitle">Registre un nuevo programa usando únicamente los datos que maneja la base del proyecto.</p>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(FeedbackMessage))
+        {
+            <div class="bulma-notification @(IsSuccess ? "bulma-is-success" : "bulma-is-danger") bulma-is-light">
+                @FeedbackMessage
+            </div>
+        }
+
+        <EditForm Model="FormModel" OnValidSubmit="HandleSubmitAsync" FormName="CreateProgramForm">
+            <DataAnnotationsValidator />
+
+            <section class="cp-card">
+                <div class="cp-card__section">
+                    <div class="cp-section-heading">
+                        <h2 class="cp-section-heading__title">Imagen del programa</h2>
+                        <p class="cp-section-heading__subtitle">Puede subir una imagen o dejar la de respaldo.</p>
+                    </div>
+
+                    <label class="cp-upload-box" for="program-image">
+                        <div class="cp-upload-box__content">
+                            <p class="cp-upload-box__title">Seleccionar imagen</p>
+                            <p class="cp-upload-box__text">PNG o JPG, máximo 5 MB</p>
+                            @if (!string.IsNullOrWhiteSpace(SelectedImageName))
+                            {
+                                <p class="cp-upload-box__file">@SelectedImageName</p>
+                            }
+                        </div>
+                        <InputFile id="program-image" OnChange="HandleImageSelected" accept="image/png,image/jpeg,image/jpg" />
+                    </label>
+                </div>
+
+                <div class="cp-card__section">
+                    <div class="cp-section-heading">
+                        <h2 class="cp-section-heading__title">Información base</h2>
+                        <p class="cp-section-heading__subtitle">Estos datos sí se guardarán en la tabla `Programas`.</p>
+                    </div>
+
+                    <div class="bulma-columns bulma-is-multiline">
+                        <div class="bulma-column bulma-is-8-desktop">
+                            <div class="bulma-field">
+                                <label class="bulma-label cp-label">Nombre del programa</label>
+                                <div class="bulma-control">
+                                    <InputText class="bulma-input cp-input"
+                                               @bind-Value="FormModel.Nombre"
+                                               placeholder="Ej. Programa de apoyo comunitario" />
+                                </div>
+                                <ValidationMessage For="@(() => FormModel.Nombre)" class="bulma-help bulma-is-danger" />
+                            </div>
+                        </div>
+
+                        <div class="bulma-column bulma-is-4-desktop">
+                            <div class="bulma-field">
+                                <label class="bulma-label cp-label">Estado</label>
+                                <div class="bulma-control">
+                                    <div class="bulma-select bulma-is-fullwidth cp-select-wrap">
+                                        <InputSelect class="cp-select" @bind-Value="FormModel.Estado">
+                                            <option value="Activo">Activo</option>
+                                            <option value="Completado">Completado</option>
+                                            <option value="Inactivo">Inactivo</option>
+                                        </InputSelect>
+                                    </div>
+                                </div>
+                                <ValidationMessage For="@(() => FormModel.Estado)" class="bulma-help bulma-is-danger" />
+                            </div>
+                        </div>
+
+                        <div class="bulma-column bulma-is-12">
+                            <div class="bulma-field">
+                                <label class="bulma-label cp-label">Categoría</label>
+                                <div class="bulma-control">
+                                    <div class="bulma-select bulma-is-fullwidth cp-select-wrap">
+                                        <InputSelect class="cp-select" @bind-Value="FormModel.IdCategoria">
+                                            <option value="0">Seleccione una categoría</option>
+                                            @foreach (var categoria in Categories)
+                                            {
+                                                <option value="@categoria.Id">@categoria.Nombre</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </div>
+                                <ValidationMessage For="@(() => FormModel.IdCategoria)" class="bulma-help bulma-is-danger" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bulma-field">
+                        <label class="bulma-label cp-label">Descripción</label>
+                        <div class="bulma-control">
+                            <InputTextArea class="bulma-textarea cp-textarea"
+                                           @bind-Value="FormModel.Descripcion"
+                                           rows="6"
+                                           placeholder="Describa el objetivo, alcance e impacto esperado del programa." />
+                        </div>
+                        <ValidationMessage For="@(() => FormModel.Descripcion)" class="bulma-help bulma-is-danger" />
+                    </div>
+                </div>
+
+                <div class="cp-card__section cp-card__section--hint">
+                    <p class="cp-hint">
+                        Los documentos adjuntos todavía no existen como columnas en la entidad `Programa`. Esta vista guarda nombre, descripción, estado, categoría, fecha, creador e imagen.
+                    </p>
+                </div>
+
+                <div class="cp-footer">
+                    <button type="button" class="bulma-button cp-btn cp-btn--ghost" @onclick="Cancel">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bulma-button bulma-is-warning cp-btn cp-btn--primary" disabled="@IsSubmitting">
+                        <strong>@(IsSubmitting ? "Guardando..." : "Guardar programa")</strong>
+                    </button>
+                </div>
+            </section>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Usuario? CurrentUser { get; set; }
+    private bool IsSubmitting { get; set; }
+    private bool IsSuccess { get; set; }
+    private string? FeedbackMessage { get; set; }
+    private string? SelectedImageName { get; set; }
+    private IBrowserFile? SelectedImageFile { get; set; }
+    private List<Categoria> Categories { get; set; } = new();
+    private CreateProgramFormModel FormModel { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(userIdStr, out var userId))
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        CurrentUser = await UsuarioService.ObtenerPorId(userId);
+        if (!IsAdmin(CurrentUser))
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        Categories = await CasoService.ObtenerCategorias();
+    }
+
+    private async Task HandleImageSelected(InputFileChangeEventArgs e)
+    {
+        FeedbackMessage = null;
+        var file = e.File;
+        SelectedImageFile = null;
+        SelectedImageName = null;
+
+        if (file is null)
+        {
+            return;
+        }
+
+        if (file.Size > 5 * 1024 * 1024)
+        {
+            FeedbackMessage = "La imagen supera el tamaño máximo permitido de 5 MB.";
+            IsSuccess = false;
+            return;
+        }
+
+        SelectedImageFile = file;
+        SelectedImageName = file.Name;
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        FeedbackMessage = null;
+
+        if (CurrentUser is null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        IsSubmitting = true;
+
+        try
+        {
+            var imagePath = await SaveImageAsync();
+
+            var programa = new Programa
+            {
+                Nombre = FormModel.Nombre.Trim(),
+                Descripcion = FormModel.Descripcion.Trim(),
+                Estado = FormModel.Estado,
+                FechaCreacion = DateTime.Now,
+                IdCategoria = FormModel.IdCategoria,
+                CreadoPor = CurrentUser.Id,
+                ImagenUrl = imagePath
+            };
+
+            await ProgramaService.CrearAsync(programa);
+
+            IsSuccess = true;
+            FeedbackMessage = "Programa creado correctamente.";
+            Navigation.NavigateTo("/admin/programs", true);
+        }
+        catch (Exception ex)
+        {
+            IsSuccess = false;
+            FeedbackMessage = "No se pudo crear el programa: " + ex.Message;
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+
+    private async Task<string?> SaveImageAsync()
+    {
+        if (SelectedImageFile is null)
+        {
+            return null;
+        }
+
+        var uploadsFolder = Path.Combine(Environment.WebRootPath, "uploads", "programs");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
+        var extension = Path.GetExtension(SelectedImageFile.Name);
+        var fileName = $"program_{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        await using var readStream = SelectedImageFile.OpenReadStream(5 * 1024 * 1024);
+        await using var fileStream = new FileStream(filePath, FileMode.Create);
+        await readStream.CopyToAsync(fileStream);
+
+        return $"/uploads/programs/{fileName}";
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/admin/programs");
+    }
+
+    private static bool IsAdmin(Usuario? usuario)
+    {
+        var roleName = usuario?.IdRolNavigation?.Nombre;
+        return !string.IsNullOrWhiteSpace(roleName) &&
+               roleName.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed class CreateProgramFormModel
+    {
+        [Required(ErrorMessage = "Ingrese el nombre del programa.")]
+        [StringLength(150, ErrorMessage = "El nombre no puede superar los 150 caracteres.")]
+        public string Nombre { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Ingrese la descripción del programa.")]
+        public string Descripcion { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Seleccione el estado del programa.")]
+        public string Estado { get; set; } = "Activo";
+
+        [Range(1, int.MaxValue, ErrorMessage = "Seleccione una categoría.")]
+        public int IdCategoria { get; set; }
+    }
+}

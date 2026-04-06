@@ -26,23 +26,6 @@ builder.Services.AddScoped<ProyectoSocioEconomico.WebUI.Services.CustomAuthentic
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    if (!await dbContext.Roles.AnyAsync())
-    {
-        dbContext.Roles.Add(new Role
-        {
-            Nombre = "Usuario",
-            Descripcion = "Rol por defecto para nuevos registros",
-            Estado = "Activo"
-        });
-
-        await dbContext.SaveChangesAsync();
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

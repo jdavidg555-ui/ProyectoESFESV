@@ -1,0 +1,182 @@
+div.cp-page {
+    min-height: 100%;
+    background: #f7f6f1;
+    padding: 2.25rem 1rem 4rem;
+}
+
+div.cp-page .cp-container {
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+div.cp-page .cp-header {
+    margin-bottom: 1.5rem;
+}
+
+div.cp-page .cp-header__title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #171717;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.35rem;
+}
+
+div.cp-page .cp-header__subtitle {
+    color: #6b7280;
+    font-size: 0.96rem;
+}
+
+div.cp-page .cp-card {
+    background: #fff;
+    border: 1px solid #e7e5df;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+}
+
+div.cp-page .cp-card__section + .cp-card__section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ece9e1;
+}
+
+div.cp-page .cp-section-heading {
+    margin-bottom: 1rem;
+}
+
+div.cp-page .cp-section-heading__title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+div.cp-page .cp-section-heading__subtitle {
+    margin-top: 0.25rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+div.cp-page .cp-upload-box {
+    position: relative;
+    display: block;
+    border: 2px dashed #b6e1c2;
+    border-radius: 14px;
+    background: #f4fbf6;
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+}
+
+div.cp-page .cp-upload-box input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+div.cp-page .cp-upload-box__content {
+    text-align: center;
+}
+
+div.cp-page .cp-upload-box__title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #166534;
+}
+
+div.cp-page .cp-upload-box__text {
+    margin-top: 0.3rem;
+    color: #4b5563;
+}
+
+div.cp-page .cp-upload-box__file {
+    margin-top: 0.8rem;
+    color: #111827;
+    font-weight: 700;
+}
+
+div.cp-page .cp-label.bulma-label {
+    color: #111827;
+    font-weight: 700;
+}
+
+div.cp-page .cp-input.bulma-input,
+div.cp-page .cp-textarea.bulma-textarea,
+div.cp-page .cp-select-wrap select.cp-select {
+    background: #fff;
+    color: #111827;
+    border: 1.5px solid #ddd9cf;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+div.cp-page .cp-input.bulma-input::placeholder,
+div.cp-page .cp-textarea.bulma-textarea::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+}
+
+div.cp-page .cp-input.bulma-input:focus,
+div.cp-page .cp-textarea.bulma-textarea:focus,
+div.cp-page .cp-select-wrap select.cp-select:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+}
+
+div.cp-page .cp-textarea.bulma-textarea {
+    min-height: 10rem;
+}
+
+div.cp-page .cp-card__section--hint {
+    background: #faf9f6;
+    border: 1px solid #ece9e1;
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+}
+
+div.cp-page .cp-hint {
+    color: #4b5563;
+    line-height: 1.65;
+}
+
+div.cp-page .cp-footer {
+    margin-top: 2rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid #ece9e1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+}
+
+div.cp-page .cp-btn.bulma-button {
+    min-height: 2.95rem;
+    padding: 0 1.2rem;
+    border-radius: 10px;
+    font-weight: 800;
+}
+
+div.cp-page .cp-btn--ghost.bulma-button {
+    background: #f3f1eb;
+    border: 1px solid #ddd9cf;
+    color: #111827;
+}
+
+div.cp-page .cp-btn--primary.bulma-button.bulma-is-warning {
+    background: #f5bb00;
+    border: none;
+    color: #1a1a1a;
+}
+
+@media (max-width: 640px) {
+    div.cp-page {
+        padding: 1.5rem 0.75rem 3rem;
+    }
+
+    div.cp-page .cp-card {
+        padding: 1.25rem;
+    }
+
+    div.cp-page .cp-footer {
+        flex-direction: column;
+    }
+}

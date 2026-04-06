@@ -82,17 +82,18 @@
 
                     @if (IsAdmin)
                     {
-                        <a href="" class="@GetNavItemClass("/account/settings")">
+                        @* <a href="" class="@GetNavItemClass("/account/settings")">
                             Perfiles
-                        </a>
+                        </a> *@
 
-                        <a href="" class="@GetNavItemClass("/programs")">
+                        <a href="/admin/programs" class="@GetNavItemClass("/admin/programs")">
+                            <span class="bulma-icon bulma-is-small"><i class="fa-brands fa-42-group"></i></span>
                             Programas
                         </a>
 
-                        <a href="" class="@GetNavItemClass("/beneficiary/withdrawals")">
+                        @* <a href="" class="@GetNavItemClass("/beneficiary/withdrawals")">
                             Retiros pendientes
-                        </a>
+                        </a> *@
                     }
                 </nav>
             </aside>

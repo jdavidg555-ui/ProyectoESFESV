@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoSocioEconomico.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ProyectoSocioEconomico.Infrastructure.Data;
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260406074038_AddCategoriaToProgramas")]
+    partial class AddCategoriaToProgramas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,43 +115,6 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Descripcion = "Proyectos de construcción, vías, agua y saneamiento",
-                            Estado = "Activo",
-                            Nombre = "Infraestructura"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Descripcion = "Conservación ambiental, reforestación y ecología",
-                            Estado = "Activo",
-                            Nombre = "Naturaleza"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Descripcion = "Educación, becas y formación académica",
-                            Estado = "Activo",
-                            Nombre = "Educacion"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Descripcion = "Salud, atención médica y bienestar",
-                            Estado = "Activo",
-                            Nombre = "Salud"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Descripcion = "Ayuda humanitaria en emergencias y desastres",
-                            Estado = "Activo",
-                            Nombre = "Desastres naturales"
-                        });
                 });
 
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Comprobante", b =>
@@ -444,29 +410,6 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Descripcion = "Usuario que realiza donaciones a casos y programas",
-                            Estado = "Activo",
-                            Nombre = "Donante"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Descripcion = "Usuario que crea casos y recibe ayuda",
-                            Estado = "Activo",
-                            Nombre = "Beneficiario"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Descripcion = "Administrador del sistema con acceso total",
-                            Estado = "Activo",
-                            Nombre = "Administrador"
-                        });
                 });
 
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Usuario", b =>

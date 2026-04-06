@@ -1,0 +1,333 @@
+div.ap-page {
+    --ap-yellow: #f5bb00;
+    --ap-yellow-dark: #d9a600;
+    --ap-bg: #ffffff;
+    --ap-surface: #fcfbf7;
+    --ap-text-dark: #111111;
+    --ap-text-mid: #4a4a4a;
+    --ap-text-muted: #888;
+    --ap-border: #e8e7e2;
+    --ap-row-hover: #fafaf7;
+    --ap-green: #22c55e;
+    --ap-red: #dc2626;
+    --ap-shadow-card: 0 1px 8px rgba(0, 0, 0, 0.07);
+    min-height: 100%;
+    background-color: var(--ap-bg);
+    padding: 2.25rem 2.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+div.ap-page .ap-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+div.ap-page .ap-page-header__title {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--ap-text-dark);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 0.25rem;
+}
+
+div.ap-page .ap-page-header__subtitle {
+    font-size: 0.92rem;
+    color: var(--ap-text-muted);
+}
+
+div.ap-page .ap-page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+div.ap-page .ap-search-wrap.bulma-control {
+    min-width: 18rem;
+}
+
+div.ap-page .ap-search-input.bulma-input {
+    background: #fff;
+    color: var(--ap-text-dark);
+    border: 1.5px solid var(--ap-border);
+    border-radius: 10px;
+    height: 2.75rem;
+    box-shadow: none;
+}
+
+div.ap-page .ap-search-input.bulma-input::placeholder {
+    color: var(--ap-text-muted);
+    opacity: 1;
+}
+
+div.ap-page .ap-btn-new.bulma-button.bulma-is-warning {
+    background-color: var(--ap-yellow);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 10px;
+    min-height: 2.75rem;
+    padding: 0 1.15rem;
+    font-weight: 800;
+}
+
+div.ap-page .ap-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--ap-border);
+}
+
+div.ap-page .ap-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.8rem 0.95rem;
+    color: var(--ap-text-muted);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+div.ap-page .ap-tab--active {
+    color: var(--ap-text-dark);
+    border-bottom-color: var(--ap-text-dark);
+}
+
+div.ap-page .ap-table-card {
+    border: 1px solid var(--ap-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--ap-shadow-card);
+}
+
+div.ap-page table.ap-table.bulma-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+div.ap-page table.ap-table.bulma-table thead tr {
+    background: var(--ap-surface);
+}
+
+div.ap-page table.ap-table.bulma-table th.ap-table__th {
+    padding: 0.95rem 1.4rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--ap-text-muted);
+    border-bottom: 1px solid var(--ap-border);
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+div.ap-page table.ap-table.bulma-table th.ap-table__th--name {
+    width: 44%;
+    text-align: left;
+}
+
+div.ap-page table.ap-table.bulma-table th.ap-table__th--status {
+    width: 18%;
+    text-align: left;
+}
+
+div.ap-page table.ap-table.bulma-table th.ap-table__th--date {
+    width: 18%;
+    text-align: left;
+}
+
+div.ap-page table.ap-table.bulma-table th.ap-table__th--actions {
+    width: 20%;
+    text-align: center;
+}
+
+div.ap-page table.ap-table.bulma-table tr.ap-table__row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+div.ap-page table.ap-table.bulma-table tr.ap-table__row:hover {
+    background: var(--ap-row-hover);
+}
+
+div.ap-page table.ap-table.bulma-table td.ap-table__td {
+    padding: 1rem 1.4rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--ap-border);
+}
+
+div.ap-page table.ap-table.bulma-table tbody tr:last-child td.ap-table__td {
+    border-bottom: none;
+}
+
+div.ap-page .ap-program-name {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ap-text-dark);
+}
+
+div.ap-page .ap-program-caption {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.78rem;
+    color: var(--ap-text-muted);
+}
+
+div.ap-page .ap-table__td--date {
+    font-size: 0.88rem;
+    color: var(--ap-text-mid);
+}
+
+div.ap-page .ap-table__td--actions {
+    text-align: center;
+}
+
+div.ap-page .ap-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 6.5rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.77rem;
+    font-weight: 800;
+}
+
+div.ap-page .ap-status--active {
+    background: rgba(34, 197, 94, 0.12);
+    color: #166534;
+}
+
+div.ap-page .ap-status--history {
+    background: rgba(17, 24, 39, 0.08);
+    color: #374151;
+}
+
+div.ap-page .ap-delete-btn.bulma-button {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: var(--ap-red);
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+div.ap-page .ap-delete-btn.bulma-button:hover {
+    background: #ffe4e6;
+}
+
+div.ap-page .ap-table__empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--ap-text-muted);
+}
+
+div.ap-page .ap-state-card {
+    border: 1px solid var(--ap-border);
+    border-radius: 14px;
+    padding: 2rem;
+    background: var(--ap-surface);
+}
+
+div.ap-page .ap-state-card__title {
+    color: var(--ap-text-dark);
+    font-size: 1.3rem;
+    font-weight: 900;
+}
+
+div.ap-page .ap-state-card__text {
+    color: var(--ap-text-muted);
+    margin-top: 0.45rem;
+}
+
+div.ap-page .ap-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 17, 17, 0.48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+div.ap-page .ap-modal__card {
+    width: 100%;
+    max-width: 31rem;
+    background: #fff;
+    border: 1px solid var(--ap-border);
+    border-radius: 16px;
+    padding: 2rem 1.75rem;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
+div.ap-page .ap-modal__title {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--ap-text-dark);
+    margin-bottom: 0.65rem;
+}
+
+div.ap-page .ap-modal__text {
+    color: var(--ap-text-mid);
+    line-height: 1.6;
+}
+
+div.ap-page .ap-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+div.ap-page .ap-modal__btn {
+    min-height: 2.9rem;
+    padding: 0 1.2rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+div.ap-page .ap-modal__btn--ghost {
+    background: #f3f1eb;
+    color: var(--ap-text-dark);
+    border-color: var(--ap-border);
+}
+
+div.ap-page .ap-modal__btn--danger {
+    background: var(--ap-red);
+    color: #fff;
+}
+
+@media (max-width: 860px) {
+    div.ap-page {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    div.ap-page .ap-page-header__actions {
+        width: 100%;
+    }
+
+    div.ap-page .ap-search-wrap.bulma-control {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    div.ap-page table.ap-table.bulma-table th.ap-table__th--date,
+    div.ap-page table.ap-table.bulma-table td.ap-table__td--date {
+        display: none;
+    }
+
+    div.ap-page .ap-modal__actions {
+        flex-direction: column;
+    }
+}

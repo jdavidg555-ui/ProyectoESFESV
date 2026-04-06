@@ -160,8 +160,7 @@
 
     private string GetCategoryName(Programa p)
     {
-        // El programa no tiene categoría directa, se toma la del primer caso si existe
-        return p.IdCasos?.FirstOrDefault()?.IdCategoriaNavigation?.Nombre ?? "Otro";
+        return p.IdCategoriaNavigation?.Nombre ?? "Otro";
     }
 
     private int CalculateOverallProgress(Programa p)

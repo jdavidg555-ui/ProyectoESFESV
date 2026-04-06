@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddCategoriaToProgramas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -155,11 +155,17 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdCategoria = table.Column<int>(type: "int", nullable: false),
                     CreadoPor = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Programas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Programas_Categorias_IdCategoria",
+                        column: x => x.IdCategoria,
+                        principalTable: "Categorias",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Programas_Usuarios_CreadoPor",
                         column: x => x.CreadoPor,
@@ -345,6 +351,11 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                 name: "IX_Programas_CreadoPor",
                 table: "Programas",
                 column: "CreadoPor");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Programas_IdCategoria",
+                table: "Programas",
+                column: "IdCategoria");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Retiros_IdBeneficiado",

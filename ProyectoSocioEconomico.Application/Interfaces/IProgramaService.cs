@@ -8,5 +8,7 @@ namespace ProyectoSocioEconomico.Application.Interfaces
     {
         Task<List<Programa>> ObtenerTodosConCasosAsync();
         Task<Programa?> ObtenerPorIdConDetallesAsync(int id);
+        Task CrearAsync(Programa programa);
+        Task EliminarAsync(int id);
     }
 }

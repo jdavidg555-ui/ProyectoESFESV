@@ -217,6 +217,14 @@ div.cap-page .cap-grid article.cap-card .cap-card__image-wrap .cap-card__tag--ed
     background: var(--cap-orange);
 }
 
+div.cap-page .cap-grid article.cap-card .cap-card__image-wrap .cap-card__tag--environment {
+    background: var(--cap-green-dark);
+}
+
+div.cap-page .cap-grid article.cap-card .cap-card__image-wrap .cap-card__tag--disaster {
+    background: #475569;
+}
+
 /* Card body */
 div.cap-page .cap-grid article.cap-card .cap-card__body {
     padding: 1.1rem 1.2rem 1.25rem;
@@ -239,6 +247,10 @@ div.cap-page .cap-grid article.cap-card .cap-card__body .cap-card__desc {
     color: var(--cap-text-mid);
     line-height: 1.55;
     flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* Progress block */

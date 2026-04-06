@@ -14,4 +14,6 @@ public partial class Categoria
     public string Estado { get; set; } = null!;
 
     public virtual ICollection<Caso> Casos { get; set; } = new List<Caso>();
+
+    public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
 }

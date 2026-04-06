@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoSocioEconomico.Application.Interfaces;
 using ProyectoSocioEconomico.Domain.Entities;
 using ProyectoSocioEconomico.Infrastructure.Data;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProyectoSocioEconomico.Infrastructure.Services
@@ -20,6 +22,7 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             return await context.Programas
+                .Include(p => p.IdCategoriaNavigation)
                 .Include(p => p.IdCasos)
                     .ThenInclude(c => c.Donaciones)
                 .ToListAsync();
@@ -29,11 +32,48 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             return await context.Programas
+                .Include(p => p.IdCategoriaNavigation)
                 .Include(p => p.IdCasos)
                     .ThenInclude(c => c.Donaciones)
                 .Include(p => p.IdCasos)
                     .ThenInclude(c => c.IdCategoriaNavigation)
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task CrearAsync(Programa programa)
+        {
+            ArgumentNullException.ThrowIfNull(programa);
+
+            using var context = await _contextFactory.CreateDbContextAsync();
+            context.Programas.Add(programa);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task EliminarAsync(int id)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var programa = await context.Programas
+                .Include(p => p.IdCasos)
+                .Include(p => p.InscripcionesVoluntarios)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (programa is null)
+            {
+                return;
+            }
+
+            if (programa.IdCasos.Any())
+            {
+                programa.IdCasos.Clear();
+            }
+
+            if (programa.InscripcionesVoluntarios.Any())
+            {
+                context.InscripcionesVoluntarios.RemoveRange(programa.InscripcionesVoluntarios);
+            }
+
+            context.Programas.Remove(programa);
+            await context.SaveChangesAsync();
         }
     }
 }

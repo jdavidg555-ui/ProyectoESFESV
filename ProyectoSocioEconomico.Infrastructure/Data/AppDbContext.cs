@@ -89,6 +89,14 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Descripcion).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.Nombre).HasMaxLength(100);
+
+            entity.HasData(
+                new Categoria { Id = 1, Nombre = "Infraestructura", Descripcion = "Proyectos de construcción, vías, agua y saneamiento", Estado = "Activo" },
+                new Categoria { Id = 2, Nombre = "Naturaleza", Descripcion = "Conservación ambiental, reforestación y ecología", Estado = "Activo" },
+                new Categoria { Id = 3, Nombre = "Educacion", Descripcion = "Educación, becas y formación académica", Estado = "Activo" },
+                new Categoria { Id = 4, Nombre = "Salud", Descripcion = "Salud, atención médica y bienestar", Estado = "Activo" },
+                new Categoria { Id = 5, Nombre = "Desastres naturales", Descripcion = "Ayuda humanitaria en emergencias y desastres", Estado = "Activo" }
+            );
         });
 
         modelBuilder.Entity<Comprobante>(entity =>
@@ -157,10 +165,16 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Programa>(entity =>
         {
+            entity.HasIndex(e => e.IdCategoria, "IX_Programas_IdCategoria");
+
             entity.HasIndex(e => e.CreadoPor, "IX_Programas_CreadoPor");
 
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.Nombre).HasMaxLength(150);
+
+            entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Programas)
+                .HasForeignKey(d => d.IdCategoria)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.CreadoPorNavigation).WithMany(p => p.Programas)
                 .HasForeignKey(d => d.CreadoPor)
@@ -192,6 +206,12 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Descripcion).HasMaxLength(150);
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.Nombre).HasMaxLength(50);
+
+            entity.HasData(
+                new Role { Id = 1, Nombre = "Donante", Descripcion = "Usuario que realiza donaciones a casos y programas", Estado = "Activo" },
+                new Role { Id = 2, Nombre = "Beneficiario", Descripcion = "Usuario que crea casos y recibe ayuda", Estado = "Activo" },
+                new Role { Id = 3, Nombre = "Administrador", Descripcion = "Administrador del sistema con acceso total", Estado = "Activo" }
+            );
         });
 
         modelBuilder.Entity<Usuario>(entity =>

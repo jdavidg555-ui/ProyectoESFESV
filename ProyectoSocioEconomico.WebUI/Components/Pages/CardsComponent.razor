@@ -1,36 +1,27 @@
-@using System.Globalization
 @using ProyectoSocioEconomico.Application.Interfaces
-@inject ICasoService CasoService
+@using ProyectoSocioEconomico.Domain.Entities
+@inject IProgramaService ProgramaService
 
 <section class="bulma-section">
     <div class="bulma-container">
-        @if (casos.Count == 0)
+        @if (Programs.Count == 0)
         {
             <div class="bulma-notification bulma-is-light">
-                <p class="bulma-has-text-grey">No hay casos disponibles por el momento.</p>
+                <p class="bulma-has-text-grey">No hay programas disponibles por el momento.</p>
             </div>
         }
         else
         {
-            <div class="bulma-columns bulma-is-multiline">
-                @foreach (var caso in casos)
+            <div class="cap-grid">
+                @foreach (var program in Programs)
                 {
-                    decimal totalRecaudado = 0m;
-                    if (caso.Donaciones != null)
-                    {
-                        foreach (var donacion in caso.Donaciones)
-                        {
-                            totalRecaudado += donacion.Monto;
-                        }
-                    }
-
-                    <div class="bulma-column bulma-is-3-desktop bulma-is-6-tablet">
-                        <CardComponent Title="@caso.Titulo"
-                                       Description="@caso.Descripcion"
-                                       MoneyRaised="@totalRecaudado.ToString("C", CultureInfo.GetCultureInfo("es-SV"))"
-                                       RemainingPercentage="@CalcularPorcentajeProgreso(caso.Meta, totalRecaudado)"
-                                       ImageUrl="@caso.ImagenUrl" />
-                    </div>
+                    <ProgramCardComponent Id="@program.Id"
+                                          Title="@program.Nombre"
+                                          Description="@program.Descripcion"
+                                          Category="@GetCategoryName(program)"
+                                          ProgressLabel="Progreso"
+                                          Progress="@CalculateOverallProgress(program)"
+                                          ImageUrl="@program.ImagenUrl" />
                 }
             </div>
         }
@@ -38,22 +29,40 @@
 </section>
 
 @code {
-    private List<dynamic> casos = new();
+    private List<Programa> Programs { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        casos = (await CasoService.ObtenerActivosParaHome(4)).Cast<dynamic>().ToList();
+        Programs = (await ProgramaService.ObtenerTodosConCasosAsync())
+            .Where(program => string.Equals(program.Estado, "Activo", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(program => program.FechaCreacion)
+            .Take(4)
+            .ToList();
     }
 
-    private static int CalcularPorcentajeProgreso(decimal meta, decimal totalRecaudado)
+    private static string GetCategoryName(Programa program)
     {
-        if (meta <= 0)
+        return program.IdCategoriaNavigation?.Nombre ?? "Otro";
+    }
+
+    private static int CalculateOverallProgress(Programa program)
+    {
+        if (program.IdCasos == null || !program.IdCasos.Any())
         {
             return 0;
         }
 
-        var porcentaje = (int)Math.Round((totalRecaudado / meta) * 100, MidpointRounding.AwayFromZero);
+        decimal totalMeta = program.IdCasos.Sum(caso => caso.Meta);
+        decimal totalRecaudado = program.IdCasos
+            .SelectMany(caso => caso.Donaciones ?? [])
+            .Where(donacion => string.Equals(donacion.Estado, "Completado", StringComparison.OrdinalIgnoreCase))
+            .Sum(donacion => donacion.Monto);
 
-        return Math.Clamp(porcentaje, 0, 100);
+        if (totalMeta <= 0)
+        {
+            return 0;
+        }
+
+        return Math.Clamp((int)Math.Round((totalRecaudado / totalMeta) * 100), 0, 100);
     }
 }

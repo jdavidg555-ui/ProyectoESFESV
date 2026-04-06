@@ -33,8 +33,8 @@
     {
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();
 
-        var count = await dbContext.Casos
-            .Where(c => c.IdCategoria == IdCategoria && c.Estado == "Activo")
+        var count = await dbContext.Programas
+            .Where(p => p.IdCategoria == IdCategoria && p.Estado == "Activo")
             .CountAsync();
 
         Cases = count.ToString();

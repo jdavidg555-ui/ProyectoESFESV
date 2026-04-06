@@ -12,8 +12,8 @@ using ProyectoSocioEconomico.Infrastructure.Data;
 namespace ProyectoSocioEconomico.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260330050555_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260406074353_SeedCatalogosBase")]
+    partial class SeedCatalogosBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,6 +115,43 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Proyectos de construcción, vías, agua y saneamiento",
+                            Estado = "Activo",
+                            Nombre = "Infraestructura"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Conservación ambiental, reforestación y ecología",
+                            Estado = "Activo",
+                            Nombre = "Naturaleza"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Descripcion = "Educación, becas y formación académica",
+                            Estado = "Activo",
+                            Nombre = "Educacion"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Descripcion = "Salud, atención médica y bienestar",
+                            Estado = "Activo",
+                            Nombre = "Salud"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Descripcion = "Ayuda humanitaria en emergencias y desastres",
+                            Estado = "Activo",
+                            Nombre = "Desastres naturales"
+                        });
                 });
 
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Comprobante", b =>
@@ -319,6 +356,9 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdCategoria")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagenUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -330,6 +370,8 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "CreadoPor" }, "IX_Programas_CreadoPor");
+
+                    b.HasIndex(new[] { "IdCategoria" }, "IX_Programas_IdCategoria");
 
                     b.ToTable("Programas");
                 });
@@ -405,6 +447,29 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Usuario que realiza donaciones a casos y programas",
+                            Estado = "Activo",
+                            Nombre = "Donante"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Usuario que crea casos y recibe ayuda",
+                            Estado = "Activo",
+                            Nombre = "Beneficiario"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Descripcion = "Administrador del sistema con acceso total",
+                            Estado = "Activo",
+                            Nombre = "Administrador"
+                        });
                 });
 
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Usuario", b =>
@@ -572,7 +637,14 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
                         .HasForeignKey("CreadoPor")
                         .IsRequired();
 
+                    b.HasOne("ProyectoSocioEconomico.Domain.Entities.Categoria", "IdCategoriaNavigation")
+                        .WithMany("Programas")
+                        .HasForeignKey("IdCategoria")
+                        .IsRequired();
+
                     b.Navigation("CreadoPorNavigation");
+
+                    b.Navigation("IdCategoriaNavigation");
                 });
 
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Retiro", b =>
@@ -612,6 +684,8 @@ namespace ProyectoSocioEconomico.Infrastructure.Migrations
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Categoria", b =>
                 {
                     b.Navigation("Casos");
+
+                    b.Navigation("Programas");
                 });
 
             modelBuilder.Entity("ProyectoSocioEconomico.Domain.Entities.Donacione", b =>

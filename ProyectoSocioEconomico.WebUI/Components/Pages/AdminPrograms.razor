@@ -1,0 +1,262 @@
+@page "/admin/programs"
+@layout ProfileLayout
+@using ProyectoSocioEconomico.Application.Interfaces
+@using ProyectoSocioEconomico.Domain.Entities
+@using ProyectoSocioEconomico.WebUI.Services
+@using System.Security.Claims
+@inject IProgramaService ProgramaService
+@inject IUsuarioService UsuarioService
+@inject CustomAuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+
+<div class="ap-page">
+    @if (IsLoading)
+    {
+        <div class="ap-state-card">
+            <h1 class="ap-state-card__title">Cargando programas...</h1>
+            <p class="ap-state-card__text">Estamos obteniendo los programas registrados.</p>
+        </div>
+    }
+    else
+    {
+        <div class="ap-page-header">
+            <div class="ap-page-header__left">
+                <h1 class="ap-page-header__title">Programas Comunitarios</h1>
+                <p class="ap-page-header__subtitle">Cree, revise y administre el ciclo de vida de los programas sociales.</p>
+            </div>
+
+            <div class="ap-page-header__actions">
+                <div class="bulma-control bulma-has-icons-left ap-search-wrap">
+                    <input class="bulma-input ap-search-input"
+                           type="text"
+                           placeholder="Buscar programa"
+                           @bind="SearchQuery"
+                           @bind:event="oninput" />
+                    <span class="bulma-icon bulma-is-left">
+                        <i class="fas fa-magnifying-glass"></i>
+                    </span>
+                </div>
+
+                <a href="/admin/programs/new" class="bulma-button bulma-is-warning ap-btn-new">
+                    <strong>Nuevo Programa</strong>
+                </a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(FeedbackMessage))
+        {
+            <div class="bulma-notification @(IsSuccess ? "bulma-is-success" : "bulma-is-danger") bulma-is-light">
+                @FeedbackMessage
+            </div>
+        }
+
+        <div class="ap-tabs">
+            <button type="button"
+                    class="ap-tab @(ActiveTab == "active" ? "ap-tab--active" : "")"
+                    @onclick='() => SetTab("active")'>
+                Programas Activos
+            </button>
+            <button type="button"
+                    class="ap-tab @(ActiveTab == "history" ? "ap-tab--active" : "")"
+                    @onclick='() => SetTab("history")'>
+                Historial
+            </button>
+        </div>
+
+        <div class="ap-table-card">
+            <table class="bulma-table ap-table bulma-is-fullwidth">
+                <thead>
+                    <tr>
+                        <th class="ap-table__th ap-table__th--name">NOMBRE DEL PROGRAMA</th>
+                        <th class="ap-table__th ap-table__th--status">ESTADO</th>
+                        <th class="ap-table__th ap-table__th--date">FECHA DE CREACIÓN</th>
+                        <th class="ap-table__th ap-table__th--actions">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (VisiblePrograms.Any())
+                    {
+                        @foreach (var program in VisiblePrograms)
+                        {
+                            <tr class="ap-table__row" @onclick="() => GoToEdit(program.Id)">
+                                <td class="ap-table__td ap-table__td--name">
+                                    <span class="ap-program-name">@program.Nombre</span>
+                                    <span class="ap-program-caption">Abrir edición</span>
+                                </td>
+                                <td class="ap-table__td ap-table__td--status">
+                                    <span class="ap-status @GetStatusClass(program.Estado)">@program.Estado</span>
+                                </td>
+                                <td class="ap-table__td ap-table__td--date">
+                                    @program.FechaCreacion.ToString("dd/MM/yyyy")
+                                </td>
+                                <td class="ap-table__td ap-table__td--actions">
+                                    <button type="button"
+                                            class="bulma-button ap-delete-btn"
+                                            title="Eliminar programa"
+                                            @onclick:stopPropagation="true"
+                                            @onclick="() => AskDelete(program)">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="ap-table__empty">
+                                No hay programas para mostrar en esta vista.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (ProgramToDelete is not null)
+    {
+        <div class="ap-modal">
+            <div class="ap-modal__card">
+                <h2 class="ap-modal__title">Eliminar programa</h2>
+                <p class="ap-modal__text">
+                    Se eliminará <strong>@ProgramToDelete.Nombre</strong> de la base de datos. Esta acción no se puede deshacer.
+                </p>
+                <div class="ap-modal__actions">
+                    <button type="button" class="ap-modal__btn ap-modal__btn--ghost" @onclick="CloseDeleteDialog">
+                        Cancelar
+                    </button>
+                    <button type="button" class="ap-modal__btn ap-modal__btn--danger" @onclick="DeleteProgramAsync">
+                        Confirmar eliminación
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private Usuario? CurrentUser { get; set; }
+    private bool IsLoading { get; set; } = true;
+    private bool IsSuccess { get; set; }
+    private string ActiveTab { get; set; } = "active";
+    private string SearchQuery { get; set; } = string.Empty;
+    private string? FeedbackMessage { get; set; }
+    private Programa? ProgramToDelete { get; set; }
+    private List<Programa> Programs { get; set; } = new();
+
+    private IEnumerable<Programa> VisiblePrograms =>
+        FilterPrograms()
+            .Where(program => ActiveTab == "active"
+                ? string.Equals(program.Estado, "Activo", StringComparison.OrdinalIgnoreCase)
+                : !string.Equals(program.Estado, "Activo", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(program => program.FechaCreacion);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(userIdStr, out var userId))
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        CurrentUser = await UsuarioService.ObtenerPorId(userId);
+        if (!IsAdmin(CurrentUser))
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        await LoadProgramsAsync();
+    }
+
+    private async Task LoadProgramsAsync()
+    {
+        try
+        {
+            Programs = await ProgramaService.ObtenerTodosConCasosAsync();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private IEnumerable<Programa> FilterPrograms()
+    {
+        if (string.IsNullOrWhiteSpace(SearchQuery))
+        {
+            return Programs;
+        }
+
+        return Programs.Where(program =>
+            program.Nombre.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ||
+            program.Descripcion.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void SetTab(string tab)
+    {
+        ActiveTab = tab;
+    }
+
+    private void GoToEdit(int programId)
+    {
+        Navigation.NavigateTo($"/admin/programs/{programId}/edit");
+    }
+
+    private void AskDelete(Programa program)
+    {
+        ProgramToDelete = program;
+    }
+
+    private void CloseDeleteDialog()
+    {
+        ProgramToDelete = null;
+    }
+
+    private async Task DeleteProgramAsync()
+    {
+        if (ProgramToDelete is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await ProgramaService.EliminarAsync(ProgramToDelete.Id);
+            FeedbackMessage = "Programa eliminado correctamente.";
+            IsSuccess = true;
+            ProgramToDelete = null;
+            Programs = await ProgramaService.ObtenerTodosConCasosAsync();
+        }
+        catch (Exception ex)
+        {
+            FeedbackMessage = "No se pudo eliminar el programa: " + ex.Message;
+            IsSuccess = false;
+        }
+    }
+
+    private static bool IsAdmin(Usuario? usuario)
+    {
+        var roleName = usuario?.IdRolNavigation?.Nombre;
+        return !string.IsNullOrWhiteSpace(roleName) &&
+               roleName.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetStatusClass(string? estado)
+    {
+        return string.Equals(estado, "Activo", StringComparison.OrdinalIgnoreCase)
+            ? "ap-status--active"
+            : "ap-status--history";
+    }
+}

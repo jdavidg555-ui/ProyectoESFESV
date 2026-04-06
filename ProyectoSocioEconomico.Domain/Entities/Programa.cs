@@ -17,9 +17,13 @@ public partial class Programa
 
     public DateTime FechaCreacion { get; set; }
 
+    public int IdCategoria { get; set; }
+
     public int CreadoPor { get; set; }
 
     public virtual Usuario CreadoPorNavigation { get; set; } = null!;
+
+    public virtual Categoria IdCategoriaNavigation { get; set; } = null!;
 
     public virtual ICollection<InscripcionesVoluntario> InscripcionesVoluntarios { get; set; } = new List<InscripcionesVoluntario>();
 
