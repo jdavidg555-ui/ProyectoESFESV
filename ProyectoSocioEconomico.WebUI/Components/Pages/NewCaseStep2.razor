@@ -8,8 +8,10 @@
 @using Microsoft.AspNetCore.Components.Web
 @inject NewCaseState CaseState
 @inject ICasoService CasoService
+@inject IUsuarioService UsuarioService
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthenticationStateProvider CustomAuthStateProvider
 @inject IWebHostEnvironment Environment
 @inject IJSRuntime JSRuntime
 @using System.IO
@@ -500,6 +502,12 @@
             await JSRuntime.InvokeVoidAsync("console.log", "Saving case to database...", nuevoCaso);
             await CasoService.Crear(nuevoCaso);
             await JSRuntime.InvokeVoidAsync("console.log", "Case saved successfully");
+
+            var usuarioActualizado = await UsuarioService.ObtenerPorId(userId.Value);
+            if (usuarioActualizado != null)
+            {
+                await CustomAuthStateProvider.NotifyUserLogin(usuarioActualizado);
+            }
 
             CaseState.Reset();
             await JSRuntime.InvokeVoidAsync("console.log", "State reset, redirecting to home");

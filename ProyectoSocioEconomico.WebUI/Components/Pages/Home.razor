@@ -1,5 +1,6 @@
 @page "/"
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
 @inject NavigationManager Navigation
 
 @if (showDuplicateCaseDialog)
@@ -15,7 +16,8 @@
                 Ya tienes un caso registrado en la plataforma. Si necesitas cambios, debes revisar ese caso actual.
             </p>
             <div class="home-duplicate-dialog__actions">
-                <button type="button" class="bulma-button bulma-is-warning home-duplicate-dialog__button" @onclick="CloseDuplicateCaseDialog">
+                <button type="button" class="bulma-button bulma-is-warning home-duplicate-dialog__button"
+                        @onclick="CloseDuplicateCaseDialog">
                     Entendido
                 </button>
             </div>
@@ -34,57 +36,61 @@
                 <div class="search">
                     <div class="bulma-control bulma-has-icons-left search__input-container">
                         <input class="bulma-input bulma-input-rounded bulma-is-success bulma-is-medium search__input"
-                               type="text" name="search" placeholder="Busca casos" />
+                               type="text" name="search" placeholder="Busca casos" @bind="searchQuery" @bind:event="oninput"
+                               @onkeydown="HandleSearchKeyDown" />
                         <span class="bulma-icon bulma-is-small bulma-is-left">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
                     </div>
-                    <a class="bulma-button bulma-is-success">Encuentra un caso</a>
-                </div>
-            </section>
-        </header>
-
-        <section class="bulma-container bulma-mt-5">
-            <section class="bulma-section">
-                <div class="bulma-is-flex bulma-is-justify-content-space-between">
-                    <div>Explorar categorias</div>
-                    <a class="color-primary">Ver mas</a>
-                </div>
-                <section class="bulma-section icons-container">
-                    <CategoryComponent Title="Medicina" Icon="fa-apple-whole" ColorClass="icon-category__icon--health" />
-                    <CategoryComponent Title="Educacion" Icon="fa-book-open" ColorClass="icon-category__icon--education" />
-                    <CategoryComponent Title="Desastres naturales" Icon="fa-person-walking-arrow-loop-left"
-                                       ColorClass="icon-category__icon--disaster-relief" />
-                    <CategoryComponent Title="Medio ambiente" Icon="fa-leaf" ColorClass="icon-category__icon--environment" />
+                    <button type="button" class="bulma-button bulma-is-success" @onclick="NavigateToCasesSearch">Encuentra un
+                        caso</button>
+                    </div>
                 </section>
-                <section class="bulma-section bulma-is-flex bulma-is-justify-content-space-between bg-cream-color section-redondeado">
-                    <div class="mx-3">
-                        <h2 class="bulma-has-text-black bulma-title">Buscando apoyo?</h2>
-                        <p class="bulma-has-text-black">Ya sean facturas médicas, proyectos comunitarios o necesidades
-                            educativas,
-                            Nuestra plataforma lo conecta directamente con quienes se preocupan. Comienza tu
-                            campaña en menos de 5 minutos.</p>
-                        </div>
-                        <div class="bulma-is-flex bulma-is-align-items-center">
-                            <a class="bulma-button bulma-is-success bulma-is-medium" href="/cases/new/step1">Crea tu caso ahora</a>
-                        </div>
+            </header>
+
+            <section class="bulma-container bulma-mt-5">
+                <section class="bulma-section">
+                    <div class="bulma-is-flex bulma-is-justify-content-space-between">
+                        <div>Explorar categorias</div>
+                        <a class="color-primary" href="/programs">Ver mas</a>
+                    </div>
+                    <section class="bulma-section icons-container">
+                        <CategoryComponent Title="Medicina" Icon="fa-apple-whole" ColorClass="icon-category__icon--health" />
+                        <CategoryComponent Title="Educacion" Icon="fa-book-open" ColorClass="icon-category__icon--education" />
+                        <CategoryComponent Title="Desastres naturales" Icon="fa-person-walking-arrow-loop-left"
+                                           ColorClass="icon-category__icon--disaster-relief" />
+                        <CategoryComponent Title="Medio ambiente" Icon="fa-leaf" ColorClass="icon-category__icon--environment" />
+                    </section>
+                    <section
+                        class="bulma-section bulma-is-flex bulma-is-justify-content-space-between bg-cream-color section-redondeado">
+                        <div class="mx-3">
+                            <h2 class="bulma-has-text-black bulma-title">Buscando apoyo?</h2>
+                            <p class="bulma-has-text-black">Ya sean facturas médicas, proyectos comunitarios o necesidades
+                                educativas,
+                                Nuestra plataforma lo conecta directamente con quienes se preocupan. Comienza tu
+                                campaña en menos de 5 minutos.</p>
+                            </div>
+                            <div class="bulma-is-flex bulma-is-align-items-center">
+                                <a class="bulma-button bulma-is-success bulma-is-medium" href="/cases/new/step1">Crea tu caso ahora</a>
+                            </div>
+                        </section>
                     </section>
                 </section>
-            </section>
-            <div class="bulma-container">
-                <section class="bulma-section bulma-is-flex bulma-is-align-items-center">
-                    <div class="raya-decoration"></div>
-                    <p class="bulma-has-text-black mx-3">Programas activos de Aid</p>
-                </section>
+                <div class="bulma-container">
+                    <section class="bulma-section bulma-is-flex bulma-is-align-items-center">
+                        <div class="raya-decoration"></div>
+                        <p class="bulma-has-text-black mx-3">Programas activos de Aid</p>
+                    </section>
 
-                <CardsComponent />
-            </div>
+                    <CardsComponent />
+                </div>
 
 @code {
     [SupplyParameterFromQuery(Name = "caseWarning")]
     private string? caseWarning { get; set; }
 
     private bool showDuplicateCaseDialog;
+    private string searchQuery = string.Empty;
 
     protected override void OnParametersSet()
     {
@@ -95,5 +101,26 @@
     {
         showDuplicateCaseDialog = false;
         Navigation.NavigateTo("/", replace: true);
+    }
+
+    private void NavigateToCasesSearch()
+    {
+        var normalizedQuery = searchQuery.Trim();
+
+        if (string.IsNullOrWhiteSpace(normalizedQuery))
+        {
+            Navigation.NavigateTo("/cases");
+            return;
+        }
+
+        Navigation.NavigateTo($"/cases?q={Uri.EscapeDataString(normalizedQuery)}");
+    }
+
+    private void HandleSearchKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            NavigateToCasesSearch();
+        }
     }
 }

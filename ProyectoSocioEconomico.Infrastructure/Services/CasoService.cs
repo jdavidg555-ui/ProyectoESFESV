@@ -67,6 +67,26 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
         public async Task Crear(Caso caso)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
+
+            var usuario = await context.Usuarios.FindAsync(caso.IdBeneficiado);
+            if (usuario != null)
+            {
+                var rolBeneficiario = await context.Roles
+                    .FirstOrDefaultAsync(r =>
+                        r.Nombre.ToLower() == "beneficiario" ||
+                        r.Nombre.ToLower() == "beneficiado");
+
+                if (rolBeneficiario == null)
+                {
+                    throw new InvalidOperationException("No se encontró el rol Beneficiario en la base de datos.");
+                }
+
+                if (usuario.IdRol != rolBeneficiario.Id)
+                {
+                    usuario.IdRol = rolBeneficiario.Id;
+                }
+            }
+
             context.Casos.Add(caso);
             await context.SaveChangesAsync();
         }

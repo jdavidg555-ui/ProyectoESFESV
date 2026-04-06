@@ -27,7 +27,9 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
         public async Task<Usuario?> ObtenerPorId(int id)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
-            return await context.Usuarios.FindAsync(id);
+            return await context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task Crear(Usuario usuario)

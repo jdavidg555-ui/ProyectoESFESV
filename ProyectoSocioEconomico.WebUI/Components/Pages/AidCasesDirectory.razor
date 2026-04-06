@@ -1,4 +1,5 @@
 @page "/cases"
+@using Microsoft.AspNetCore.Components
 @using ProyectoSocioEconomico.Application.Interfaces
 @using ProyectoSocioEconomico.Domain.Entities
 @using System.Globalization
@@ -116,6 +117,9 @@
 @code {
     private record FilterOption(string Key, string Label, string Icon);
 
+    [SupplyParameterFromQuery(Name = "q")]
+    private string? QueryFromUrl { get; set; }
+
     private string SearchQuery  { get; set; } = string.Empty;
     private string ActiveFilter { get; set; } = "all";
     private int    CurrentPage  { get; set; } = 1;
@@ -138,12 +142,18 @@
         AllCases = await CasoService.ObtenerTodosConDetallesAsync();
     }
 
+    protected override void OnParametersSet()
+    {
+        SearchQuery = QueryFromUrl?.Trim() ?? string.Empty;
+        CurrentPage = 1;
+    }
+
     private IEnumerable<Caso> FilteredCases =>
         AllCases
             .Where(c => ActiveFilter == "all" || IsMatch(c.IdCategoriaNavigation?.Nombre, ActiveFilter))
             .Where(c => string.IsNullOrWhiteSpace(SearchQuery) ||
-                        c.Titulo.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ||
-                        c.Descripcion.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+                        (c.Titulo?.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (c.Descripcion?.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) ?? false));
 
     private bool IsMatch(string? categoryName, string filterKey)
     {
