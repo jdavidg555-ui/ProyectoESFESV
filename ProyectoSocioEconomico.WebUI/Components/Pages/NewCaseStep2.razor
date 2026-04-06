@@ -279,11 +279,26 @@
     private string? submissionError;
     private readonly List<string> validationMessages = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (!CaseState.Step1Completed)
         {
             Navigation.NavigateTo("/cases/new/step1");
+            return;
+        }
+
+        var userId = await GetAuthenticatedUserIdAsync();
+        if (userId is null)
+        {
+            submissionError = "Tu sesión no está activa. Inicia sesión nuevamente para crear un caso.";
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        if (await CasoService.UsuarioYaTieneCasoAsync(userId.Value))
+        {
+            Navigation.NavigateTo("/?caseWarning=duplicate");
+            return;
         }
     }
 
@@ -418,27 +433,20 @@
                 return;
             }
 
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            if (user.Identity == null || !user.Identity.IsAuthenticated)
+            var userId = await GetAuthenticatedUserIdAsync();
+            if (userId is null)
             {
                 submissionError = "Tu sesión no está activa. Inicia sesión nuevamente para enviar el caso.";
-                await JSRuntime.InvokeVoidAsync("console.error", "User not authenticated");
-                Console.WriteLine("User not authenticated");
                 return;
             }
 
-            var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            if (await CasoService.UsuarioYaTieneCasoAsync(userId.Value))
             {
-                submissionError = "No se pudo identificar al usuario autenticado.";
-                await JSRuntime.InvokeVoidAsync("console.error", "Could not retrieve user ID", userIdString);
-                Console.WriteLine($"Could not retrieve user ID: {userIdString}");
+                Navigation.NavigateTo("/?caseWarning=duplicate");
                 return;
             }
 
-            await JSRuntime.InvokeVoidAsync("console.log", $"User ID: {userId}");
+            await JSRuntime.InvokeVoidAsync("console.log", $"User ID: {userId.Value}");
 
             var thumbnailPath = string.Empty;
             if (CaseState.ThumbnailData != null)
@@ -479,7 +487,7 @@
 
             var nuevoCaso = new Caso
             {
-                IdBeneficiado = userId,
+                IdBeneficiado = userId.Value,
                 Titulo = CaseState.CaseTitle,
                 Descripcion = CaseState.Description,
                 Meta = CaseState.FinancialGoal,
@@ -523,5 +531,28 @@
         return string.IsNullOrWhiteSpace(baseException.Message)
             ? "Ocurrió un error inesperado."
             : baseException.Message;
+    }
+
+    private async Task<int?> GetAuthenticatedUserIdAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity == null || !user.Identity.IsAuthenticated)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "User not authenticated");
+            Console.WriteLine("User not authenticated");
+            return null;
+        }
+
+        var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Could not retrieve user ID", userIdString);
+            Console.WriteLine($"Could not retrieve user ID: {userIdString}");
+            return null;
+        }
+
+        return userId;
     }
 }

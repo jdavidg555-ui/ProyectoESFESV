@@ -58,6 +58,12 @@ namespace ProyectoSocioEconomico.Infrastructure.Services
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<bool> UsuarioYaTieneCasoAsync(int usuarioId)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Casos.AnyAsync(c => c.IdBeneficiado == usuarioId);
+        }
+
         public async Task Crear(Caso caso)
         {
             using var context = await _contextFactory.CreateDbContextAsync();

@@ -26,6 +26,10 @@
   --rp-border: #e2e0d8;
   --rp-input-bg: #ffffff;
   --rp-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --duplicate-dialog-overlay: rgba(17, 33, 17, 0.42);
+  --duplicate-dialog-surface: #fffdf7;
+  --duplicate-dialog-border: #f3d37a;
+  --duplicate-dialog-text: #33250a;
 }
 
 .color-primary {
@@ -146,6 +150,77 @@ article.icon-category {
     color: var(--black);
     text-wrap: balance;
   }
+}
+
+dialog.home-duplicate-dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: min(92vw, 30rem);
+  width: 100%;
+}
+
+dialog.home-duplicate-dialog::backdrop {
+  background: var(--duplicate-dialog-overlay);
+  backdrop-filter: blur(3px);
+}
+
+dialog.home-duplicate-dialog article.home-duplicate-dialog__card {
+  background: linear-gradient(180deg, var(--duplicate-dialog-surface) 0%, var(--white) 100%);
+  color: var(--duplicate-dialog-text);
+  border: 1px solid var(--duplicate-dialog-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 24px 60px rgba(17, 33, 17, 0.18);
+  padding: 2rem 1.75rem;
+  text-align: center;
+}
+
+dialog.home-duplicate-dialog .home-duplicate-dialog__icon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 1.75rem;
+  color: #b77900;
+  background: #fff3cd;
+}
+
+dialog.home-duplicate-dialog .home-duplicate-dialog__eyebrow {
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9a6c00;
+}
+
+dialog.home-duplicate-dialog .home-duplicate-dialog__title {
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: var(--duplicate-dialog-text);
+}
+
+dialog.home-duplicate-dialog .home-duplicate-dialog__body {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(51, 37, 10, 0.82);
+}
+
+dialog.home-duplicate-dialog .home-duplicate-dialog__actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+dialog.home-duplicate-dialog .home-duplicate-dialog__button.bulma-button {
+  min-width: 10rem;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(245, 187, 0, 0.22);
 }
 
 section.bg-cream-color {

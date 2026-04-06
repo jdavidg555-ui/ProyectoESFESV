@@ -1,4 +1,27 @@
-﻿@page "/"
+@page "/"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager Navigation
+
+@if (showDuplicateCaseDialog)
+{
+    <dialog class="home-duplicate-dialog" open aria-labelledby="duplicate-case-title">
+        <article class="home-duplicate-dialog__card">
+            <div class="home-duplicate-dialog__icon" aria-hidden="true">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <p class="home-duplicate-dialog__eyebrow">Caso ya registrado</p>
+            <h2 id="duplicate-case-title" class="home-duplicate-dialog__title">Solo puedes crear un caso por persona</h2>
+            <p class="home-duplicate-dialog__body">
+                Ya tienes un caso registrado en la plataforma. Si necesitas cambios, debes revisar ese caso actual.
+            </p>
+            <div class="home-duplicate-dialog__actions">
+                <button type="button" class="bulma-button bulma-is-warning home-duplicate-dialog__button" @onclick="CloseDuplicateCaseDialog">
+                    Entendido
+                </button>
+            </div>
+        </article>
+    </dialog>
+}
 
 <PageTitle>Home</PageTitle>
 
@@ -56,3 +79,21 @@
 
                 <CardsComponent />
             </div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "caseWarning")]
+    private string? caseWarning { get; set; }
+
+    private bool showDuplicateCaseDialog;
+
+    protected override void OnParametersSet()
+    {
+        showDuplicateCaseDialog = caseWarning == "duplicate";
+    }
+
+    private void CloseDuplicateCaseDialog()
+    {
+        showDuplicateCaseDialog = false;
+        Navigation.NavigateTo("/", replace: true);
+    }
+}
