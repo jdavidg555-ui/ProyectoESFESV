@@ -155,6 +155,7 @@
     private Usuario? CurrentUser { get; set; }
     private bool IsSubmitting { get; set; }
     private bool IsSuccess { get; set; }
+    private bool HasNavigated { get; set; }
     private string? FeedbackMessage { get; set; }
     private string? SelectedImageName { get; set; }
     private IBrowserFile? SelectedImageFile { get; set; }
@@ -245,16 +246,26 @@
 
             IsSuccess = true;
             FeedbackMessage = "Programa creado correctamente.";
-            Navigation.NavigateTo("/admin/programs", true);
+            HasNavigated = true;
+            Navigation.NavigateTo("/admin/programs");
+            return;
         }
         catch (Exception ex)
         {
+            if (HasNavigated)
+            {
+                return;
+            }
+
             IsSuccess = false;
             FeedbackMessage = "No se pudo crear el programa: " + ex.Message;
         }
         finally
         {
-            IsSubmitting = false;
+            if (!HasNavigated)
+            {
+                IsSubmitting = false;
+            }
         }
     }
 
