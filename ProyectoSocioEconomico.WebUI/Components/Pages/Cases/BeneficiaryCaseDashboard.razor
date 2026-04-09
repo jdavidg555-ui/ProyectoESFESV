@@ -8,6 +8,8 @@
 @using ProyectoSocioEconomico.Application.Interfaces
 @inject ICasoService CasoService
 @inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="bcd-page">
     <div class="bcd-header">
@@ -45,6 +47,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Cases = await CasoService.ObtenerPorBeneficiadoAsync();
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var idStr = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (int.TryParse(idStr, out var userId))
+        {
+            Cases = new List<Caso>();
+            var c = await CasoService.ObtenerPorBeneficiadoIdAsync(userId);
+            if (c != null) Cases.Add(c);
+        }
     }
 }

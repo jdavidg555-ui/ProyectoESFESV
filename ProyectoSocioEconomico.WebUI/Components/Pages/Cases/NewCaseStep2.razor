@@ -400,4 +400,56 @@
         certificationError = null;
         thumbnailError = null;
 
-*** End Patch
+        try
+        {
+            // Minimal submission flow: ensure thumbnail exists and certification checked
+            if (CaseState.ThumbnailData == null)
+            {
+                thumbnailError = "Se requiere una imagen de portada.";
+                submissionError = "Faltan archivos requeridos.";
+                return;
+            }
+
+            if (!CaseState.IsCertified)
+            {
+                certificationError = "Debe certificar la veracidad de la información.";
+                submissionError = "Faltan campos obligatorios.";
+                return;
+            }
+
+            // Placeholder: real implementation should call CasoService to create the case
+            // await CasoService.CrearDesdeNuevoCaseStateAsync(CaseState);
+
+            Navigation.NavigateTo("/beneficiary/dashboard");
+        }
+        catch (Exception ex)
+        {
+            submissionError = $"Ocurrió un error al enviar la campaña: {GetDisplayError(ex)}";
+            await JSRuntime.InvokeVoidAsync("console.error", submissionError);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private async Task<int?> GetAuthenticatedUserIdAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var idStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (int.TryParse(idStr, out var id)) return id;
+        return null;
+    }
+
+    private async Task<byte[]> ReadFileAsync(IBrowserFile file)
+    {
+        using var ms = new MemoryStream();
+        var stream = file.OpenReadStream(maxFileSize);
+        await stream.CopyToAsync(ms);
+        return ms.ToArray();
+    }
+
+    private string GetDisplayError(Exception ex) => ex?.Message ?? "Error desconocido";
+
+}
