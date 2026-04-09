@@ -1,3 +1,4 @@
+@namespace ProyectoSocioEconomico.WebUI.Components.Pages
 @*
   NewCaseStep1.razor
   Propósito: Primer paso del flujo para crear un nuevo caso. Recoge categoría, título y descripción.
@@ -114,10 +115,6 @@
                     </div>
                 </div>
                 <ValidationMessage For="@(() => CaseState.FinancialGoal)" class="bulma-help bulma-is-danger" />
-                @* <p class="nc1-field-note">
-                    <span class="bulma-icon bulma-is-small"><i class="far fa-circle-info"></i></span>
-                    This is the total amount required to fully fund and close this aid case.
-                </p> *@
             </div>
 
             <!-- Action row -->
